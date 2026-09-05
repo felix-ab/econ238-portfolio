@@ -28,3 +28,15 @@ button:hover .folder-label{text-decoration:none}
 :root[data-theme=dark] .folder:hover,:root[data-theme=dark] .folder[aria-expanded=true]{background:var(--wash)}
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]) .folder:hover,:root:not([data-theme=light]) .folder[aria-expanded=true]{background:var(--wash)}}
 @media(prefers-reduced-motion:reduce){.folder{transition:none}.folder:active{transform:none}}
+
+/* Keep all folder layers within the rounded front and reserve shadow space. */
+.avatar{object-position:44% 40%}
+.folder-icon{overflow:visible;transition:transform .26s var(--ease-soft)}
+.folder-paper{transition:transform .26s var(--ease-soft)}
+.folder-panel:not([hidden]){animation:folder-reveal .22s var(--ease-soft) both}
+@keyframes folder-reveal{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@media(hover:hover) and (pointer:fine){.folder:hover .folder-icon{transform:translateY(-2px)}.folder:hover .folder-paper{transform:translateY(-2px)}}
+.folder:active{transform:scale(.985)}
+.close-folder{flex-shrink:0;transition:background-color .18s ease,transform .18s var(--ease-soft)}
+.close-folder:active{transform:scale(.97)}
+@media(prefers-reduced-motion:reduce){.folder-icon,.folder-paper,.close-folder{transition:none}.folder-panel:not([hidden]){animation:none}.folder:hover .folder-icon,.folder:hover .folder-paper,.folder:active,.close-folder:active{transform:none}}

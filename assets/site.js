@@ -26,6 +26,7 @@
     folders.forEach(button => button.setAttribute('aria-expanded', 'false'));
     panels.forEach(panel => { panel.hidden = true; });
   }
+  closeAll();
   folders.forEach(button => button.addEventListener('click', () => {
     const wasOpen = button.getAttribute('aria-expanded') === 'true';
     closeAll();
