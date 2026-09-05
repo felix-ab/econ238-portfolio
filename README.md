@@ -4,9 +4,9 @@ Environmental Economics (ECON 238) · University of Rochester · Fall 2026
 
 <img src="assets/portrait.png" alt="Felix Brener" width="112" height="112">
 
-I study neuroscience and economics at the University of Rochester. I am interested in the practical applications of artificial intelligence.
+**About me:** I study neuroscience and economics at the University of Rochester. I am interested in the practical applications of artificial intelligence.
 
-[View my course portfolio](https://felix-ab.github.io/econ238-portfolio/)
+[View the portfolio website](https://felix-ab.github.io/econ238-portfolio/)
 
 ## Assignments
 
