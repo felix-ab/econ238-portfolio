@@ -6,6 +6,7 @@
   <meta name="color-scheme" content="light dark">
   <title>{{ page.title | default: site.title | escape }}</title>
   <meta name="description" content="{{ page.description | default: site.description | escape }}">
+  <link rel="preload" href="{{ '/assets/fonts/Switzer-Regular.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}?v={{ site.time | date: '%s' }}">
   <script>try{var t=localStorage.getItem('portfolio-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
   <script src="{{ '/assets/site.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
@@ -21,10 +22,7 @@
       {% unless page.home %}<a class="back-link" href="{{ '/' | relative_url }}#assignments">← All assignments</a>{% endunless %}
       {{ content }}
     </main>
-    <footer>
-      <span>Felix Brener <span class="footer-divider" aria-hidden="true">/</span> Fall 2026</span>
-      <nav aria-label="Project links"><a href="https://github.com/felix-ab/econ238-portfolio">Source <span aria-hidden="true">↗</span></a><a href="https://github.com/felix-ab/econ238-portfolio/commits/main/">History <span aria-hidden="true">↗</span></a></nav>
-    </footer>
+    <footer><a href="https://github.com/felix-ab/econ238-portfolio">Repository <span aria-hidden="true">↗</span></a></footer>
   </div>
 </body>
 </html>
