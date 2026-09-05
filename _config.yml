@@ -1,0 +1,13 @@
+title: Felix Brener — ECON 238
+description: Environmental Economics coursework, Fall 2026, University of Rochester.
+url: https://felix-ab.github.io
+baseurl: /econ238-portfolio
+markdown: kramdown
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+exclude:
+  - Gemfile
+  - Gemfile.lock
