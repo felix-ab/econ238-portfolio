@@ -18,3 +18,31 @@
   render();
   button.hidden = false;
 })();
+
+(() => {
+  const folders = [...document.querySelectorAll('.folder')];
+  const panels = [...document.querySelectorAll('.folder-panel')];
+  function closeAll() {
+    folders.forEach(button => button.setAttribute('aria-expanded', 'false'));
+    panels.forEach(panel => { panel.hidden = true; });
+  }
+  folders.forEach(button => button.addEventListener('click', () => {
+    const wasOpen = button.getAttribute('aria-expanded') === 'true';
+    closeAll();
+    if (!wasOpen) {
+      button.setAttribute('aria-expanded', 'true');
+      document.getElementById(button.getAttribute('aria-controls')).hidden = false;
+    }
+  }));
+  panels.forEach(panel => {
+    const close = () => {
+      const button = folders.find(item => item.getAttribute('aria-controls') === panel.id);
+      closeAll();
+      button.focus();
+    };
+    panel.querySelector('.close-folder').addEventListener('click', close);
+    panel.addEventListener('keydown', event => {
+      if (event.key === 'Escape') { event.preventDefault(); close(); }
+    });
+  });
+})();
