@@ -1,35 +1,26 @@
----
-title: Felix Brener — ECON 238 Portfolio
-permalink: /
-home: true
----
+# Felix Brener
 
-<div class="profile">
-  <img class="avatar" src="{{ '/assets/portrait.png' | relative_url }}" alt="Felix Brener" width="112" height="112">
-  <div class="profile-copy">
-    <h1>Felix Brener</h1>
-    <p class="bio">I study neuroscience and economics at the University of Rochester. I am interested in the practical applications of artificial intelligence.</p>
-    <p class="profile-course">ECON 238 · Environmental Economics · Fall 2026</p>
-  </div>
-</div>
+Environmental Economics (ECON 238) · University of Rochester · Fall 2026
 
-<section class="coursework" aria-labelledby="assignments">
-<div class="section-heading"><h2 id="assignments">Assignments</h2></div>
-<div class="folders">
-<button class="folder blue" type="button" aria-expanded="false" aria-controls="rrr-panel" id="rrr-button"><svg class="folder-icon" viewBox="-8 -4 176 128" aria-hidden="true"><path class="folder-back" d="M8 22q0-12 12-12h31q8 0 12 6l6 9h71q12 0 12 12v43H8Z"/><rect class="folder-paper" x="20" y="31" width="120" height="49" rx="3"/><path class="folder-front" d="M14 36h132q10 0 9 10l-4 49q-1 15-16 15H25q-15 0-16-15L5 46q-1-10 9-10Z"/></svg><span class="folder-label">Weekly RRRs</span><span class="folder-caption">12 assignments</span></button>
-<button class="folder sand" type="button" aria-expanded="false" aria-controls="eett-panel" id="eett-button"><svg class="folder-icon" viewBox="-8 -4 176 128" aria-hidden="true"><path class="folder-back" d="M8 22q0-12 12-12h31q8 0 12 6l6 9h71q12 0 12 12v43H8Z"/><rect class="folder-paper" x="20" y="31" width="120" height="49" rx="3"/><path class="folder-front" d="M14 36h132q10 0 9 10l-4 49q-1 15-16 15H25q-15 0-16-15L5 46q-1-10 9-10Z"/></svg><span class="folder-label">EETT</span><span class="folder-caption">Individual + group</span></button>
-<button class="folder sage" type="button" aria-expanded="false" aria-controls="interview-panel" id="interview-button"><svg class="folder-icon" viewBox="-8 -4 176 128" aria-hidden="true"><path class="folder-back" d="M8 22q0-12 12-12h31q8 0 12 6l6 9h71q12 0 12 12v43H8Z"/><rect class="folder-paper" x="20" y="31" width="120" height="49" rx="3"/><path class="folder-front" d="M14 36h132q10 0 9 10l-4 49q-1 15-16 15H25q-15 0-16-15L5 46q-1-10 9-10Z"/></svg><span class="folder-label">Interview Project</span><span class="folder-caption">Group project</span></button>
-<button class="folder gray" type="button" aria-expanded="false" aria-controls="final-panel" id="final-button"><svg class="folder-icon" viewBox="-8 -4 176 128" aria-hidden="true"><path class="folder-back" d="M8 22q0-12 12-12h31q8 0 12 6l6 9h71q12 0 12 12v43H8Z"/><rect class="folder-paper" x="20" y="31" width="120" height="49" rx="3"/><path class="folder-front" d="M14 36h132q10 0 9 10l-4 49q-1 15-16 15H25q-15 0-16-15L5 46q-1-10 9-10Z"/></svg><span class="folder-label">Final Assessment</span><span class="folder-caption">Individual</span></button>
-</div>
-<section class="folder-panel" id="rrr-panel" aria-labelledby="rrr-title"><div class="panel-heading"><h3 id="rrr-title">Weekly RRRs</h3><button class="close-folder" type="button" aria-label="Close Weekly RRRs">Close ×</button></div><p class="panel-note">Research, responses, and review. Sundays at 6:59 PM ET.</p><ul class="assignment-list"><li><span>RRR 1</span><span class="assignment-date">Sep 6</span></li><li><span>RRR 2 · Get Outside</span><span class="assignment-date">Sep 13</span></li><li><span>RRR 3</span><span class="assignment-date">Sep 20</span></li><li><span>RRR 4</span><span class="assignment-date">Sep 27</span></li><li><span>RRR 5</span><span class="assignment-date">Oct 4</span></li><li><span>RRR 6</span><span class="assignment-date">Oct 18</span></li><li><span>RRR 7</span><span class="assignment-date">Oct 25</span></li><li><span>RRR 8</span><span class="assignment-date">Nov 1</span></li><li><span>RRR 9</span><span class="assignment-date">Nov 8</span></li><li><span>RRR 10</span><span class="assignment-date">Nov 22</span></li><li><span>RRR 11</span><span class="assignment-date">Dec 6</span></li><li><span>RRR 12</span><span class="assignment-date">Dec 13</span></li></ul><p class="publication-note">No published work.</p></section>
-<section class="folder-panel" id="eett-panel" aria-labelledby="eett-title"><div class="panel-heading"><h3 id="eett-title">Environmental Economics Turing Test</h3><button class="close-folder" type="button" aria-label="Close Environmental Economics Turing Test">Close ×</button></div><p class="panel-note">Individual and group work.</p><ul class="assignment-list"><li><span>Individual reflections</span><span class="assignment-date">RRRs 3 &amp; 4</span></li><li><span>Individual EETT</span><span class="assignment-date">Oct 2</span></li><li><span>Group précis</span><span class="assignment-date">Oct 11</span></li><li><span>Final group memo</span><span class="assignment-date">Oct 28 · 7 PM ET</span></li><li><span>Printed memo</span><span class="assignment-date">Oct 29 · In class</span></li></ul><p class="publication-note">No published work.</p></section>
-<section class="folder-panel" id="interview-panel" aria-labelledby="interview-title"><div class="panel-heading"><h3 id="interview-title">Interview Project</h3><button class="close-folder" type="button" aria-label="Close Interview Project">Close ×</button></div><p class="panel-note">Group interview and written analysis.</p><ul class="assignment-list"><li><span>Final project</span><span class="assignment-date">Dec 10 · Noon ET</span></li></ul><p class="publication-note">No published work.</p></section>
-<section class="folder-panel" id="final-panel" aria-labelledby="final-title"><div class="panel-heading"><h3 id="final-title">Final Assessment</h3><button class="close-folder" type="button" aria-label="Close Final Assessment">Close ×</button></div><p class="panel-note">Individual course reflection and assessment.</p><ul class="assignment-list"><li><span>Final assessment</span><span class="assignment-date">Final-exam period</span></li></ul><p class="publication-note">No published work.</p></section>
-<noscript><style>.folders,.close-folder{display:none}</style></noscript>
+<img src="assets/portrait.png" alt="Felix Brener" width="112" height="112">
 
-</section>
+I study neuroscience and economics at the University of Rochester. I am interested in the practical applications of artificial intelligence.
 
-<!-- Keep README.md as the homepage. Add published work to the matching folder
-     as a link to its own assignment-01-topic.html page, backed by a Markdown file.
-     Replace the folder's "No published work" note when adding the first entry.
-     Planned entries are not completed assignments. -->
+[View my course portfolio](https://felix-ab.github.io/econ238-portfolio/)
+
+## Assignments
+
+This repository contains my coursework for ECON 238. No assignments have been published yet.
+
+| Category | Work |
+| --- | --- |
+| Weekly RRRs | Research, responses, and review |
+| Environmental Economics Turing Test | Individual analysis and a group memo |
+| Interview Project | Group interviews and written analysis |
+| Final Assessment | Individual course reflection |
+
+Published assignments will be linked here as they are completed.
+
+<!-- Add each published assignment as a Markdown link to its assignment-NN-topic.md
+     file here and as a rendered page link in _includes/home.html.
+     Keep one Markdown file per assignment; submit the specific page URL in Blackboard. -->

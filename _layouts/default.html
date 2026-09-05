@@ -20,7 +20,7 @@
     </header>
     <main id="main" class="{% if page.home %}home{% else %}assignment{% endif %}">
       {% unless page.home %}<a class="back-link" href="{{ '/' | relative_url }}#assignments">← All assignments</a>{% endunless %}
-      {{ content }}
+      {% if page.home %}{% include home.html %}{% else %}{{ content }}{% endif %}
     </main>
     <footer><a href="https://github.com/felix-ab/econ238-portfolio">Repository <span aria-hidden="true">↗</span></a></footer>
   </div>

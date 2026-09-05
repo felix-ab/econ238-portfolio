@@ -3,11 +3,18 @@ description: Environmental Economics coursework, Fall 2026, University of Roches
 url: https://felix-ab.github.io
 baseurl: /econ238-portfolio
 markdown: kramdown
+# README remains the homepage; GitHub shows its plain Markdown.
 defaults:
   - scope:
       path: ""
     values:
       layout: default
+  - scope:
+      path: "README.md"
+    values:
+      home: true
+      permalink: /
+      title: Felix Brener — ECON 238 Portfolio
 exclude:
   - Gemfile
   - Gemfile.lock
