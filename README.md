@@ -19,6 +19,8 @@ This repository contains my coursework for ECON 238. No assignments have been pu
 | Interview Project | Group interviews and written analysis |
 | Final Assessment | Individual course reflection |
 
+Week 1 (Sep 6): Exemption used.
+
 Published assignments will be linked here as they are completed.
 
 <!-- Add each published assignment as a Markdown link to its assignment-NN-topic.md
