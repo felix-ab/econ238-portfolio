@@ -10,7 +10,7 @@ Environmental Economics (ECON 238) · University of Rochester · Fall 2026
 
 ## Assignments
 
-This repository contains my coursework for ECON 238. No assignments have been published yet.
+This repository contains my coursework for ECON 238.
 
 | Category | Work |
 | --- | --- |
@@ -21,8 +21,4 @@ This repository contains my coursework for ECON 238. No assignments have been pu
 
 Week 1 (Sep 6): Exemption used.
 
-Published assignments will be linked here as they are completed.
-
-<!-- Add each published assignment as a Markdown link to its assignment-NN-topic.md
-     file here and as a rendered page link in _includes/home.html.
-     Keep one Markdown file per assignment; submit the specific page URL in Blackboard. -->
+[Week Four: Storm deaths, adaptation, and exposure](week-four/) · [18 × 24 poster PDF](week-four/poster.pdf)
