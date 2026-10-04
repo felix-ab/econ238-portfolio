@@ -11,11 +11,11 @@
 <meta name="theme-color" content="#f4f3ef">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='13' cy='16' r='10' fill='%23FF48B0'/%3E%3Ccircle cx='19' cy='16' r='10' fill='%230078BF' style='mix-blend-mode:multiply'/%3E%3C/svg%3E">
 <link rel="preload" href="assets/fonts/SUIT-Variable.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/site.css?v=7">
+<link rel="stylesheet" href="css/site.css?v=8">
 <script defer src="assets/vendor/d3.min.js"></script>
 <script defer src="assets/vendor/topojson-client.min.js"></script>
-<script defer src="model.js?v=7"></script>
-<script defer src="js/app.js?v=7"></script>
+<script defer src="model.js?v=8"></script>
+<script defer src="js/app.js?v=8"></script>
 </head>
 <body>
 <div class="app" id="top">
@@ -35,36 +35,7 @@
     <p class="sr-only" id="map-alt">World map. Land used for US beef is printed in pink (pasture) and blue (feed crops) where cattle and crops actually are. Cropland for replacement foods is printed in yellow.</p>
     <div class="pins" id="pins"></div>
     <div class="factoid" id="factoid" role="tooltip" hidden></div>
-    <div class="edge" aria-hidden="true"><i></i><i></i><i></i></div>
     <div class="veil" aria-hidden="true"></div>
-    <div class="rim" aria-hidden="true"></div>
-    <svg class="glass-defs" width="0" height="0" aria-hidden="true" focusable="false">
-      <!-- Curved glass over the map. Per-channel displacement after rdev/liquid-glass-react (MIT):
-           red, green and blue refract by different amounts, so aberration grows with the bevel.
-           A blur ladder, masked to deeper bands toward the rim, makes the blur progressive. -->
-      <filter id="glass" x="0" y="0" width="100" height="100" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-        <feImage id="glass-disp" x="0" y="0" width="100" height="100" preserveAspectRatio="none" result="D"/>
-        <feImage id="glass-mask" x="0" y="0" width="100" height="100" preserveAspectRatio="none" result="MK"/>
-        <feDisplacementMap in="SourceGraphic" in2="D" scale="64" xChannelSelector="R" yChannelSelector="G" result="dR"/>
-        <feColorMatrix in="dR" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="cR"/>
-        <feDisplacementMap in="SourceGraphic" in2="D" scale="54" xChannelSelector="R" yChannelSelector="G" result="dG"/>
-        <feColorMatrix in="dG" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="cG"/>
-        <feDisplacementMap in="SourceGraphic" in2="D" scale="44" xChannelSelector="R" yChannelSelector="G" result="dB"/>
-        <feColorMatrix in="dB" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="cB"/>
-        <feBlend in="cR" in2="cG" mode="screen" result="RG"/>
-        <feBlend in="RG" in2="cB" mode="screen" result="CA"/>
-        <feGaussianBlur in="CA" stdDeviation="1.4" edgeMode="duplicate" result="b1"/>
-        <feGaussianBlur in="CA" stdDeviation="3.6" edgeMode="duplicate" result="b2"/>
-        <feGaussianBlur in="CA" stdDeviation="8" edgeMode="duplicate" result="b3"/>
-        <feColorMatrix in="MK" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 0 0 0 0" result="m1"/>
-        <feColorMatrix in="MK" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 1 0 0 0" result="m2"/>
-        <feColorMatrix in="MK" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 1 0 0" result="m3"/>
-        <feComposite in="b1" in2="m1" operator="in" result="L1"/>
-        <feComposite in="b2" in2="m2" operator="in" result="L2"/>
-        <feComposite in="b3" in2="m3" operator="in" result="L3"/>
-        <feMerge><feMergeNode in="CA"/><feMergeNode in="L1"/><feMergeNode in="L2"/><feMergeNode in="L3"/></feMerge>
-      </filter>
-    </svg>
     <header class="readout">
       <h1 class="sr-only">The Land on Our Plates</h1>
       <p class="figure"><span id="total">805</span><span class="thin"> <span id="mag">million</span> <span id="unit-word">acres</span></span></p>

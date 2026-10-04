@@ -60,8 +60,8 @@
   function layout() {
     const rect = stage.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
     const cw = Math.round(rect.width), ch = Math.round(rect.height), DW = Math.round(cw * dpr), DH = Math.round(ch * dpr);
-    // Mercator, scaled to cover the stage edge to edge: the map runs under the figure and the glass rim,
-    // which is what the blur is for. World: keep 60°S–82°N in view, never show past Mercator's 85° limit.
+    // Mercator, scaled to cover the stage edge to edge: the map runs under the figure and its scrim,
+    // World: keep 60°S–82°N in view, never show past Mercator's 85° limit.
     const proj = d3.geoMercator(), my = lat => Math.log(Math.tan(Math.PI / 4 + lat * Math.PI / 360));
     if (view === 'world') {
       const yN = my(82), yS = my(-60), yMax = my(85), s = Math.max(cw / (2 * Math.PI), ch / (yN - yS)), half = ch / 2 / s;
@@ -105,44 +105,8 @@
     for (const c of Object.values(canvases)) { c.width = DW; c.height = DH; }
     P = {proj, dpr, DW, DH, S, GW, GH, L, mask, box: [Math.max(0, (bx0 - 1) * S), Math.max(0, (by0 - 1) * S), Math.min(DW, (bx1 + 2) * S), Math.min(DH, (by1 + 2) * S)], cw, ch};
     printBlack();
-    if (GLASS) buildGlass(cw, ch);
+    const ro = $('.readout').getBoundingClientRect(); stage.style.setProperty('--veil-h', Math.round(ro.bottom - rect.top + 56) + 'px');
     placePins();
-  }
-
-  // The SVG glass needs feImage maps; WebKit is unreliable with them, so it gets the CSS edge blur.
-  let glassGen = 0;
-  const ua = navigator.userAgent, GLASS = (!!window.chrome && !/CriOS/.test(ua)) || /Firefox\//.test(ua);
-  if (GLASS) document.documentElement.classList.add('glass-on');
-  // Glass maps for #glass, rebuilt on resize. Displacement: zero in the middle, pulling inward
-  // toward the rim along a rounded-rectangle bevel, so the map bends like curved glass.
-  // Masks: three bands (R, G, B channels) that start deeper as the blur gets heavier.
-  function buildGlass(cw, ch) {
-    const k = 2, w = Math.ceil(cw / k), h = Math.ceil(ch / k);
-    const ro = $('.readout').getBoundingClientRect(), so = stage.getBoundingClientRect();
-    const side = Math.max(40, Math.min(110, Math.min(cw, ch) * .1)) / k;
-    const top = Math.max(side * k, Math.min(ch * .45, ro.bottom - so.top + 28)) / k;
-    const dc = document.createElement('canvas'), mc = document.createElement('canvas');
-    dc.width = mc.width = w; dc.height = mc.height = h;
-    const di = dc.getContext('2d').createImageData(w, h), mi = mc.getContext('2d').createImageData(w, h);
-    const ss = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
-    const clamp = v => Math.max(0, Math.min(1, v));
-    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-      // bevel depth from each edge; the inward normal blends the edges by depth, which rounds the corners
-      const tl = clamp(1 - (x + .5) / side), tr = clamp(1 - (w - x - .5) / side), tt = clamp(1 - (y + .5) / top), tb = clamp(1 - (h - y - .5) / side);
-      const t = Math.max(tl, tr, tt, tb), wl = tl ** 3, wr = tr ** 3, wt = tt ** 3, wb = tb ** 3, sum = wl + wr + wt + wb || 1;
-      let nx = (wl - wr) / sum, ny = (wt - wb) / sum; const nl = Math.hypot(nx, ny) || 1; nx /= nl; ny /= nl;
-      const mag = t * t, i = (y * w + x) * 4;
-      di.data[i] = 128 + 127 * nx * mag; di.data[i + 1] = 128 + 127 * ny * mag; di.data[i + 2] = 128; di.data[i + 3] = 255;
-      mi.data[i] = 255 * ss(.05, .4, t); mi.data[i + 1] = 255 * ss(.35, .72, t); mi.data[i + 2] = 255 * ss(.66, 1, t); mi.data[i + 3] = 255;
-    }
-    dc.getContext('2d').putImageData(di, 0, 0); mc.getContext('2d').putImageData(mi, 0, 0);
-    const f = document.querySelector('.glass-defs filter'); f.setAttribute('width', cw); f.setAttribute('height', ch);
-    for (const [id, c] of [['glass-disp', dc], ['glass-mask', mc]]) {
-      const el = document.getElementById(id);
-      el.setAttribute('width', cw); el.setAttribute('height', ch); el.setAttribute('href', c.toDataURL());
-    }
-    // Chrome caches a CSS-referenced SVG filter; re-reference it under a fresh id so the new maps apply.
-    f.id = 'glass-' + (++glassGen); platesEl.style.filter = `url(#${f.id})`;
   }
 
   // Screen one drum: ink where coverage beats the master. Each drum reads the master at its own offset,
