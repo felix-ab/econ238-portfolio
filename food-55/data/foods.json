@@ -1,0 +1,176 @@
+{
+ "beef": {
+  "label": "Beef",
+  "fdcId": 174034,
+  "fdcDescription": "Beef, ground, 85% lean meat / 15% fat, crumbles, cooked, pan-browned",
+  "per100g": {
+   "kcal": 256.0,
+   "protein": 27.73,
+   "fiber": 0.0,
+   "iron": 2.93,
+   "zinc": 6.62,
+   "copper": 0.093,
+   "selenium": 21.6,
+   "choline": 91.4,
+   "b12": 2.8,
+   "tryptophan": 0.141,
+   "threonine": 1.073,
+   "isoleucine": 1.225,
+   "leucine": 2.161,
+   "lysine": 2.295,
+   "methionine": 0.713,
+   "phenylalanine": 1.081,
+   "valine": 1.362,
+   "histidine": 0.9
+  },
+  "landFactor": {
+   "poore_nemecek_category": "Beef (beef herd)",
+   "m2_per_100g_protein": 163.5958
+  }
+ },
+ "chicken": {
+  "label": "Chicken breast",
+  "fdcId": 171477,
+  "fdcDescription": "Chicken, broilers or fryers, breast, meat only, cooked, roasted",
+  "per100g": {
+   "kcal": 165.0,
+   "protein": 31.02,
+   "fiber": 0.0,
+   "iron": 1.04,
+   "zinc": 1.0,
+   "copper": 0.049,
+   "selenium": 27.6,
+   "choline": 85.3,
+   "b12": 0.34,
+   "tryptophan": 0.362,
+   "threonine": 1.31,
+   "isoleucine": 1.638,
+   "leucine": 2.328,
+   "lysine": 2.635,
+   "methionine": 0.859,
+   "phenylalanine": 1.231,
+   "valine": 1.539,
+   "histidine": 0.963
+  },
+  "landFactor": {
+   "poore_nemecek_category": "Poultry Meat",
+   "m2_per_100g_protein": 7.055427
+  }
+ },
+ "tofu": {
+  "label": "Tofu, firm",
+  "fdcId": 172475,
+  "fdcDescription": "Tofu, raw, firm, prepared with calcium sulfate",
+  "per100g": {
+   "kcal": 144.0,
+   "protein": 17.27,
+   "fiber": 2.3,
+   "iron": 2.66,
+   "zinc": 1.57,
+   "copper": 0.378,
+   "selenium": 17.4,
+   "b12": 0.0,
+   "tryptophan": 0.235,
+   "threonine": 0.785,
+   "isoleucine": 0.849,
+   "leucine": 1.392,
+   "lysine": 0.883,
+   "methionine": 0.211,
+   "phenylalanine": 0.835,
+   "valine": 0.87,
+   "histidine": 0.431,
+   "choline": null
+  },
+  "landFactor": {
+   "poore_nemecek_category": "Tofu",
+   "m2_per_100g_protein": 2.2
+  }
+ },
+ "lentils": {
+  "label": "Lentils",
+  "fdcId": 172421,
+  "fdcDescription": "Lentils, mature seeds, cooked, boiled, without salt",
+  "per100g": {
+   "kcal": 116.0,
+   "protein": 9.02,
+   "fiber": 7.9,
+   "iron": 3.33,
+   "zinc": 1.27,
+   "copper": 0.251,
+   "selenium": 2.8,
+   "choline": 32.7,
+   "b12": 0.0,
+   "tryptophan": 0.081,
+   "threonine": 0.323,
+   "isoleucine": 0.39,
+   "leucine": 0.654,
+   "lysine": 0.63,
+   "methionine": 0.077,
+   "phenylalanine": 0.445,
+   "valine": 0.448,
+   "histidine": 0.254
+  },
+  "landFactor": {
+   "poore_nemecek_category": "Other Pulses",
+   "m2_per_100g_protein": 7.2723026
+  }
+ },
+ "beans": {
+  "label": "Black beans",
+  "fdcId": 173735,
+  "fdcDescription": "Beans, black, mature seeds, cooked, boiled, without salt",
+  "per100g": {
+   "kcal": 132.0,
+   "protein": 8.86,
+   "fiber": 8.7,
+   "iron": 2.1,
+   "zinc": 1.12,
+   "copper": 0.209,
+   "selenium": 1.2,
+   "choline": 32.6,
+   "b12": 0.0,
+   "tryptophan": 0.105,
+   "threonine": 0.373,
+   "isoleucine": 0.391,
+   "leucine": 0.708,
+   "lysine": 0.608,
+   "methionine": 0.133,
+   "phenylalanine": 0.479,
+   "valine": 0.464,
+   "histidine": 0.247
+  },
+  "landFactor": {
+   "poore_nemecek_category": "Other Pulses",
+   "m2_per_100g_protein": 7.2723026
+  }
+ },
+ "eggs": {
+  "label": "Eggs",
+  "fdcId": 173424,
+  "fdcDescription": "Egg, whole, cooked, hard-boiled",
+  "per100g": {
+   "kcal": 155.0,
+   "protein": 12.58,
+   "fiber": 0.0,
+   "iron": 1.19,
+   "zinc": 1.05,
+   "copper": 0.013,
+   "selenium": 30.8,
+   "choline": 293.8,
+   "b12": 1.11,
+   "tryptophan": 0.153,
+   "threonine": 0.604,
+   "isoleucine": 0.686,
+   "leucine": 1.075,
+   "lysine": 0.904,
+   "methionine": 0.392,
+   "phenylalanine": 0.668,
+   "valine": 0.767,
+   "histidine": 0.298
+  },
+  "landFactor": {
+   "poore_nemecek_category": "Eggs",
+   "m2_per_100g_protein": 5.650685
+  }
+ }
+}

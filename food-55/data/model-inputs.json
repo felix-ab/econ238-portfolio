@@ -1,0 +1,127 @@
+{
+ "version": "research-1",
+ "servingGrams": 113,
+ "servingNote": "4 oz cooked (113 g), the USDA reference amount for cooked meat.",
+ "baseline": {
+  "beefLandKm2": 3256000,
+  "pastureShare": 0.8977,
+  "note": "Eshel et al. 2014 (PNAS): US animal products use ~3.7 million km\u00b2, beef ~88% of it (pasture 79 pts, processed roughage 7, concentrates 2). Beef = 0.88 x 3.7M = 3.256M km\u00b2; pasture share = 79/88. Data are 2000-2010 USDA averages, corrected for trade.",
+  "crossCheck": "USDA ERS Major Land Uses 2022: 784.1 million acres (3.17 million km\u00b2) of grazing land, all livestock."
+ },
+ "dri": {
+  "adolescent": {
+   "male": {
+    "protein": 52,
+    "iron": 11,
+    "zinc": 11,
+    "copper": 0.89,
+    "selenium": 55,
+    "b12": 2.4,
+    "leucineMeal": 2.5
+   },
+   "female": {
+    "protein": 46,
+    "iron": 15,
+    "zinc": 9,
+    "copper": 0.89,
+    "selenium": 55,
+    "b12": 2.4,
+    "leucineMeal": 2.5
+   }
+  },
+  "adult": {
+   "male": {
+    "protein": 56,
+    "iron": 8,
+    "zinc": 11,
+    "copper": 0.9,
+    "selenium": 55,
+    "b12": 2.4,
+    "leucineMeal": 2.5
+   },
+   "female": {
+    "protein": 46,
+    "iron": 18,
+    "zinc": 8,
+    "copper": 0.9,
+    "selenium": 55,
+    "b12": 2.4,
+    "leucineMeal": 2.5
+   }
+  },
+  "older": {
+   "male": {
+    "protein": 56,
+    "iron": 8,
+    "zinc": 11,
+    "copper": 0.9,
+    "selenium": 55,
+    "b12": 2.4,
+    "leucineMeal": 3.0
+   },
+   "female": {
+    "protein": 46,
+    "iron": 8,
+    "zinc": 8,
+    "copper": 0.9,
+    "selenium": 55,
+    "b12": 2.4,
+    "leucineMeal": 3.0
+   }
+  },
+  "oldest": {
+   "male": {
+    "protein": 56,
+    "iron": 8,
+    "zinc": 11,
+    "copper": 0.9,
+    "selenium": 55,
+    "b12": 2.4,
+    "leucineMeal": 3.0
+   },
+   "female": {
+    "protein": 46,
+    "iron": 8,
+    "zinc": 8,
+    "copper": 0.9,
+    "selenium": 55,
+    "b12": 2.4,
+    "leucineMeal": 3.0
+   }
+  },
+  "pregnancy": {
+   "female": {
+    "protein": 71,
+    "iron": 27,
+    "zinc": 11,
+    "copper": 1.0,
+    "selenium": 60,
+    "b12": 2.6,
+    "leucineMeal": 2.5
+   }
+  },
+  "lactation": {
+   "female": {
+    "protein": 71,
+    "iron": 9,
+    "zinc": 12,
+    "copper": 1.3,
+    "selenium": 70,
+    "b12": 2.8,
+    "leucineMeal": 2.5
+   }
+  }
+ },
+ "driSource": "NIH Office of Dietary Supplements fact sheets (RDA/AI tables); protein RDA from National Academies DRI tables.",
+ "compare": {
+  "label": "Texas",
+  "km2": 695662
+ },
+ "consumption": {
+  "lbRetailPerPerson": 59.17,
+  "year": 2025,
+  "importShareCarcass": 0.186,
+  "source": "USDA ERS Meat Supply and Disappearance Tables, updated 2026-09-29"
+ },
+ "replacementMethod": "Replacement land = shift x baseline beef land x (plate land / beef-serving land), both per-serving lands from Poore & Nemecek 2018 global means per 100 g protein. P&N mean beef x 2025 US retail beef (9.18 Mt) = 3.0M km\u00b2, close to Eshel, so the ratio transfers."
+}

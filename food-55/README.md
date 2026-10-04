@@ -1,17 +1,16 @@
-# FOOD 55 Beef land use dashboard
+# FOOD-55 · The land on our plates
 
-[Open the interactive design prototype](https://felix-ab.github.io/econ238-portfolio/food-55/)
+[Open the exhibit](https://felix-ab.github.io/econ238-portfolio/food-55/)
 
-Static HTML, CSS, SVG and client-side JavaScript. No server or database is required. All assets are local. This is an explicitly labelled design prototype with arbitrary index fixtures, not measured land-use or nutritional findings.
+How much US land does beef use, and how much would swapping it out free, once the replacement has to hit the same per-meal leucine target and cover the same micronutrients?
 
-Start with `index.html`, `tokens.css` and `style.css`. Pure scenario arithmetic lives in `model.js`; UI and map rendering in `app.js`. `data/scenario-inputs.json` records every illustrative coefficient. Methods and current limitations appear on the public page.
+Static HTML, CSS, SVG and client-side JavaScript. No server.
 
-Read [build notes and open questions](docs/BUILD-NOTES.md) before connecting research data. [Asset provenance](docs/ASSETS.md) and `data/asset-manifest.json` retain licenses, upstream URLs and checksums.
+- `model.js`: pure accounting (per-serving nutrients and land, national scaling).
+- `app.js`: controls, nutrition panel and true-scale dot map.
+- `data/model-inputs.json`: US beef land baseline (Eshel et al. 2014), DRIs by age, sex and life stage (NIH ODS), and leucine targets.
+- `data/foods.json`: USDA FoodData Central nutrients (FDC IDs inside) plus Poore & Nemecek 2018 land per 100 g protein.
+- `data/grid.json`: half-degree US cells with cattle head (FAO GLW 2010) and maize, soy and pulse physical area (MapSPAM 2010), plus 1° non-US cattle.
+- `docs/BUILD-NOTES.md`: method, derivations and limits.
 
-To preview from the portfolio directory:
-
-```sh
-python3 -m http.server 8765
-```
-
-Visit `http://localhost:8765/food-55/`. JavaScript fetches local JSON, so serve over HTTP rather than opening `index.html` as a file.
+Preview: `python3 -m http.server 8765` from the portfolio root, then open `http://localhost:8765/food-55/`.

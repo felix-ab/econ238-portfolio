@@ -1,54 +1,54 @@
-# FOOD 55 dashboard build notes
+# FOOD-55 build notes
 
-## Current state
+Research version (2026-10-04). This replaces the earlier design prototype, whose coefficients were placeholders.
 
-A standalone static client-side JavaScript dashboard, inside the existing ECON 238 Pages portfolio at `/food-55/`. It has locally bundled assets, design tokens, an Equal Earth map, procedural ink layers, population/diet sliders, presets, behavior lanes, layer toggles, comparison outlines, zoom, area-unit handling, scenario links, JSON export, an accessible numeric ledger, methodological notes and responsive layout.
+## Model
 
-This is a **public design prototype**, not a completed research exhibit or empirical result. Its numeric coefficients are arbitrary fixtures. The default “Today / reference” is an index reference, not a measured estimate of current beef acreage. No nutrient adequacy or long-term muscle growth is calculated. The world canvas does not establish a global study scope; the worksheet's initial research population is U.S. consumers.
+Shift = beef cut x share of Americans taking part.
 
-## First model boundary
+Baseline beef land = 3,256,000 km². Eshel et al. 2014 (PNAS, doi:10.1073/pnas.1402183111) put US animal-product land at about 3.7 million km². Beef takes about 88% of it: pasture 79 points, processed roughage 7, concentrates 2. Pasture is therefore 79/88 = 89.8% of beef land. The data are 2000–2010 USDA averages, corrected for trade. Cross-check: USDA ERS Major Land Uses 2022 counts 784.1 million acres (3.17 million km²) of grazing land for all livestock.
 
-Start with agricultural land occupation: beef pasture plus feed cropland, compared with corresponding land for replacement recipes. Treat processing plants, distribution/retail facilities and other infrastructure as a later boundary sensitivity. Include all foods consistently and check the factors' existing boundaries to prevent double counting. Land occupation, emissions, nutrient adequacy and potential restoration remain separate outcomes.
+Per-serving land = protein grams x Poore & Nemecek 2018 global mean land per 100 g protein (OWID series, which matches Data S2 "Mean"). Beef herd 163.6; poultry 7.06; eggs 5.65; other pulses 7.27; tofu 2.20. The P&N medians are about half the means for beef (85.4), so ratios are rough. Beef stays more than 10x any alternative under either figure.
 
-## Geographic honesty
+Replacement land = baseline x shift x (plate land / beef-serving land). P&N's beef mean x 2025 US retail beef disappearance (9.18 Mt) gives about 3.0 million km², close to Eshel, so the ratio transfers.
 
-Coastlines use real Natural Earth data; color locations are schematic. Printed patch size is not calibrated acreage. The equal-area projection supports a future geographic data layer, but cannot make conceptual masks into measured land. Never present the current colored cells as ranch locations or actual land released.
+Plate size:
+- Appetite lane: same 113 g as the beef. People eat a steady weight of food, not steady calories (Bell, Rolls et al. 1998, AJCN, doi:10.1093/ajcn/67.3.412).
+- Muscle lane: each food sized to reach the profile's per-meal leucine target.
+- Mix lane: a linear blend of the two.
 
-For genuine mapped acreage: choose a spatial pasture/crop dataset, attribution of feed land to beef, a reference year, consumption-to-production/import allocation, counterfactual spatial assignment and uncertainty. If only aggregate factors are available, switch to a clearly labelled area-equivalence display or retain the illustrative map with a separate empirical ledger.
+Leucine targets: 2.5 g for ages up to 50; 3.0 g for 51+.
+- Moore et al. 2015 (doi:10.1093/gerona/glu103): 0.40 vs 0.24 g/kg per meal, older vs young.
+- Katsanos et al. 2006 (doi:10.1152/ajpendo.00488.2005): about 1.7 g failed in the elderly; about 2.8 g worked.
+- Treat 2.5 g as a consensus figure; do not quote it from Norton & Layman.
 
-The yellow layer means gross avoided *demand*, not restored land. Cyan replacement demand can overprint yellow to explain scenario comparisons; this is not an assertion that replacement crops will be grown on that physical site. Legend layers control display only and never alter the accounting.
+DRIs: NIH ODS RDAs for protein, iron, zinc, copper, selenium and B12, by age band, sex, pregnancy and lactation. Cobalt has no RDA; people use it only inside B12.
 
-## Data integration contract
+## Map
 
-`model.js` is pure accounting; `app.js` handles controls and drawing. `data/scenario-inputs.json` is the fixture contract. Its status is `illustrative`, `baselineAreaKm2` and time period are null. `areaValue` refuses acres/mi²/km² without a verified baseline. The app intentionally rejects unsupported new input status: research integration must replace the demo accounting, labels and geographic rendering together, rather than simply flip a flag.
+Equal Earth (equal-area). Dot area = km² x (sphere px² / 510,072,000 km²), so dots are true scale.
 
-Research build inputs need:
+How national totals are spread across US 0.5° cells (US mask from Natural Earth 50m):
+- Pasture: by cattle head (FAO GLW3 2010, doi:10.7910/DVN/GIVQ75).
+- Feed: by maize area.
+- Tofu: by soybean area.
+- Beans and lentils: by pulse area.
+- Chicken and eggs: by maize + soy area.
 
-1. Geography, consumer population, time period, baseline intake and observed weights.
-2. Exact food record IDs, recipes, cooked edible amounts, background day and complete nutrient matrix, including source/form-specific units.
-3. Explicit protein/amino-acid and micronutrient constraints by age/life stage/reference sex, realistic energy and serving bounds, bioavailability sensitivity and missing-data flags.
-4. Separate appetite/convenience and planned-feasible recipes; no invented prevalence or default equivalence between a population share and a share of beef intake.
-5. Environmental factor source/version, production unit, food yield/loss conversion, pasture/cropland distinction and compatible boundaries.
-6. Spatial data if used, otherwise a declared non-geographic visualization.
-7. Results with reproducible equations, constraint/binding-nutrient diagnostics, uncertainty and provenance.
+Crop areas are MapSPAM 2010 physical area (doi:10.7910/DVN/PRFF8V). Grid sanity checks: US cattle 93.5 M, maize 32.9 Mha, soy 30.1 Mha. These match 2010 USDA figures.
 
-The illustrative planned-portion multiplier is **not** a nutrition solver. The energy slider affects only replacement portions, not a full-day calorie response. Profile selectors store the requested reference profile but intentionally have no invented numerical effect.
+Non-US cattle are drawn by head count only, as context. They make no land claim.
 
-## Design tokens
+## Known limits
 
-`tokens.css` centralizes font families, paper/ocean/land colors, ink palette, rules, shadows, spacing and sidebar size. Display and body use Pretendard, an open-source Korean font family; labels use a system monospaced stack. Squared controls, ruled sections, print marks and oversized typography form the original visual language. CSS multiply blending and SVG halftone/grain provide overlapping ink. A flat-ink option, reduced-motion handling, numeric ledger and text descriptions supplement the color display.
+- GLW cattle include dairy and feedlot animals. Pasture is therefore over-allocated to feedlot areas.
+- About 19% of US beef disappearance (carcass weight) is imported, and its land is abroad.
+- Western range is mostly arid. Freed acres are not all farmable acres.
+- Processing plants are excluded for every food (small land, and a symmetric boundary).
+- The model is single meal, not whole day. DIAAS digestibility is not modelled.
 
 ## Open questions for Felix
 
-1. **Population:** keep U.S. consumers first (recommended from the worksheet) or expand to a global dietary shift? Decide consumption vs production geography before choosing datasets.
-2. **Baseline:** which actual cooked beef meal/cut and background day? The 100 g cooked reference is a comparison unit, not everyone’s daily beef intake.
-3. **Replacement recipes:** which tofu/soy product, legume–grain recipe and chicken preparation? Fortification/coagulants and cooking matter.
-4. **Nutrient profiles:** which first few comparisons fit a short exhibit? Recommend one adult example plus one relevant older-adult or pregnancy/lactation contrast after appropriate baselines exist.
-5. **Map meaning:** actual spatial ranch/feed layers, or an honestly labelled aggregate area comparison if the research only yields totals?
-6. **Avoided land:** keep land-use change unspecified first; restoration, rewilding and crop reuse require separate scenarios.
-7. **Infrastructure:** retain farm land as primary boundary (recommended), then add consistent processing/retail sensitivity if compatible evidence supports it.
-8. **Behavior weights:** use selected sensitivity scenarios until observed population shares and beef-intake distributions are available.
-
-## Publication
-
-Existing repository: `felix-ab/econ238-portfolio`; existing GitHub Pages source: `main`, repository root. No new server, database, paid service or credentials are embedded. Deploy only this exhibit and its portfolio link, not private worksheets, course downloads or scratch outputs. This prototype is not a Museum registration or Blackboard submission.
+1. Should we add a beef-factor toggle (P&N mean vs median vs Eshel-implied)?
+2. Should we add dairy-herd beef as a separate, lower-land source?
+3. Should we weight the appetite and muscle lanes with survey data (e.g. NHANES protein-supplement users)?

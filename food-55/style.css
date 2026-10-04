@@ -320,3 +320,55 @@ footer{margin:0}
 .site-header{margin:0}
 }
 
+
+/* v2: true-scale dot layers, nutrition panel */
+.swatch.grey{background:#9b9b94}
+#world-map .ink-magenta circle{fill:var(--magenta)}
+#world-map .ink-key circle{fill:var(--key)}
+#world-map .ink-cyan circle{fill:var(--cyan)}
+#world-map .ink-cyan{transform:translate(.25px,-.2px)}
+#world-map .world-cattle circle{fill:#a9a9a2;opacity:.4}
+#world-map .ink-layer{mix-blend-mode:multiply}
+#world-map.flat-ink .ink-texture{filter:none}
+.map-tools button#zoom-us,.map-tools button#zoom-world{width:auto;padding:0 9px;font:600 10px var(--font-label);letter-spacing:.6px}
+.map-tooltip{max-width:240px}
+.map-tooltip b{display:block;font-family:var(--font-label);font-size:10px;margin-bottom:4px}
+.map-tooltip span{display:block;padding-left:12px;position:relative}
+.map-tooltip span::before{content:'';position:absolute;left:0;top:4px;width:8px;height:8px}
+.map-tooltip .m::before{background:var(--magenta)}.map-tooltip .k::before{background:var(--key)}.map-tooltip .c::before{background:var(--cyan)}
+.map-tooltip small{display:block;color:var(--muted);margin-top:4px;font-size:10px}
+.legend small{color:var(--muted);font-size:10px}
+.result-strip small+small{margin-top:3px;color:var(--ink)}
+.result-strip>div.short strong{color:var(--magenta)}
+.nutrition{padding:22px 20px;border-bottom:var(--rule)}
+.nutrition-head{display:flex;gap:15px;align-items:flex-start;margin-bottom:18px}
+.nutrition-head h2{font-size:21px;letter-spacing:-.65px}
+.nutrition-head p{font-size:12px;color:var(--muted);margin-top:6px}
+.key-m,.key-c,.key-t{font-family:var(--font-label);font-size:10px;margin-left:8px}
+.key-m{color:var(--magenta)}.key-c{color:var(--cyan)}.key-t{color:var(--ink);font-weight:700}
+.nutrition-grid{display:grid;grid-template-columns:1.15fr 1fr 1.15fr;gap:22px}
+.nutrition-grid h3{font-size:12px;font-weight:800;border-bottom:var(--rule);padding-bottom:6px;margin-bottom:10px}
+.nutrition-grid h3 small{font:400 9px var(--font-label);color:var(--muted);letter-spacing:.3px;margin-left:4px}
+.nrow{display:grid;grid-template-columns:96px 1fr 58px;gap:8px;align-items:center;padding:5px 0;border-bottom:var(--hairline)}
+.nlabel{font-size:11px;font-weight:700;line-height:1.15}
+.nlabel small{display:block;font-weight:400;font-size:9px;color:var(--muted)}
+.ntrack{position:relative;height:16px;background:#f1f0eb}
+.nbar{position:absolute;left:0;height:100%;mix-blend-mode:multiply;transition:width .25s}
+.nbar.beef{background:var(--magenta);opacity:.85;top:0;height:60%}
+.nbar.swap{background:var(--cyan);opacity:.85;bottom:0;top:auto;height:60%}
+.target{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink)}
+.nvals{display:flex;flex-direction:column;align-items:flex-end;font:500 10px var(--font-label);font-style:normal;line-height:1.3}
+.nvals em{font-style:normal}.nvals .m{color:var(--magenta)}.nvals .c{color:#008aa6}
+.nrow.short .nvals .c{color:var(--ink);background:var(--yellow);padding:0 2px}
+.eaa-grid{display:grid;grid-template-columns:repeat(9,1fr);gap:4px;align-items:end}
+.eaa{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0}
+.eaa span:first-child{writing-mode:vertical-rl;transform:rotate(180deg);font:500 9px var(--font-label);height:84px;text-align:left}
+.eaa-track{position:relative;width:100%;height:110px;background:#f1f0eb;border-bottom:var(--rule)}
+.eaa-track::after{content:'';position:absolute;left:-2px;right:-2px;bottom:62.5%;border-top:1px dashed var(--magenta)}
+.eaa-track b{position:absolute;bottom:0;left:15%;right:15%;background:var(--cyan);mix-blend-mode:multiply;transition:height .25s}
+.eaa.short .eaa-track b{background:var(--cyan);outline:2px solid var(--ink);outline-offset:-2px}
+.eaa em{font:500 9px var(--font-label);font-style:normal}
+.small-note{font-size:11px;color:var(--muted);margin-top:10px}
+.ledger details b{color:var(--ink)}
+@media(max-width:1200px){.nutrition-grid{grid-template-columns:1fr 1fr}.nutrition-grid>div:last-child{grid-column:1/-1}}
+@media(max-width:760px){.nutrition-grid{grid-template-columns:1fr}.nutrition{padding:18px 0}}
