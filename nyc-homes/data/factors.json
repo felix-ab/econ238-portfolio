@@ -1,0 +1,126 @@
+{
+ "nycCounties": [
+  "36005",
+  "36047",
+  "36061",
+  "36081",
+  "36085"
+ ],
+ "ll97PricePerTon": 268,
+ "carTonsPerYear": 4.6,
+ "ticks": [
+  {
+   "homes": 82000,
+   "label": "City of Yes"
+  },
+  {
+   "homes": 500000,
+   "label": "500k goal"
+  }
+ ],
+ "method": [
+  {
+   "title": "Who commutes in.",
+   "text": "Census LODES (2023) links every job’s workplace block to the worker’s home block. Of 4.59 million New York City jobs, 1.23 million are held by people living outside the city within 150 km of Times Square. Another 170,000 held by people farther away are left out."
+  },
+  {
+   "title": "Households, not jobs.",
+   "text": "Each tract’s NYC jobs become households by dividing by its workers per household (ACS 2020–24). A tract can’t send more households than it has."
+  },
+  {
+   "title": "Driving.",
+   "text": "BTS LATCH (2017) estimates weekday household driving for every tract. It is annualised ×365 at EPA’s 400 g of CO₂ per mile."
+  },
+  {
+   "title": "Home energy.",
+   "text": "Each tract’s mix of detached houses, row houses and apartments (ACS) is multiplied by EIA RECS 2020 energy use by building type in the Middle Atlantic. Electricity uses eGRID 2023 regional rates; gas, oil and propane use EPA factors."
+  },
+  {
+   "title": "The new home.",
+   "text": "An apartment in a building of five or more units on the NYC grid (3.0 t a year), plus the driving of the tracts where it goes. Those are the car-light core (tracts where under 20% of workers drive), the tracts where NYC has added homes since 2015 (DCP Housing Database), or Staten Island with its own house mix."
+  },
+  {
+   "title": "Who moves.",
+   "text": "Eligible households commute to NYC jobs from outside the city, or from parts of it where at least 35% of workers drive, such as much of Staten Island, eastern Queens and southern Brooklyn. Homes fill each eligible tract in proportion to its households. Tons are priced at $268, the charge NYC levies per ton over a building’s Local Law 97 cap."
+  }
+ ],
+ "limits": [
+  "Who moves in is your choice on the panel, not a forecast. Some commuters prefer the suburbs, so the slider counts homes, and only that many households move.",
+  "A household keeps its size and income when it moves; in reality both can change.",
+  "LATCH models 2017 weekday driving on 2010 tracts. Split tracts take their parent’s value; 842 tracts that changed more take their county’s average.",
+  "Home energy uses regional averages by building type, not the actual building. New all-electric buildings under Local Law 154 likely use less than the RECS average, so the new-home figure is conservative.",
+  "eGRID rates cover power generated inside each grid region. NYC also imports cleaner upstate power, which would lower the city side.",
+  "Transit’s own emissions and the embodied carbon of construction are left out. Every new home has embodied carbon wherever it’s built.",
+  "Commute distances are straight lines between tract centres."
+ ],
+ "sources": [
+  {
+   "label": "Census LEHD LODES 8, 2023",
+   "url": "https://lehd.ces.census.gov/data/",
+   "note": "Where every NYC worker lives"
+  },
+  {
+   "label": "Census ACS 5-year, 2020–24",
+   "url": "https://www.census.gov/programs-surveys/acs/data/summary-file.html",
+   "note": "Households, housing type, commute mode"
+  },
+  {
+   "label": "BTS LATCH 2017",
+   "url": "https://www.bts.gov/latch",
+   "note": "Household driving by tract"
+  },
+  {
+   "label": "EIA RECS 2020",
+   "url": "https://www.eia.gov/consumption/residential/data/2020/",
+   "note": "Home energy by building type"
+  },
+  {
+   "label": "EPA eGRID 2023",
+   "url": "https://www.epa.gov/egrid",
+   "note": "Electricity CO₂ by grid region"
+  },
+  {
+   "label": "EPA, typical passenger vehicle",
+   "url": "https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle",
+   "note": "400 g CO₂ per mile"
+  },
+  {
+   "label": "EPA GHG Emission Factors Hub",
+   "url": "https://www.epa.gov/climateleadership/ghg-emission-factors-hub",
+   "note": "Gas, oil, propane"
+  },
+  {
+   "label": "NYC DCP Housing Database",
+   "url": "https://www.nyc.gov/site/planning/data-maps/open-data/dwn-housing-database.page",
+   "note": "Where NYC adds homes"
+  },
+  {
+   "label": "NYC Local Law 97",
+   "url": "https://www.nyc.gov/site/sustainablebuildings/ll97/local-law-97.page",
+   "note": "$268 per ton over the cap"
+  },
+  {
+   "label": "Census cartographic boundaries 2023",
+   "url": "https://www.census.gov/geographies/mapping-files/time-series/geo/cartographic-boundary.html",
+   "note": "Tract outlines"
+  },
+  {
+   "label": "Glaeser & Kahn 2010, J. Urban Econ.",
+   "url": "https://doi.org/10.1016/j.jue.2009.11.006",
+   "note": "The greenness of cities"
+  },
+  {
+   "label": "Jones & Kammen 2014, ES&T",
+   "url": "https://doi.org/10.1021/es4034364",
+   "note": "Suburbs offset urban density’s carbon savings"
+  },
+  {
+   "label": "Code, data and model",
+   "url": "https://github.com/felix-ab/econ238-portfolio/tree/main/nyc-homes",
+   "note": "model.js, data/*.json"
+  }
+ ],
+ "coreDriveMax": 0.2,
+ "cityOriginDriveMin": 0.35,
+ "newApartmentHomeCO2": 2.993
+}

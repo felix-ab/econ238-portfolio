@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Carbon Cost of a Home Not Built</title>
+<meta name="description" content="Hundreds of thousands of people commute into New York City jobs from car-dependent places. If the city built homes for them, how much driving and carbon would disappear? An interactive exhibit by Felix Brener for ECON 238.">
+<meta property="og:title" content="The Carbon Cost of a Home Not Built">
+<meta property="og:description" content="Where NYC's commuters live, what their households emit, and what a new home in the city would change.">
+<meta property="og:image" content="https://felix-ab.github.io/econ238-portfolio/nyc-homes/assets/cover.png">
+<meta name="theme-color" content="#f4f3ef">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='5' y='9' width='14' height='18' fill='%230078BF'/%3E%3Crect x='13' y='4' width='14' height='23' fill='%23FF48B0' style='mix-blend-mode:multiply'/%3E%3C/svg%3E">
+<link rel="preload" href="assets/fonts/Pretendard-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/D2Coding-subset.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/site.css?v=1">
+<script defer src="assets/vendor/d3.min.js"></script>
+<script defer src="assets/vendor/topojson-client.min.js"></script>
+<script defer src="model.js?v=1"></script>
+<script defer src="js/app.js?v=1"></script>
+</head>
+<body>
+<div class="app" id="top">
+
+  <nav class="rail" aria-label="Sections">
+    <a class="rail-mark" href="../" aria-label="Felix Brener, ECON 238 portfolio">fb.</a>
+    <button class="rail-btn" type="button" data-view="shed" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg><span>Commute shed</span></button>
+    <button class="rail-btn" type="button" data-view="city" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V9h5v11M9 20V4h6v16M15 20v-8h5v8M3 20h18"/></svg><span>The five boroughs</span></button>
+    <a class="rail-btn" href="#homes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-6h4v6"/></svg><span>One household</span></a>
+    <a class="rail-btn" href="#method"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Method</span></a>
+    <a class="rail-btn" href="#sources"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14l10-10M13 4h7v7"/><path d="M18 14v6H4V6h6"/></svg><span>Sources</span></a>
+  </nav>
+
+  <main class="stage" id="map" aria-label="Map of where New York City's workers live">
+    <div class="plates" id="plates" role="img" aria-labelledby="map-alt"></div>
+    <p class="sr-only" id="map-alt">Map of the New York commute shed. Pink ink marks the extra carbon from households who commute to NYC jobs from car-dependent places. Blue ink marks where new homes in the city would go.</p>
+    <div class="edge" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="pins" id="pins"></div>
+    <div class="factoid" id="factoid" role="tooltip" hidden></div>
+    <div class="veil" aria-hidden="true"></div>
+    <div class="rim" aria-hidden="true"></div>
+    <svg class="glass-defs" width="0" height="0" aria-hidden="true" focusable="false">
+      <!-- Curved glass over the map. Per-channel displacement after rdev/liquid-glass-react (MIT). -->
+      <filter id="glass" x="0" y="0" width="100" height="100" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+        <feImage id="glass-disp" x="0" y="0" width="100" height="100" preserveAspectRatio="none" result="D"/>
+        <feImage id="glass-mask" x="0" y="0" width="100" height="100" preserveAspectRatio="none" result="MK"/>
+        <feDisplacementMap in="SourceGraphic" in2="D" scale="64" xChannelSelector="R" yChannelSelector="G" result="dR"/>
+        <feColorMatrix in="dR" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="cR"/>
+        <feDisplacementMap in="SourceGraphic" in2="D" scale="54" xChannelSelector="R" yChannelSelector="G" result="dG"/>
+        <feColorMatrix in="dG" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="cG"/>
+        <feDisplacementMap in="SourceGraphic" in2="D" scale="44" xChannelSelector="R" yChannelSelector="G" result="dB"/>
+        <feColorMatrix in="dB" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="cB"/>
+        <feBlend in="cR" in2="cG" mode="screen" result="RG"/>
+        <feBlend in="RG" in2="cB" mode="screen" result="CA"/>
+        <feGaussianBlur in="CA" stdDeviation="1.4" edgeMode="duplicate" result="b1"/>
+        <feGaussianBlur in="CA" stdDeviation="3.6" edgeMode="duplicate" result="b2"/>
+        <feGaussianBlur in="CA" stdDeviation="8" edgeMode="duplicate" result="b3"/>
+        <feColorMatrix in="MK" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 0 0 0 0" result="m1"/>
+        <feColorMatrix in="MK" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 1 0 0 0" result="m2"/>
+        <feColorMatrix in="MK" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 1 0 0" result="m3"/>
+        <feComposite in="b1" in2="m1" operator="in" result="L1"/>
+        <feComposite in="b2" in2="m2" operator="in" result="L2"/>
+        <feComposite in="b3" in2="m3" operator="in" result="L3"/>
+        <feMerge><feMergeNode in="CA"/><feMergeNode in="L1"/><feMergeNode in="L2"/><feMergeNode in="L3"/></feMerge>
+      </filter>
+    </svg>
+    <header class="readout">
+      <h1 class="sr-only">The Carbon Cost of a Home Not Built</h1>
+      <div class="figure"><span class="figure-num"><span id="total">—</span> <span id="mag" class="mag"></span></span><span class="units" role="group" aria-label="Units"><button type="button" data-unit="tons" aria-pressed="true">t CO₂</button><button type="button" data-unit="cars" aria-pressed="false">cars</button></span></div>
+      <p class="figure-cap"><span id="total-cap"></span> <span id="delta" class="delta"></span></p>
+    </header>
+    <ul class="key" aria-label="Map key">
+      <li><i class="ink pink"></i>Extra CO₂ from NYC commuters’ homes</li>
+      <li><i class="ink blue"></i>New homes in the city</li>
+      <li><i class="ink black"></i>Land</li>
+    </ul>
+    <p class="scale">Darker pink = more extra CO₂ per km². Darker blue = more growth relative to the homes already there.</p>
+  </main>
+
+  <aside class="panel" aria-labelledby="panel-title">
+    <h2 id="panel-title">Build the homes</h2>
+
+    <div class="presets" role="group" aria-label="Scenarios">
+      <button type="button" data-preset="yes">City of Yes</button>
+      <button type="button" data-preset="goal">500,000 homes</button>
+      <button type="button" data-preset="young">Young workers</button>
+      <button type="button" data-preset="staten">Like Staten Island</button>
+    </div>
+
+    <div class="slider"><label for="homes">New homes in the city</label><output id="homes-out" for="homes">100,000</output><input id="homes" type="range" min="0" max="500000" step="1000" value="100000"><div class="ticks" id="ticks"></div></div>
+
+    <fieldset class="grid-pick who"><legend>Who moves in</legend><div id="who">
+      <button type="button" class="cell" data-who="all" aria-pressed="true">Any commuter<small id="pool-all"></small></button>
+      <button type="button" class="cell" data-who="young" aria-pressed="false">Under 30<small id="pool-young"></small></button>
+      <button type="button" class="cell" data-who="low" aria-pressed="false">Earning under $40k<small id="pool-low"></small></button>
+      <button type="button" class="cell" data-who="long" aria-pressed="false">Long commutes<small id="pool-long"></small></button>
+    </div></fieldset>
+
+    <fieldset class="grid-pick where"><legend>Where the home goes</legend><div id="where">
+      <button type="button" class="cell" data-where="core" aria-pressed="true">Car-light core<small id="dest-core"></small></button>
+      <button type="button" class="cell" data-where="built" aria-pressed="false">Where NYC builds<small id="dest-built"></small></button>
+      <button type="button" class="cell" data-where="staten" aria-pressed="false">Like Staten Island<small id="dest-staten"></small></button>
+    </div></fieldset>
+
+    <fieldset class="fp"><legend>Household CO₂ by commute distance</legend>
+      <svg id="fp-chart" viewBox="0 0 320 210" role="img" aria-label="Household carbon footprint against commute distance"></svg>
+      <p class="fp-read" id="fp-read"></p>
+    </fieldset>
+
+    <dl class="readouts">
+      <div><dt>Driving avoided</dt><dd id="r-vmt">—</dd></div>
+      <div><dt>At NYC’s own carbon price</dt><dd id="r-usd">—</dd></div>
+      <div><dt>Land per household, given back</dt><dd id="r-acres">—</dd></div>
+      <div><dt>Households who’d emit more</dt><dd id="r-worse">—</dd></div>
+    </dl>
+
+    <div class="actions"><button type="button" id="share">Copy link</button><button type="button" id="export">Export data</button></div>
+    <p class="status" id="status" role="status"></p>
+  </aside>
+</div>
+
+<section class="sheet" id="homes" aria-labelledby="homes-title">
+  <h2 id="homes-title">A home in the city is a climate policy.</h2>
+  <div class="cols">
+    <p id="lede-1">A household in the city’s car-light core drives about 3,100 miles a year and lives in an apartment that shares its walls. A household in Nassau County with someone working in the city drives about 12,000 miles and heats a house. When New York doesn’t build, the jobs stay and the workers live farther out.</p>
+    <p id="lede-2">Some of those commuters would choose a yard anyway. This model doesn’t assume they all want to move. You choose how many homes get built, who fills them, and where they go, and it counts what changes.</p>
+  </div>
+  <div class="meal-grid">
+    <figure><figcaption>One household, today vs. in a new city home</figcaption><div id="hh-bars" class="bars"></div></figure>
+    <figure><figcaption>Where the commuters live</figcaption><div id="origins" class="bars"></div></figure>
+  </div>
+</section>
+
+<section class="sheet" id="layers" aria-labelledby="layers-title">
+  <h2 id="layers-title">Regulate the ton, not the bulb.</h2>
+  <div class="cols">
+    <p>A new building in New York answers to several layers of rules aimed at the climate. Zoning and environmental review decide whether it gets built at all. The energy code and the 2021 gas ban (Local Law 154) dictate equipment. Local Law 97 caps emissions per square foot and charges a fixed price per ton over the cap.</p>
+    <p id="layers-p2">Economists favour the last layer: it prices the outcome and lets builders find the cheapest tons. The first layers can do the opposite. Each home they stop pushes a household outside the city, and that household emits more. This exhibit counts those tons, priced at the city’s own Local Law 97 rate.</p>
+  </div>
+</section>
+
+<section class="sheet" id="method" aria-labelledby="method-title">
+  <h2 id="method-title">Method</h2>
+  <ol class="steps" id="steps"></ol>
+  <h3>Limits</h3>
+  <ul class="limits" id="limits"></ul>
+</section>
+
+<section class="sheet" id="sources" aria-labelledby="sources-title">
+  <h2 id="sources-title">Sources</h2>
+  <ul class="src" id="src"></ul>
+  <p class="made">Felix Brener, ECON 238, University of Rochester. My own investigation. Claude (Anthropic) helped pull the data, build the model and write the code. Type: Pretendard by Kil Hyung-jin and D2Coding by Naver, both under the SIL Open Font License. Tract outlines: US Census Bureau cartographic boundaries, 2023.</p>
+</section>
+</body>
+</html>
