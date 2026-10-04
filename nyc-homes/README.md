@@ -1,11 +1,15 @@
-# The Carbon Cost of a Home Not Built
+# The Carbon Cost of NYC’s ‘Green’ Rules
 
-[Open the exhibit](https://felix-ab.github.io/econ238-portfolio/nyc-homes/)
+[Open the exhibit](https://felix-ab.github.io/econ238-portfolio/nyc-homes/) · [topic claim](https://github.com/RochesterRizzo/Rizzo-Hours/issues/146) · [SHOW ME Museum entry](https://github.com/RochesterRizzo/Rizzo-Hours/issues/148)
 
-1.23 million New York City jobs are held by people who live outside the city, and many more by people in its car-dependent edges. If the city built homes for some of those households, how much driving and CO₂ would disappear?
+Rules sold on environmental grounds, such as environmental review and zoning limits, block homes in New York City. When a home isn't built, a household that would have lived there may end up farther out in the metro area, driving more and heating a bigger house. The exhibit counts only priced-out households:
 
-- `model.js`: pure accounting. Who moves (lane), where the home goes (lane), household CO₂ before and after.
-- `js/app.js`: the riso press (tract polygons screened against a Photoshop-made master), glass edge, pins, the CO₂-by-commute instrument.
+CO₂ cost = homes blocked × priced-out share × (household CO₂ where it lives now − CO₂ in a new NYC apartment)
+
+Default: 80,000 homes (the city's City of Yes estimate) × 25% priced out (range 10–40%, from moving-chain research: Mast 2023; Bratu et al. 2023) ≈ 122,000 t of CO₂ a year, about $33 million at NYC's Local Law 97 price of $268 a ton.
+
+- `model.js`: pure accounting. Homes blocked, priced-out share, who is priced out (lane), where the blocked home would have been (lane), household CO₂ before and after.
+- `js/app.js`: the riso press (tract polygons screened against a Photoshop-made master), zoom and pan, numbered pins, the CO₂-by-commute instrument.
 - `data/tracts.json`: 7,150 census tracts within 150 km of Times Square. Fields: NYC-bound jobs by age and earnings (LODES 2023), households, workers, commute mode and housing type (ACS 2020–24), annual household driving (BTS LATCH 2017), and household CO₂ from driving and home energy (EIA RECS 2020, eGRID 2023, EPA).
 - `data/factors.json`: constants plus the method, limits and sources shown on the page.
 - `data/pins.json`: county facts computed from the same data.

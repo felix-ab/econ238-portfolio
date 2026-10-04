@@ -254,7 +254,7 @@
   on('[data-who]', 'click', e => { state.who = e.currentTarget.dataset.who; preset = null; update(); });
   on('[data-where]', 'click', e => { state.where = e.currentTarget.dataset.where; preset = null; update(); });
   on('[data-unit]', 'click', e => { state.unit = e.currentTarget.dataset.unit; update(); });
-  on('[data-view]', 'click', e => { view = e.currentTarget.dataset.view; zoomK = 1; zoomCenter = null; sync(); layout(); printData(); update(); });
+  on('[data-view]', 'click', e => { view = e.currentTarget.dataset.view; zoomK = 1; zoomCenter = null; sync(); layout(); printData(); update(); document.getElementById('map').scrollIntoView({behavior: 'smooth', block: 'start'}); });
   $('#ticks').innerHTML = (F.ticks || []).map(t => `<span style="left:${t.homes / 5000}%">${t.label}</span>`).join('');
   $('#share').addEventListener('click', async () => {
     const url = location.origin + location.pathname + '?' + H.toQuery(state) + (view === 'shed' ? '&view=shed' : '');
@@ -315,6 +315,17 @@
     if (y + h > vh - 12) y = Math.max(12, (x === r.left - w - 12 ? r.bottom : r.top - 10) - h);
     pop.style.left = x + 'px'; pop.style.top = y + 'px';
   }));
+  /* ---------- rail: mark the section crossing a reading line 35% down the viewport ---------- */
+  const rail = $('.rail'), secs = ['map', 'homes', 'layers', 'method', 'sources'].map(id => document.getElementById(id)).filter(Boolean);
+  let railFrame = 0;
+  function markRail() {
+    railFrame = 0; const line = innerHeight * .35;
+    const cur = secs.find(s => { const r = s.getBoundingClientRect(); return r.top <= line && r.bottom > line; }) || (scrollY < 10 ? secs[0] : secs[secs.length - 1]);
+    rail.dataset.active = cur.id;
+    $$('.rail [data-sec]').forEach(l => l.setAttribute('aria-current', String(l.dataset.sec === cur.id)));
+  }
+  addEventListener('scroll', () => { if (!railFrame) railFrame = requestAnimationFrame(markRail); }, {passive: true});
+  addEventListener('resize', markRail); markRail();
   let rt = 0; new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(() => { layout(); printData(); }, 120); }).observe(stage);
   update(false); layout(); printData();
   document.documentElement.dataset.ready = 'true';

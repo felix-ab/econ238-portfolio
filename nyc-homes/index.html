@@ -11,11 +11,11 @@
 <meta name="theme-color" content="#f4f3ef">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='5' y='9' width='14' height='18' fill='%230078BF'/%3E%3Crect x='13' y='4' width='14' height='23' fill='%23FF48B0' style='mix-blend-mode:multiply'/%3E%3C/svg%3E">
 <link rel="preload" href="assets/fonts/SUIT-Variable.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/site.css?v=5">
+<link rel="stylesheet" href="css/site.css?v=6">
 <script defer src="assets/vendor/d3.min.js"></script>
 <script defer src="assets/vendor/topojson-client.min.js"></script>
 <script defer src="model.js?v=4"></script>
-<script defer src="js/app.js?v=7"></script>
+<script defer src="js/app.js?v=8"></script>
 </head>
 <body>
 <div class="app" id="top">
@@ -24,10 +24,11 @@
     <a class="rail-mark" href="../" aria-label="Felix Brener, ECON 238 portfolio">fb.</a>
     <button class="rail-btn" type="button" data-view="shed" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg><span>Commute shed</span></button>
     <button class="rail-btn" type="button" data-view="city" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V9h5v11M9 20V4h6v16M15 20v-8h5v8M3 20h18"/></svg><span>The five boroughs</span></button>
-    <a class="rail-btn" href="#homes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-6h4v6"/></svg><span>One household</span></a>
-    <a class="rail-btn" href="#method"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Method</span></a>
-    <a class="rail-btn" href="#sources"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14l10-10M13 4h7v7"/><path d="M18 14v6H4V6h6"/></svg><span>Sources</span></a>
-    <p class="rail-title" aria-hidden="true">The Carbon Cost of NYC’s ‘Green’ Rules — blocked homes — the commute shed</p>
+    <a class="rail-btn" href="#homes" data-sec="homes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-6h4v6"/></svg><span>One household</span></a>
+    <a class="rail-btn" href="#layers" data-sec="layers"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M6 20h12M4 8h16M4 8l-2 6h4zM20 8l-2 6h4z"/></svg><span>The rules</span></a>
+    <a class="rail-btn" href="#method" data-sec="method"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Method</span></a>
+    <a class="rail-btn" href="#sources" data-sec="sources"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14l10-10M13 4h7v7"/><path d="M18 14v6H4V6h6"/></svg><span>Sources</span></a>
+    <p class="rail-title" aria-hidden="true">The carbon cost of NYC’s green rules — blocked homes — New York City</p>
   </nav>
 
   <main class="stage" id="map" aria-label="Map of where New York City's workers live">
@@ -59,6 +60,11 @@
   </main>
 
   <aside class="panel" aria-labelledby="panel-title">
+    <div class="brief" role="note" aria-label="What this page asks">
+      <p><b>The question:</b> rules sold on environmental grounds, such as environmental review and zoning limits, stop homes from being built in New York City. What do they cost in carbon?</p>
+      <p><b>How:</b> some households that would have lived in those homes live farther out instead and drive more. I count only those priced out, using where NYC’s workers actually live and what their households emit.</p>
+      <p class="try"><b>Try:</b> drag <i>Priced out</i> from 10% to 40%, then switch the blocked home to <i>Built like Staten Island</i>. Density near transit is what saves carbon, not city limits.</p>
+    </div>
     <header class="panel-head"><h2 id="panel-title">The blocked homes</h2></header>
 
     <section class="group">
@@ -69,7 +75,7 @@
         <button type="button" data-preset="young">Young workers</button>
         <button type="button" data-preset="staten">Built like Staten Island</button>
       </div>
-      <div class="slider"><label for="homes">Homes the rules block</label><output id="homes-out" for="homes">100,000</output><input id="homes" type="range" min="0" max="500000" step="1000" value="100000"><div class="ticks" id="ticks"></div></div>
+      <div class="slider"><label for="homes">Homes the rules block</label><output id="homes-out" for="homes">80,000</output><input id="homes" type="range" min="0" max="500000" step="1000" value="80000"><div class="ticks" id="ticks"></div></div>
       <div class="slider"><label for="pshare">Priced out</label><output id="pshare-out" for="pshare">25%</output><input id="pshare" type="range" min="0" max="100" step="1" value="25"></div>
       <p class="hint">Share of blocked homes that would have housed a household now living farther out because of price. The rest go to people already in the city, newcomers, or households who’d pick the suburbs anyway.</p>
     </section>

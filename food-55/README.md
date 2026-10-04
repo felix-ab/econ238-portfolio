@@ -1,6 +1,8 @@
-# FOOD-55 · The land on our plates
+# FOOD-55 · The Land on Our Plates
 
-[Open the exhibit](https://felix-ab.github.io/econ238-portfolio/food-55/)
+[Open the exhibit](https://felix-ab.github.io/econ238-portfolio/food-55/) · [topic claim](https://github.com/RochesterRizzo/Rizzo-Hours/issues/96) · [SHOW ME Museum entry](https://github.com/RochesterRizzo/Rizzo-Hours/issues/147)
+
+Class-list topic FOOD-55, Beef Land-Use Counterfactual: remove 10–100% of US beef and model pasture, feed crops, substitute foods, protein and calories. Emissions are out of scope; this models land.
 
 How much US land does beef use, and how much would swapping it out free, once the replacement has to hit the same per-meal leucine target and cover the same micronutrients?
 
