@@ -5,7 +5,7 @@
 - **Print assets** (`assets/print/`), all made in Adobe Photoshop 2026 and exported with Photoshop:
   - **`riso-screen.png`**, the riso master: a 512² seamless stochastic threshold map. It combines fine grain, slight clumping, a paper-tooth displace and drift, and is equalized to a uniform histogram.
   - **`paper.webp` and `paper-tooth.png`**, seamless uncoated stock. The source is the ambientCG Paper001 scan (CC0).
-  - **`pin.png` and `pin-active-key.png`**, ink-bled map pins in #121212, and in Fluorescent Pink over a misregistered key line.
+  - Map pins were replaced by typographic numbered callouts in the reference pass (below).
 - **How the riso print works.** Each data layer is a drum: Fluorescent Pink #FF48B0, Blue #0078BF, Yellow #FFE800 and Black. Coverage is screened at device resolution against the master, and each drum reads it at its own offset. The drums overprint in Multiply over the paper, each nudged a fraction of a pixel off register.
   - **Why Multiply.** Riso ink is translucent, so stacked inks filter light: transmittances multiply (Beer–Lambert). Overlaps darken and gaps show paper. Darken, Linear Burn and Screen don't model overlapping translucent inks.
 - **Map data.** Natural Earth coastlines (world-atlas, ISC), FAO GLW3 cattle 2010 and IFPRI MapSPAM 2010 physical area. D3 and topojson-client are ISC-licensed.
@@ -13,3 +13,10 @@
   - **Aberration.** Red, green and blue are displaced at 64 / 54 / 44 px scale, so the aberration grows with the bevel. The per-channel approach follows rdev/liquid-glass-react (MIT).
   - **Blur.** A three-step blur ladder (σ 1.4 / 3.6 / 8) is masked to deeper bands toward the rim.
   - **Fallback.** Chromium and Firefox get the full filter. WebKit gets a CSS backdrop-blur frame without aberration.
+- **Reference pass.** The site stays monochrome; pink, blue and yellow appear only as data ink. Neutral tints are regular halftone dot screens, never greys:
+  - the sea, the remainder in sliders and nutrient bars, and the freed land in the stacked bar
+  - after an OPEN CALL festival poster and a set of halftone percentage bars
+  - shapes take firm ink outlines (coastlines, bars, swatches)
+  - places are numbered callouts with square anchors, and the figure sets a heavy number against hairline units, after Hvnter.net's PEOPLE VOL1
+  - the land bars stack to 100% with outlined segments and a boxed legend, after a French statistical plate (Paris population, 1801–1962)
+  - microtext carries the real sources

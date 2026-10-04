@@ -72,7 +72,12 @@
     }
     // land mask at device resolution
     const mc = document.createElement('canvas'); mc.width = DW; mc.height = DH;
-    const mg = mc.getContext('2d'); mg.scale(dpr, dpr); mg.fillStyle = '#000'; mg.beginPath(); d3.geoPath(proj, mg)(land); mg.fill();
+    const mg = mc.getContext('2d'); mg.scale(dpr, dpr);
+    mg.fillStyle = 'rgba(0,0,0,.5)'; mg.beginPath(); d3.geoPath(proj, mg)({type: 'Sphere'}); mg.fill(); // sea
+    mg.globalCompositeOperation = 'copy'; mg.fillStyle = '#000'; mg.beginPath(); d3.geoPath(proj, mg)(land); mg.fill(); // land
+    mg.globalCompositeOperation = 'source-over';
+    // the sea mask must survive the land 'copy' fill: redraw it underneath
+    mg.globalCompositeOperation = 'destination-over'; mg.fillStyle = 'rgba(0,0,0,.5)'; mg.beginPath(); d3.geoPath(proj, mg)({type: 'Sphere'}); mg.fill(); mg.globalCompositeOperation = 'source-over';
     const md = mg.getImageData(0, 0, DW, DH).data, mask = new Uint8Array(DW * DH);
     for (let i = 0; i < mask.length; i++) mask[i] = md[i * 4 + 3];
     // coarse lattice (every S device px): sampled data values
@@ -152,20 +157,28 @@
     g.putImageData(img, 0, 0);
   }
   // Black drum: a light tint for land, deepened by cattle density worldwide.
+  // Black drum. Sea: a regular halftone dot screen, fixed to the paper like a real screen.
+  // Land: paper, grained only where cattle are dense. Then a firm coastline, the way a printed plate outlines its shapes.
   function printBlack() {
-    const {mask, L, DW, DH, S, GW} = P;
+    const {mask, L, DW, DH, S, GW, dpr, proj} = P;
     const c = canvases.black, g = c.getContext('2d'), img = g.createImageData(DW, DH), px = new Uint32Array(img.data.buffer);
-    const [r, gg, b] = INK.black;
+    const [r, gg, b] = INK.black, ink = (255 << 24) | (b << 16) | (gg << 8) | r;
+    const pitch = Math.round(4 * dpr), rad2 = (.92 * dpr) ** 2;
     for (let y = 0; y < DH; y++) {
-      const row = ((y + 29) & 511) << 9, iy = Math.floor(y / S);
+      const row = ((y + 29) & 511) << 9, iy = Math.floor(y / S), fy = (y % pitch) - pitch / 2 + .5;
       for (let x = 0; x < DW; x++) {
         const m = mask[y * DW + x]; if (!m) continue;
+        if (m < 200) { const fx = (x % pitch) - pitch / 2 + .5; if (fx * fx + fy * fy <= rad2) px[y * DW + x] = ink; continue; }
         const cat = L.cattle[iy * GW + Math.floor(x / S)];
-        const v = (.06 + Math.min(.12, Math.sqrt(cat) * .022)) * m / 255;
-        if (v * 255 > screen[row + ((x + 401) & 511)]) px[y * DW + x] = (238 << 24) | (b << 16) | (gg << 8) | r;
+        const v = Math.min(.1, Math.sqrt(cat) * .014);
+        if (v * 255 > screen[row + ((x + 401) & 511)]) px[y * DW + x] = (230 << 24) | (b << 16) | (gg << 8) | r;
       }
     }
     g.putImageData(img, 0, 0);
+    g.save(); g.scale(dpr, dpr); g.strokeStyle = '#121212'; g.lineJoin = 'round';
+    g.lineWidth = 1.4; g.beginPath(); d3.geoPath(proj, g)(land); g.stroke();
+    if (view === 'world' && zoomK === 1) { g.lineWidth = 1; g.beginPath(); d3.geoPath(proj, g)({type: 'Sphere'}); g.stroke(); }
+    g.restore();
   }
   let pending = 0;
   function printData() {
@@ -183,10 +196,10 @@
 
   /* ---------- pins ---------- */
   const pinsEl = $('#pins'), factoid = $('#factoid');
-  const pinArt = await new Promise(res => { const i = new Image(); i.onload = () => res(true); i.onerror = () => res(false); i.src = 'assets/print/pin.png'; });
   const pinEls = pins.map((p, i) => {
     const b = document.createElement('button');
-    b.type = 'button'; b.className = 'pin' + (pinArt ? '' : ' no-art'); b.setAttribute('aria-label', p.title + ', ' + p.place); b.setAttribute('aria-expanded', 'false');
+    b.type = 'button'; b.className = 'pin'; b.setAttribute('aria-label', p.title + ', ' + p.place); b.setAttribute('aria-expanded', 'false');
+    b.innerHTML = '<i class="sq"></i><b></b>';
     b.addEventListener('mouseenter', () => openPin(i)); b.addEventListener('focus', () => openPin(i));
     b.addEventListener('click', () => openPin(i, true));
     pinsEl.appendChild(b); return b;
@@ -195,7 +208,7 @@
   function openPin(i, stick) {
     const p = pins[i], el = pinEls[i];
     pinEls.forEach((e, j) => e.setAttribute('aria-expanded', String(j === i)));
-    factoid.innerHTML = `<span class="place">${p.place}</span><h3>${p.title}</h3><p>${p.text}</p><a href="${p.source_url}" target="_blank" rel="noopener">${p.source_label} ↗</a>`;
+    factoid.innerHTML = `<span class="place"><b>${el.dataset.n || ''}</b>${p.place}</span><h3>${p.title}</h3><p>${p.text}</p><a href="${p.source_url}" target="_blank" rel="noopener">${p.source_label} ↗</a>`;
     factoid.hidden = false;
     const x = parseFloat(el.style.left), y = parseFloat(el.style.top), fw = factoid.offsetWidth, fh = factoid.offsetHeight;
     factoid.style.left = Math.max(12, Math.min(P.cw - fw - 12, x + 22)) + 'px';
@@ -207,11 +220,18 @@
   factoid.addEventListener('mouseleave', e => { if (!sticky && !(e.relatedTarget && e.relatedTarget.classList.contains('pin'))) closePin(); });
   stage.addEventListener('click', e => { if (!e.target.closest('.pin,.factoid')) closePin(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closePin(); });
+  // Rings sit up-right of their square; if one would overlap a ring already placed, it tries the other corners.
+  const RING = [[20, -20], [-20, -20], [20, 20], [-20, 20]];
   function placePins() {
+    let n = 0; const rings = [];
     pins.forEach((p, i) => {
       const xy = P.proj([p.lon, p.lat]), el = pinEls[i];
       const inside = (p.views || ['world', 'us']).includes(view) && xy && xy[0] > 8 && xy[0] < P.cw - 8 && xy[1] > 48 && xy[1] < P.ch - 70;
       el.hidden = !inside; if (!inside) return;
+      el.dataset.n = ++n; el.querySelector('b').textContent = n;
+      const ring = RING.find(([dx, dy]) => rings.every(([x, y]) => Math.hypot(xy[0] + dx - x, xy[1] + dy - y) > 32)) || RING[0];
+      rings.push([xy[0] + ring[0], xy[1] + ring[1]]);
+      el.style.setProperty('--rx', ring[0] + 'px'); el.style.setProperty('--ry', ring[1] + 'px');
       el.style.left = xy[0] + 'px'; el.style.top = xy[1] + 'px';
     });
     closePin();
@@ -275,8 +295,16 @@
     const d = r.dri, b = r.beef, p = r.plate;
     const rows = [['Vitamin B12', b.b12 / d.b12, p.b12 / d.b12], ['Zinc', b.zinc / d.zinc, p.zinc / d.zinc], ['Iron', b.iron / d.iron, p.iron / d.iron],
       ['Copper', b.copper / d.copper, p.copper / d.copper], ['Selenium', b.selenium / d.selenium, p.selenium / d.selenium], ['Protein', b.protein / d.protein, p.protein / d.protein]];
-    const x = v => Math.min(100, v / 1.5 * 100);
-    $('#micro').innerHTML = rows.map(([l, bv, sv]) => `<div class="dumb"><span>${l}</span><span class="track"><b class="bar" style="left:${Math.min(x(bv), x(sv))}%;width:${Math.abs(x(bv) - x(sv))}%"></b><i class="dot pink" style="left:${x(bv)}%"></i><i class="dot blue" style="left:${x(sv)}%"></i></span><em>${num(sv * 100)}%</em></div>`).join('');
+    const w = v => Math.min(100, v * 100), over = v => v > 1 ? ' over' : '';
+    $('#micro').innerHTML = rows.map(([l, bv, sv]) => `<div class="nb"><span>${l}</span><span class="tracks"><span class="tk beef${over(bv)}"><b style="width:${w(bv)}%"></b></span><span class="tk swap${over(sv)}"><b style="width:${w(sv)}%"></b></span></span><em>${num(sv * 100)}%</em></div>`).join('');
+  }
+
+
+  function stack(r) {
+    const pct = v => Math.max(0, v / r.base * 100).toFixed(2) + '%';
+    const bar = segs => `<span class="stack-bar">${segs.filter(([, v]) => v / r.base > .0005).map(([cls, v]) => `<i class="${cls}" style="flex-basis:${pct(v)}"></i>`).join('')}</span>`;
+    $('#stack').innerHTML = `<div class="stack-row"><span>Today</span>${bar([['pink', r.base * inputs.baseline.pastureShare], ['blue', r.base * (1 - inputs.baseline.pastureShare)]])}</div>`
+      + `<div class="stack-row"><span>Scenario</span>${bar([['pink', r.pasture], ['blue', r.feed], ['yellow', r.replacement], ['freed', Math.max(0, r.freed)]])}</div>`;
   }
 
   /* ---------- the meal sheet ---------- */
@@ -288,7 +316,7 @@
     $('#meal-bars').innerHTML = rows.map(([l, s, bv, sv, t, f]) => { const mx = Math.max(bv, sv, t) * 1.06 || 1, w = v => v / mx * 100;
       return `<div class="row${t && sv < t ? ' short' : ''}"><span class="lbl">${l}${s ? `<small>${s}</small>` : ''}</span><span class="tr"><b class="b beef" style="width:${w(bv)}%"></b><b class="b swap" style="width:${w(sv)}%"></b>${t ? `<i class="t" style="left:${w(t)}%"></i>` : ''}</span><span class="v"><span>${f(bv)}</span><br><span>${f(sv)}</span></span></div>`; }).join('');
     const eaa = ['leucine', 'isoleucine', 'valine', 'lysine', 'methionine', 'phenylalanine', 'threonine', 'tryptophan', 'histidine'];
-    $('#eaa').innerHTML = eaa.map(k => { const v = p[k] / b[k] * 100; return `<div class="col${v < 100 ? ' short' : ''}"><em>${num(v)}%</em><div class="bar" style="height:${Math.min(v, 200) / 2 * .62}%"></div><span>${k}</span></div>`; }).join('');
+    $('#eaa').innerHTML = eaa.map(k => { const v = p[k] / b[k] * 100; return `<div class="col${v < 100 ? ' short' : ''}"><em>${num(v)}%</em><div class="frame"><i class="beefline" style="bottom:50%"></i><div class="bar" style="height:${Math.min(v, 200) / 2}%"></div></div><span>${k}</span></div>`; }).join('');
     const low = eaa.map(k => [k, p[k] / b[k]]).sort((x, y) => x[1] - y[1])[0];
     $('#eaa-note').textContent = `The scarcest is ${low[0]}, at ${num(low[1] * 100)}% of the beef. Muscle is built only as far as the scarcest essential amino acid allows. Hatched bars fall short of the beef.`;
   }
@@ -309,10 +337,11 @@
     state = M.sanitize(state); result = M.calculate(state, inputs, foods); sync();
     const r = result;
     setFigure(M.convert(r.total, state.unit));
-    $('#unit-word').textContent = {acres: 'acres', mi2: 'square miles', km2: 'square kilometres'}[state.unit];
+    $('#unit-word').textContent = {acres: 'acres', mi2: 'sq mi', km2: 'km²'}[state.unit];
     $('#total-cap').textContent = r.shift === 0 ? `of land feed America’s beef each year.` : `of land feed America’s beef and what replaces it.`;
     $('#delta').textContent = r.shift === 0 ? '' : `${r.changePercent > 0 ? '+' : '−'}${num(Math.abs(r.changePercent), 1)}% · ${num(r.freed / inputs.compare.km2, 1)} Texases freed`;
-    drawLeu(r); dumbbells(r); mealSheet(r); printData();
+    drawLeu(r); dumbbells(r); mealSheet(r); stack(r); printData();
+    for (const id of ['reduction', 'coverage']) $('#' + id).style.setProperty('--p', state[id] + '%');
     $('#status').textContent = '';
     if (write) history.replaceState(null, '', location.pathname + '?' + M.toQuery(state) + (view === 'us' ? '&view=us' : '') + location.hash);
   }

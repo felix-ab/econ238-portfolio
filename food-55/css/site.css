@@ -8,6 +8,7 @@
   --pink:#ff48b0;--blue:#0078bf;--yellow:#ffe800;--black:#121212;
   --font:SUIT,'Helvetica Neue',Arial,sans-serif;
   /* type scale: ratio 1.2 at 360px wide, 1.25 at 1440px */
+  --s-2:.65625rem;                               /* 10.5 microtext */
   --s-1:clamp(.75rem,.73rem + .09vw,.8125rem);   /* 12–13 labels, captions */
   --s0:clamp(.875rem,.86rem + .07vw,.9375rem);   /* 14–15 interface */
   --s1:clamp(1rem,.97rem + .18vw,1.125rem);      /* 16–18 reading */
@@ -17,7 +18,11 @@
   --lh-tight:1.04;--lh-head:1.15;--lh-body:1.5;
   --tr-display:-.045em;--tr-head:-.02em;--tr-label:.01em;
   --w-body:420;--w-label:620;--w-head:740;--w-display:840;
-  --line:1px solid var(--ink);
+  --line:1px solid var(--ink);--line-2:1.5px solid var(--ink);
+  /* halftone screens: the neutral 'tints' of the system — regular dots, never grey */
+  --dots:radial-gradient(circle,var(--ink) 0 .9px,transparent 1.2px) 0 0/4px 4px;
+  --dots-fine:radial-gradient(circle,var(--ink) 0 .6px,transparent .95px) 0 0/3px 3px;
+  --dots-open:radial-gradient(circle,var(--ink) 0 .7px,transparent 1px) 0 0/5px 5px;
   --r-card:20px;--r-pill:40px;--r-item:28px;--r-sm:12px;
   --gap:16px;--rail:64px;--panel:360px;
   --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:24px;--sp-6:32px;--sp-7:48px;--sp-8:72px;
@@ -204,6 +209,62 @@ figcaption{font-size:var(--s0);font-weight:var(--w-label);border-bottom:var(--li
 .src li span{font-size:var(--s-1);text-align:right}
 .made{margin-top:var(--sp-7);font-size:var(--s-1);max-width:80ch}
 
+
+/* ---------- reference pass: dot screens, outlines, callouts, weight contrast ---------- */
+.thin{font-weight:200;letter-spacing:-.03em;font-size:.42em}
+#mag,.thin #unit-word{font-size:1em;font-weight:200}
+.delta::before{content:'('}.delta::after{content:')'}
+.rail{position:relative}
+.rail-title{margin-top:auto;writing-mode:vertical-rl;transform:rotate(180deg);font-size:var(--s-1);font-weight:var(--w-label);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;padding:var(--sp-3) 0}
+.sw{width:12px;height:12px;display:inline-block;border:var(--line);flex:none;mix-blend-mode:multiply}
+.sw.pink{background:var(--pink)}.sw.blue{background:var(--blue)}.sw.yellow{background:var(--yellow)}
+.sw.dots{background:var(--card);background:var(--dots),var(--card)}
+.sw.grain{background:var(--dots-fine),var(--card)}
+.key{border-radius:var(--r-card)}
+/* numbered callouts: a solid square on the place, a numbered ring beside it */
+.pin{width:auto;height:auto;margin:0;background:none!important;display:block}
+.pin .sq{position:absolute;left:-4px;top:-4px;width:8px;height:8px;background:var(--ink)}
+.pin b{position:absolute;left:calc(var(--rx,20px) - 14px);top:calc(var(--ry,-20px) - 14px);width:28px;height:28px;border:var(--line-2);border-radius:50%;background:var(--card);display:grid;place-items:center;font-size:var(--s0);font-weight:500;line-height:1}
+.pin:hover b,.pin[aria-expanded=true] b{background:var(--ink);color:var(--card)}
+.pin:hover .sq,.pin[aria-expanded=true] .sq{background:var(--pink)}
+.factoid .place b{display:inline-grid;place-items:center;width:20px;height:20px;border:var(--line);border-radius:50%;margin-right:6px;font-weight:500}
+/* sliders: solid ink for the value, dot screen for what's left */
+input[type=range]{height:28px;--p:0%}
+input[type=range]::-webkit-slider-runnable-track{height:10px;background:linear-gradient(var(--ink),var(--ink)) 0 0/var(--p) 100% no-repeat,var(--dots),var(--card)}
+input[type=range]::-moz-range-track{height:10px;background:var(--dots),var(--card)}
+input[type=range]::-moz-range-progress{height:10px;background:var(--ink)}
+input[type=range]::-webkit-slider-thumb{width:6px;height:22px;margin-top:-6px;border-radius:0;background:var(--ink);border:0;box-shadow:0 0 0 2px var(--card)}
+input[type=range]::-moz-range-thumb{width:6px;height:22px;border-radius:0;background:var(--ink);border:0;box-shadow:0 0 0 2px var(--card)}
+.slider output{font-weight:300;font-size:var(--s1)}
+/* stacked land bars, after the statistical plate */
+.stack{display:grid;gap:var(--sp-2)}
+.stack-row{display:grid;grid-template-columns:62px 1fr;align-items:center;gap:var(--sp-2);font-size:var(--s-1)}
+.stack-bar{display:flex;height:22px;border:var(--line-2)}
+.stack-bar i{height:100%;mix-blend-mode:multiply;transition:flex-basis .3s}
+.stack-bar i+i{border-left:var(--line)}
+.stack-bar i[style*="flex-basis: 0%"]{border:0}
+.stack-bar .pink{background:var(--pink)}.stack-bar .blue{background:var(--blue)}.stack-bar .yellow{background:var(--yellow)}.stack-bar .freed{background:var(--dots),var(--card)}
+.stack-key{list-style:none;display:flex;flex-wrap:wrap;gap:var(--sp-1) var(--sp-3);font-size:var(--s-1)}
+.stack-key li{display:flex;align-items:center;gap:6px}
+/* nutrient bars: value in ink colour over a dot-screened track to 100% of the day */
+.nb{display:grid;grid-template-columns:76px 1fr 38px;align-items:center;gap:var(--sp-2);font-size:var(--s-1);padding:3px 0}
+.nb .tracks{display:grid;gap:2px}
+.nb .tk{position:relative;height:7px;background:var(--dots-open),var(--card)}
+.nb .tk b{position:absolute;left:0;top:0;bottom:0;mix-blend-mode:multiply}
+.nb .tk.beef b{background:var(--pink)}.nb .tk.swap b{background:var(--blue)}
+.nb .tk.over::after{content:'';position:absolute;right:-5px;top:0;bottom:0;width:3px;background:var(--ink)}
+.nb em{font-style:normal;text-align:right;font-weight:300;font-size:var(--s0)}
+.legend-line .dot{border-radius:0;border:var(--line)}
+/* sheet charts */
+.bars .tr{background:var(--dots-open),var(--card);border:var(--line)}
+.bars .b{height:50%}
+.eaa .col .frame{position:relative;width:70%;flex:1;border:var(--line-2);background:var(--dots-open),var(--card);display:flex;align-items:flex-end}
+.eaa .col .frame .bar{width:100%;border-top:var(--line)}
+.eaa .col .frame .beefline{position:absolute;left:-4px;right:-4px;border-top:2px solid var(--pink)}
+.eaa .short .bar{background:var(--blue)}
+.micro{grid-column:1/-1;font-size:var(--s-2);line-height:1.35;margin-top:var(--sp-2);text-align:justify;hyphens:auto}
+figcaption{text-transform:uppercase;letter-spacing:.04em;font-size:var(--s-1)}
+
 /* ---------- responsive: recompose around the map ---------- */
 @media (max-width:1180px){:root{--panel:320px}.steps{grid-template-columns:1fr 1fr}}
 @media (max-width:900px){
@@ -220,7 +281,8 @@ figcaption{font-size:var(--s0);font-weight:var(--w-label);border-bottom:var(--li
   .zoom{right:12px;bottom:12px}
   .units{top:12px;right:12px}
   .readout{top:56px}
-  .pin{width:22px;height:29px;margin:-29px 0 0 -11px}
+  .pin b{width:24px;height:24px;left:calc(var(--rx,20px) - 12px);top:calc(var(--ry,-20px) - 12px);font-size:var(--s-1)}
+  .rail-title{display:none}
 }
 @media (max-width:520px){.factoid{left:12px!important;right:12px;width:auto}.bars .row{grid-template-columns:90px 1fr 70px}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
