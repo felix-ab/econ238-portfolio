@@ -5,7 +5,7 @@
   'use strict';
   const DEFAULT = Object.freeze({homes: 100000, who: 'all', where: 'core', cutoff: 30, unit: 'tons'});
   const PRESETS = Object.freeze({
-    yes: {label: 'City of Yes', state: {...DEFAULT, homes: 82000, where: 'built'}},
+    yes: {label: 'City of Yes', state: {...DEFAULT, homes: 80000, where: 'built'}},
     goal: {label: '500,000 homes', state: {...DEFAULT, homes: 500000, where: 'built'}},
     young: {label: 'Young workers move in', state: {...DEFAULT, who: 'young'}},
     staten: {label: 'Build it like Staten Island', state: {...DEFAULT, where: 'staten'}}

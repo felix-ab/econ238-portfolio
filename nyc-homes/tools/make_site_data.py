@@ -62,6 +62,9 @@ for r in rows:
         vmt_missing += 1; c = county_vmt[r['county']]; v = c[0] / c[1] if c[1] else None
     if v is None: continue
     vmt_year = v * ANNUAL
+    # transit commuting: riders per household x round trip x work days x EPA kg CO2 per passenger-mile
+    riders = (f(r['transit']) or 0) / hh; miles = (f(r['mean_commute_km']) or 0) * 0.621371
+    ftr = riders * miles * 2 * FX['work_days'] * FX['transit_kg_per_pmi']['subway' if r['county'] in NYC else 'commuter_rail'] / 1000
     tot = sum((f(r[k]) or 0) for k, _ in TYPES) or 1
     fh = sum((f(r[k]) or 0) / tot * home_t(t, region(r['county'])) for k, t in TYPES)
     workers = f(r['workers']) or 0
@@ -69,7 +72,7 @@ for r in rows:
     cols['hh'].append(round(hh)); cols['workers'].append(round(workers)); cols['jobs'].append(round(f(r['jobs_nyc']) or 0))
     cols['young'].append(round(f(r['sa01']) or 0)); cols['low'].append(round((f(r['se01']) or 0) + (f(r['se02']) or 0)))
     cols['drive'].append(round(((f(r['drove_alone']) or 0) + (f(r['carpool']) or 0)) / workers, 3) if workers else 0); cols['km'].append(round(f(r['mean_commute_km']) or 0, 1)); cols['transit'].append(round((f(r['transit']) or 0) / workers, 3) if workers else 0)
-    cols['vmt'].append(round(vmt_year)); cols['ft'].append(round(vmt_year * G_MI / 1e6, 3)); cols['fh'].append(round(fh, 3))
+    cols['vmt'].append(round(vmt_year)); cols['ft'].append(round(vmt_year * G_MI / 1e6 + ftr, 3)); cols['fh'].append(round(fh, 3))
     cols['land'].append(round(f(r['aland_km2']) or 0, 4)); cols['newUnits'].append(round(new.get(r['geoid'], 0)))
     cols['lat'].append(round(f(r['lat']), 4)); cols['lon'].append(round(f(r['lon']), 4))
 cols['countyNames'] = {c: names.get(c, c) for c in set(cols['county'])}

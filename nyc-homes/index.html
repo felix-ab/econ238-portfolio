@@ -10,13 +10,12 @@
 <meta property="og:image" content="https://felix-ab.github.io/econ238-portfolio/nyc-homes/assets/cover.png">
 <meta name="theme-color" content="#f4f3ef">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='5' y='9' width='14' height='18' fill='%230078BF'/%3E%3Crect x='13' y='4' width='14' height='23' fill='%23FF48B0' style='mix-blend-mode:multiply'/%3E%3C/svg%3E">
-<link rel="preload" href="assets/fonts/Pretendard-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="assets/fonts/D2Coding-subset.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/site.css?v=1">
+<link rel="preload" href="assets/fonts/SUIT-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/site.css?v=2">
 <script defer src="assets/vendor/d3.min.js"></script>
 <script defer src="assets/vendor/topojson-client.min.js"></script>
-<script defer src="model.js?v=1"></script>
-<script defer src="js/app.js?v=1"></script>
+<script defer src="model.js?v=2"></script>
+<script defer src="js/app.js?v=2"></script>
 </head>
 <body>
 <div class="app" id="top">
@@ -80,7 +79,7 @@
     <h2 id="panel-title">Build the homes</h2>
 
     <div class="presets" role="group" aria-label="Scenarios">
-      <button type="button" data-preset="yes">City of Yes</button>
+      <button type="button" data-preset="yes">City of Yes, 80k</button>
       <button type="button" data-preset="goal">500,000 homes</button>
       <button type="button" data-preset="young">Young workers</button>
       <button type="button" data-preset="staten">Like Staten Island</button>
@@ -121,7 +120,7 @@
 <section class="sheet" id="homes" aria-labelledby="homes-title">
   <h2 id="homes-title">A home in the city is a climate policy.</h2>
   <div class="cols">
-    <p id="lede-1">A household in the city’s car-light core drives about 3,100 miles a year and lives in an apartment that shares its walls. A household in Nassau County with someone working in the city drives about 12,000 miles and heats a house. When New York doesn’t build, the jobs stay and the workers live farther out.</p>
+    <p id="lede-1">A household in the city’s car-light core drives about 3,000 miles a year and lives in an apartment that shares its walls. A household in Nassau County with someone working in the city drives about 11,700 miles and heats a house. When New York doesn’t build, the jobs stay and the workers live farther out.</p>
     <p id="lede-2">Some of those commuters would choose a yard anyway. This model doesn’t assume they all want to move. You choose how many homes get built, who fills them, and where they go, and it counts what changes.</p>
   </div>
   <div class="meal-grid">
@@ -134,7 +133,7 @@
   <h2 id="layers-title">Regulate the ton, not the bulb.</h2>
   <div class="cols">
     <p>A new building in New York answers to several layers of rules aimed at the climate. Zoning and environmental review decide whether it gets built at all. The energy code and the 2021 gas ban (Local Law 154) dictate equipment. Local Law 97 caps emissions per square foot and charges a fixed price per ton over the cap.</p>
-    <p id="layers-p2">Economists favour the last layer: it prices the outcome and lets builders find the cheapest tons. The first layers can do the opposite. Each home they stop pushes a household outside the city, and that household emits more. This exhibit counts those tons, priced at the city’s own Local Law 97 rate.</p>
+    <p id="layers-p2">Economists favour the last layer: it prices the outcome and lets builders find the cheapest tons. The first layers can do the opposite. Environmental review for a rezoning typically takes six to eight months and can cost hundreds of thousands of dollars, by the city’s own account. Every home it delays or stops pushes a household outside the city, where it emits more. The city has started to adjust: since June 2024, the Green Fast Track exempts qualifying projects of up to 250 homes. This exhibit counts the tons at stake, priced at the city’s own Local Law 97 rate.</p>
   </div>
 </section>
 
@@ -148,7 +147,7 @@
 <section class="sheet" id="sources" aria-labelledby="sources-title">
   <h2 id="sources-title">Sources</h2>
   <ul class="src" id="src"></ul>
-  <p class="made">Felix Brener, ECON 238, University of Rochester. My own investigation. Claude (Anthropic) helped pull the data, build the model and write the code. Type: Pretendard by Kil Hyung-jin and D2Coding by Naver, both under the SIL Open Font License. Tract outlines: US Census Bureau cartographic boundaries, 2023.</p>
+  <p class="made">Felix Brener, ECON 238, University of Rochester. My own investigation. Claude (Anthropic) helped pull the data, build the model and write the code. Type: SUIT by Sun-young Sunn, under the SIL Open Font License. Tract outlines: US Census Bureau cartographic boundaries, 2023.</p>
 </section>
 </body>
 </html>

@@ -1,16 +1,15 @@
 /* FOOD-55. One press ink on paper; colour exists only as riso drums on the map and charts.
-   Grammar after 큰그림컴퍼니 (Bigpicture Company, Seoul): oversized grotesk, mono captions,
+   One typeface, SUIT (Sun-young Sunn, OFL), shared with FOOD-55. Grammar after 큰그림컴퍼니 (Bigpicture Company, Seoul): oversized grotesk, mono captions,
    1px ink hairlines, 20px cards, 40px pill, no shadows. */
-@font-face{font-family:Pretendard;src:url(../assets/fonts/Pretendard-latin.woff2) format('woff2');font-weight:45 920;font-display:swap}
-@font-face{font-family:D2Coding;src:url(../assets/fonts/D2Coding-subset.woff2) format('woff2');font-display:swap}
+@font-face{font-family:SUIT;src:url(../assets/fonts/SUIT-Variable.woff2) format('woff2-variations'),url(../assets/fonts/SUIT-Variable.woff2) format('woff2');font-weight:100 900;font-display:swap}
 
 :root{
   --ink:#121212;
   --paper:#f4f3ef;
   --card:#fbfaf7;
   --pink:#ff48b0;--blue:#0078bf;--yellow:#ffe800;--black:#121212;
-  --sans:Pretendard,'Helvetica Neue',Arial,sans-serif;
-  --mono:D2Coding,'IBM Plex Mono',ui-monospace,monospace;
+  --sans:SUIT,'Helvetica Neue',Arial,sans-serif;
+  --mono:SUIT,'Helvetica Neue',Arial,sans-serif;
   --line:1px solid var(--ink);
   --r-card:20px;--r-pill:40px;--r-item:28px;
   --gap:16px;--rail:64px;--panel:372px;
@@ -60,7 +59,7 @@ a{color:inherit}
 .edge i:nth-child(2){--e:7%;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
 .edge i:nth-child(3){--e:3.5%;-webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px)}
 html:not(.glass-on) .edge{display:block}
-.veil{position:absolute;left:0;right:0;top:0;height:clamp(150px,26%,230px);pointer-events:none;z-index:3;background:linear-gradient(rgba(244,243,239,.62),rgba(244,243,239,.3) 50%,rgba(244,243,239,0))}
+.veil{position:absolute;left:0;right:0;top:0;height:clamp(150px,26%,230px);pointer-events:none;z-index:3;background:linear-gradient(rgba(244,243,239,.86),rgba(244,243,239,.6) 55%,rgba(244,243,239,0))}
 /* the glass edge: a frosted lift that thickens toward the rim, and a thin specular line */
 .rim{position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:3;box-shadow:inset 0 0 0 1px rgba(255,255,255,.55),inset 0 1px 0 1px rgba(255,255,255,.5),inset 0 0 34px rgba(255,255,255,.34)}
 

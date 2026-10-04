@@ -10,7 +10,7 @@
  "carTonsPerYear": 4.6,
  "ticks": [
   {
-   "homes": 82000,
+   "homes": 80000,
    "label": "City of Yes"
   },
   {
@@ -29,7 +29,7 @@
   },
   {
    "title": "Driving.",
-   "text": "BTS LATCH (2017) estimates weekday household driving for every tract. It is annualised ×365 at EPA’s 400 g of CO₂ per mile."
+   "text": "BTS LATCH (2017) estimates weekday household driving for every tract. It is annualised ×350.7 (261 weekdays, plus 104 weekend days at 86% of a weekday, from the 2017 NHTS), at EPA’s 400 g of CO₂ per mile. Transit commutes add EPA’s 0.093 kg per passenger-mile on the subway and 0.133 on commuter rail."
   },
   {
    "title": "Home energy.",
@@ -48,10 +48,11 @@
   "Who moves in is your choice on the panel, not a forecast. Some commuters prefer the suburbs, so the slider counts homes, and only that many households move.",
   "A household keeps its size and income when it moves; in reality both can change.",
   "LATCH models 2017 weekday driving on 2010 tracts. Split tracts take their parent’s value; 842 tracts that changed more take their county’s average.",
+  "LATCH has driving estimates for only 16 Manhattan tracts. The other Manhattan tracts use those tracts’ average, 6.8 miles a weekday.",
   "Home energy uses regional averages by building type, not the actual building. New all-electric buildings under Local Law 154 likely use less than the RECS average, so the new-home figure is conservative.",
   "eGRID rates cover power generated inside each grid region. NYC also imports cleaner upstate power, which would lower the city side.",
-  "Transit’s own emissions and the embodied carbon of construction are left out. Every new home has embodied carbon wherever it’s built.",
-  "Commute distances are straight lines between tract centres."
+  "Commute distances are straight lines between tract centres.",
+  "Embodied carbon from construction is left out. Every new home has it, wherever it’s built."
  ],
  "sources": [
   {
@@ -85,6 +86,11 @@
    "note": "400 g CO₂ per mile"
   },
   {
+   "label": "2017 NHTS Summary of Travel Trends",
+   "url": "https://nhts.ornl.gov/assets/2017_nhts_summary_travel_trends.pdf",
+   "note": "Weekend vs weekday driving"
+  },
+  {
    "label": "EPA GHG Emission Factors Hub",
    "url": "https://www.epa.gov/climateleadership/ghg-emission-factors-hub",
    "note": "Gas, oil, propane"
@@ -93,6 +99,21 @@
    "label": "NYC DCP Housing Database",
    "url": "https://www.nyc.gov/site/planning/data-maps/open-data/dwn-housing-database.page",
    "note": "Where NYC adds homes"
+  },
+  {
+   "label": "NYC Office of Environmental Coordination, CEQR basics",
+   "url": "https://www.nyc.gov/site/oec/environmental-quality-review/ceqr-basics.page",
+   "note": "6–8 months, “hundreds of thousands of dollars”"
+  },
+  {
+   "label": "NYC Mayor’s Office, City of Yes for Housing Opportunity",
+   "url": "https://www.nyc.gov/mayors-office/news/2024/12/mayor-adams-governor-hochul-speaker-adams-celebrates-passage-most-pro-housing-proposal-in",
+   "note": "80,000 homes over 15 years"
+  },
+  {
+   "label": "NYC HPD, 2023 Housing and Vacancy Survey",
+   "url": "https://www.nyc.gov/site/hpd/news/007-24/new-york-city-s-vacancy-rate-reaches-historic-low-1-4-percent-demanding-urgent-action-new%26quot",
+   "note": "1.4% rental vacancy"
   },
   {
    "label": "NYC Local Law 97",
