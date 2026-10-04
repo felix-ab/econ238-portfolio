@@ -155,7 +155,8 @@
     const el = $('#total'), from = shown ?? v, t0 = performance.now(); shown = v;
     const sig = x => { const a = Math.abs(x), [d, w] = a >= 1e6 ? [1e6, 'million'] : a >= 1e3 ? [1e3, 'thousand'] : [1, '']; const y = x / d; return [num(y, Math.abs(y) >= 100 ? 0 : Math.abs(y) >= 10 ? 1 : 2), w]; };
     const step = t => { const k = Math.min(1, (t - t0) / 320), e = 1 - (1 - k) ** 3, [a, w] = sig(from + (v - from) * e); el.textContent = a; $('#mag').textContent = w; if (k < 1) requestAnimationFrame(step); };
-    requestAnimationFrame(step);
+    // first paint writes the figure directly, so it is right even before animation frames run
+    if (from === v) { const [a, w] = sig(v); el.textContent = a; $('#mag').textContent = w; } else requestAnimationFrame(step);
   }
 
   /* ---------- the instrument: household CO2 against commute distance ---------- */
