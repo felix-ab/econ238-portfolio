@@ -22,7 +22,7 @@
   const D = {tracts: T, factors: F};
   const countyName = raw.countyNames || {};
 
-  let state = H.fromQuery(location.search), result, q0 = new URLSearchParams(location.search).get('view'), view = q0 === 'city' || (!q0 && innerWidth < 700) ? 'city' : 'shed';
+  let state = H.fromQuery(location.search), result, q0 = new URLSearchParams(location.search).get('view'), view = q0 === 'shed' ? 'shed' : 'city';
   let preset = Object.keys(H.PRESETS).find(k => H.toQuery(H.PRESETS[k].state) === H.toQuery(state)) || null;
 
   /* ---------- riso master ---------- */
@@ -225,7 +225,7 @@
     for (const k of ['all', 'young', 'low', 'long']) { const c = H.origins({...state, who: k}, D); let s = 0; for (let i = 0; i < n; i++) s += c[i]; $('#pool-' + k).textContent = num(s / 1000, 0) + 'k households'; }
     drawChart(r); sheets(r); printData();
     $('#status').textContent = '';
-    if (write) history.replaceState(null, '', location.pathname + '?' + H.toQuery(state) + (view === 'city' ? '&view=city' : '') + location.hash);
+    if (write) history.replaceState(null, '', location.pathname + '?' + H.toQuery(state) + (view === 'shed' ? '&view=shed' : '') + location.hash);
   }
   const on = (sel, ev, fn) => $$(sel).forEach(el => el.addEventListener(ev, fn));
   on('#homes', 'input', e => { state.homes = +e.target.value; preset = null; update(); });
@@ -236,7 +236,7 @@
   on('[data-view]', 'click', e => { view = e.currentTarget.dataset.view; sync(); layout(); printData(); update(); });
   $('#ticks').innerHTML = (F.ticks || []).map(t => `<span style="left:${t.homes / 5000}%">${t.label}</span>`).join('');
   $('#share').addEventListener('click', async () => {
-    const url = location.origin + location.pathname + '?' + H.toQuery(state) + (view === 'city' ? '&view=city' : '');
+    const url = location.origin + location.pathname + '?' + H.toQuery(state) + (view === 'shed' ? '&view=shed' : '');
     try { await navigator.clipboard.writeText(url); $('#status').textContent = 'Link copied.'; } catch { $('#status').textContent = url; }
   });
   $('#export').addEventListener('click', () => {
