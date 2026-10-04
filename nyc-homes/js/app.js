@@ -31,22 +31,43 @@
 
   /* ---------- the press ---------- */
   const stage = $('#map'), platesEl = $('#plates'), canvases = {};
-  for (const name of ['black', 'blue', 'pink']) { const c = document.createElement('canvas'); c.className = 'p-' + name; platesEl.appendChild(c); canvases[name] = c; }
+  const press = document.createElement('div'); press.className = 'press'; platesEl.appendChild(press);
+  for (const name of ['black', 'blue', 'pink']) { const c = document.createElement('canvas'); c.className = 'p-' + name; press.appendChild(c); canvases[name] = c; }
+  let zoomK = 1, zoomCenter = null; // zoom over the fitted view; the lon/lat held at the stage centre
   const cov = document.createElement('canvas'), covG = cov.getContext('2d', {willReadFrequently: true});
   let P = null;
   function layout() {
     const rect = stage.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
     const cw = Math.round(rect.width), ch = Math.round(rect.height), DW = Math.round(cw * dpr), DH = Math.round(ch * dpr);
-    const top = Math.min(ch * .27, 220), side = cw < 700 ? 10 : 30;
-    const proj = d3.geoConicConformal().parallels([40, 42]).rotate([74, 0]);
-    const target = view === 'city' ? {type: 'FeatureCollection', features: counties.filter(c => F.nycCounties.includes(c.properties.co))} : topojson.feature(topo, topo.objects.states);
-    proj.fitExtent([[side, top], [cw - side, ch - (cw < 700 ? 56 : 70)]], target);
+    // Mercator over the whole stage. The shed covers it edge to edge; the five boroughs fit below the figure,
+    // with New Jersey and Long Island filling the rest.
+    const proj = d3.geoMercator();
+    if (view === 'city') {
+      const nyc = {type: 'FeatureCollection', features: counties.filter(c => F.nycCounties.includes(c.properties.co))};
+      const top = Math.min(ch * .3, 230), key = $('.key');
+      // on narrow stages the key spans most of the bottom edge, so the boroughs fit above it
+      const bottom = cw < 560 && key && key.offsetParent ? Math.min(ch - 16, key.offsetTop - 8) : ch - 16;
+      proj.fitExtent([[16, top], [cw - 16, bottom]], nyc);
+    } else {
+      const shed = topojson.feature(topo, topo.objects.states);
+      proj.fitSize([cw, ch], shed);
+      const b = d3.geoPath(proj).bounds(shed), k = Math.max(cw / (b[1][0] - b[0][0]), ch / (b[1][1] - b[0][1]));
+      const c = proj.invert([(b[0][0] + b[1][0]) / 2, (b[0][1] + b[1][1]) / 2]);
+      proj.scale(proj.scale() * k); const pc = proj(c), t = proj.translate(); proj.translate([t[0] + cw / 2 - pc[0], t[1] + ch / 2 - pc[1]]);
+    }
+    if (zoomK !== 1 || zoomCenter) {
+      const c0 = zoomCenter || proj.invert([cw / 2, ch / 2]);
+      proj.scale(proj.scale() * zoomK);
+      const p = proj(c0), t = proj.translate(); proj.translate([t[0] + cw / 2 - p[0], t[1] + ch / 2 - p[1]]);
+    }
     const path = d3.geoPath(proj);
     const paths = geomOf.map(f => f ? new Path2D(path(f) || '') : null);
     cov.width = DW; cov.height = DH;
     for (const c of Object.values(canvases)) { c.width = DW; c.height = DH; }
     P = {proj, dpr, DW, DH, cw, ch, paths, borders: new Path2D(path(countyMesh) || ''), states: new Path2D(path(stateMesh) || '')};
-    printBlack(); if (GLASS) buildGlass(cw, ch); placePins();
+    printBlack();
+    const ro = $('.readout').getBoundingClientRect(); stage.style.setProperty('--veil-h', Math.round(ro.bottom - rect.top + 56) + 'px');
+    placePins();
   }
   // Rasterise one value per tract (0..1) into the coverage buffer, then screen it like a riso drum.
   function coverage(values, extra) {
@@ -95,34 +116,10 @@
     });
   }
 
-  /* ---------- glass (same filter as FOOD-55) ---------- */
-  let glassGen = 0;
-  const ua = navigator.userAgent, GLASS = (!!window.chrome && !/CriOS/.test(ua)) || /Firefox\//.test(ua);
-  if (GLASS) document.documentElement.classList.add('glass-on');
-  function buildGlass(cw, ch) {
-    const k = 2, w = Math.ceil(cw / k), h = Math.ceil(ch / k), rad = 20 / k, band = Math.max(46, Math.min(130, Math.min(cw, ch) * .13)) / k;
-    const dc = document.createElement('canvas'), mc = document.createElement('canvas'); dc.width = mc.width = w; dc.height = mc.height = h;
-    const di = dc.getContext('2d').createImageData(w, h), mi = mc.getContext('2d').createImageData(w, h);
-    const hx = w / 2 - rad, hy = h / 2 - rad, ss = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
-    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-      const px = x + .5 - w / 2, py = y + .5 - h / 2, qx = Math.abs(px) - hx, qy = Math.abs(py) - hy;
-      let d, nx, ny;
-      if (qx > 0 && qy > 0) { const l = Math.hypot(qx, qy) || 1; d = rad - l; nx = -Math.sign(px) * qx / l; ny = -Math.sign(py) * qy / l; }
-      else if (qx > qy) { d = rad - qx; nx = -Math.sign(px); ny = 0; } else { d = rad - qy; nx = 0; ny = -Math.sign(py); }
-      const t = Math.max(0, Math.min(1, 1 - d / band)), mag = t * t, i = (y * w + x) * 4;
-      di.data[i] = 128 + 127 * nx * mag; di.data[i + 1] = 128 + 127 * ny * mag; di.data[i + 2] = 128; di.data[i + 3] = 255;
-      mi.data[i] = 255 * ss(.05, .4, t); mi.data[i + 1] = 255 * ss(.35, .72, t); mi.data[i + 2] = 255 * ss(.66, 1, t); mi.data[i + 3] = 255;
-    }
-    dc.getContext('2d').putImageData(di, 0, 0); mc.getContext('2d').putImageData(mi, 0, 0);
-    const f = document.querySelector('.glass-defs filter'); f.setAttribute('width', cw); f.setAttribute('height', ch);
-    for (const [id, c] of [['glass-disp', dc], ['glass-mask', mc]]) { const el = document.getElementById(id); el.setAttribute('width', cw); el.setAttribute('height', ch); el.setAttribute('href', c.toDataURL()); }
-    f.id = 'glass-' + (++glassGen); platesEl.style.filter = `url(#${f.id})`;
-  }
-
   /* ---------- pins ---------- */
   const pinsEl = $('#pins'), factoid = $('#factoid');
   const pinEls = pins.map((p, i) => {
-    const b = document.createElement('button'); b.type = 'button'; b.className = 'pin'; b.setAttribute('aria-label', p.title + ', ' + p.place); b.setAttribute('aria-expanded', 'false');
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'pin'; b.setAttribute('aria-label', p.title + ', ' + p.place); b.setAttribute('aria-expanded', 'false'); b.innerHTML = '<i class="sq"></i><b></b>';
     b.addEventListener('mouseenter', () => openPin(i)); b.addEventListener('focus', () => openPin(i)); b.addEventListener('click', () => openPin(i, true));
     pinsEl.appendChild(b); return b;
   });
@@ -130,7 +127,7 @@
   function openPin(i, stick) {
     const p = pins[i], el = pinEls[i];
     pinEls.forEach((e, j) => e.setAttribute('aria-expanded', String(j === i)));
-    factoid.innerHTML = `<span class="place">${p.place}</span><h3>${p.title}</h3><p>${p.text}</p>${p.source_url ? `<a href="${p.source_url}" target="_blank" rel="noopener">${p.source_label} ↗</a>` : `<span class="src-note">${p.source_label}</span>`}`;
+    factoid.innerHTML = `<span class="place"><b>${el.dataset.n || ''}</b>${p.place}</span><h3>${p.title}</h3><p>${p.text}</p>${p.source_url ? `<a href="${p.source_url}" target="_blank" rel="noopener">${p.source_label} ↗</a>` : `<span class="src-note">${p.source_label}</span>`}`;
     factoid.hidden = false;
     const x = parseFloat(el.style.left), y = parseFloat(el.style.top), fw = factoid.offsetWidth, fh = factoid.offsetHeight;
     factoid.style.left = Math.max(12, Math.min(P.cw - fw - 12, x + 22)) + 'px'; factoid.style.top = Math.max(12, Math.min(P.ch - fh - 12, y - fh / 2 - 20)) + 'px';
@@ -141,10 +138,29 @@
   factoid.addEventListener('mouseleave', e => { if (!sticky && !(e.relatedTarget && e.relatedTarget.classList.contains('pin'))) closePin(); });
   stage.addEventListener('click', e => { if (!e.target.closest('.pin,.factoid')) closePin(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closePin(); });
+  // Rings sit up-right of their square; if one would overlap a ring already placed, it tries the other corners.
+  const RING = [[20, -20], [-20, -20], [20, 20], [-20, 20]];
   function placePins() {
+    let k = 0; const rings = [], so = stage.getBoundingClientRect();
+    const blocked = ['.readout .figure', '.readout .figure-cap', '.readout .delta', '.units', '.key', '.zoom'].map(q => document.querySelector(q)).filter(e => e && e.offsetParent)
+      .map(e => { const r = e.getBoundingClientRect(); return [r.left - so.left, r.top - so.top, r.right - so.left, r.bottom - so.top]; });
+    const pos = pins.map(p => {
+      const xy = P.proj([p.lon, p.lat]);
+      const under = blocked.some(([l, t, r, b]) => xy && xy[0] > l - 40 && xy[0] < r + 40 && xy[1] > t - 40 && xy[1] < b + 44);
+      return (p.views || ['shed', 'city']).includes(view) && xy && !under && xy[0] > 24 && xy[0] < P.cw - 24 && xy[1] > 44 && xy[1] < P.ch - 24 ? xy : null;
+    });
     pins.forEach((p, i) => {
-      const xy = P.proj([p.lon, p.lat]), el = pinEls[i], inside = (p.views || ['shed', 'city']).includes(view) && xy && xy[0] > 8 && xy[0] < P.cw - 8 && xy[1] > 60 && xy[1] < P.ch - 60;
-      el.hidden = !inside; if (inside) { el.style.left = xy[0] + 'px'; el.style.top = xy[1] + 'px'; }
+      const xy = pos[i], el = pinEls[i];
+      el.hidden = !xy; if (!xy) return;
+      el.dataset.n = ++k; el.querySelector('b').textContent = k;
+      // a ring must stay inside the stage and clear every other ring and every pin's square
+      const ok = ([dx, dy]) => { const x = xy[0] + dx, y = xy[1] + dy;
+        return x > 18 && x < P.cw - 18 && y > 18 && y < P.ch - 18 && rings.every(([a, b]) => Math.hypot(x - a, y - b) > 32)
+          && pos.every((q, j) => !q || j === i || Math.hypot(x - q[0], y - q[1]) > 20); };
+      const ring = RING.find(ok) || RING.find(([dx, dy]) => xy[0] + dx > 18 && xy[0] + dx < P.cw - 18 && xy[1] + dy > 18) || RING[0];
+      rings.push([xy[0] + ring[0], xy[1] + ring[1]]);
+      el.style.setProperty('--rx', ring[0] + 'px'); el.style.setProperty('--ry', ring[1] + 'px');
+      el.style.left = xy[0] + 'px'; el.style.top = xy[1] + 'px';
     });
     closePin();
   }
@@ -184,7 +200,7 @@
     destLbl.attr('x', cw2 - m.r).attr('y', y - 5).text('new city home ' + num(r.dest.total, 1) + ' t');
     gap.attr('d', d3.area().x(p => xS(p.x)).y0(() => y).y1(p => yS(Math.max(p.y, r.dest.total))).curve(d3.curveMonotoneX)(pts));
     cut.attr('transform', `translate(${xS(state.cutoff)},0)`).classed('on', state.who === 'long'); cutLbl.text(state.who === 'long' ? state.cutoff + ' km +' : 'drag');
-    $('#fp-read').innerHTML = `Each dot is commuters at that distance. The shaded gap is the CO₂ a household sheds by moving into a <b>${{core: 'car-light core', built: 'typical new', staten: 'Staten Island-style'}[state.where]}</b> city home.`;
+    $('#fp-read').innerHTML = `New home: <b>${{core: 'car-light core', built: 'where NYC builds', staten: 'Staten Island-style'}[state.where]}</b>, ${num(r.dest.total, 1)} t a year.`;
   }
 
   /* ---------- sheets ---------- */
@@ -203,12 +219,13 @@
 
   /* ---------- state ---------- */
   function sync() {
-    $('#homes').value = state.homes; $('#homes-out').textContent = num(state.homes);
+    $('#homes').value = state.homes; $('#homes-out').textContent = num(state.homes); $('#homes').style.setProperty('--p', state.homes / 5000 + '%');
     $$('[data-preset]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.preset === preset)));
     $$('[data-who]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.who === state.who)));
     $$('[data-where]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.where === state.where)));
     $$('[data-unit]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.unit === state.unit)));
     $$('[data-view]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === view)));
+    if ($('#zoom-out')) { $('#zoom-out').disabled = zoomK <= 1; $('#zoom-fit').disabled = zoomK === 1 && !zoomCenter; }
   }
   function update(write = true) {
     state = H.sanitize(state); result = H.calculate(state, D); sync();
@@ -234,7 +251,7 @@
   on('[data-who]', 'click', e => { state.who = e.currentTarget.dataset.who; preset = null; update(); });
   on('[data-where]', 'click', e => { state.where = e.currentTarget.dataset.where; preset = null; update(); });
   on('[data-unit]', 'click', e => { state.unit = e.currentTarget.dataset.unit; update(); });
-  on('[data-view]', 'click', e => { view = e.currentTarget.dataset.view; sync(); layout(); printData(); update(); });
+  on('[data-view]', 'click', e => { view = e.currentTarget.dataset.view; zoomK = 1; zoomCenter = null; sync(); layout(); printData(); update(); });
   $('#ticks').innerHTML = (F.ticks || []).map(t => `<span style="left:${t.homes / 5000}%">${t.label}</span>`).join('');
   $('#share').addEventListener('click', async () => {
     const url = location.origin + location.pathname + '?' + H.toQuery(state) + (view === 'shed' ? '&view=shed' : '');
@@ -250,6 +267,51 @@
   $('#steps').innerHTML = (F.method || []).map(s => `<li><b>${s.title}</b> ${s.text}</li>`).join('');
   $('#limits').innerHTML = (F.limits || []).map(s => `<li>${s}</li>`).join('');
   $('#src').innerHTML = (F.sources || []).map(s => `<li><a href="${s.url}">${s.label}</a><span>${s.note}</span></li>`).join('');
+  /* ---------- zoom and pan: each move reprints the drums at the new scale ---------- */
+  function refit() { layout(); printData(); sync(); }
+  function zoomBy(f, at) {
+    const pt = at || [P.cw / 2, P.ch / 2], ll = P.proj.invert(pt), c = P.proj.invert([P.cw / 2, P.ch / 2]);
+    const k = Math.max(1, Math.min(10, zoomK * f)); if (k === zoomK) return;
+    if (at && ll && c) { const s2 = 1 - zoomK / k; zoomCenter = [c[0] + (ll[0] - c[0]) * s2, c[1] + (ll[1] - c[1]) * s2]; }
+    else zoomCenter = zoomCenter || c;
+    zoomK = k; if (zoomK === 1) zoomCenter = null; refit();
+  }
+  if ($('#zoom-in')) {
+    $('#zoom-in').addEventListener('click', () => zoomBy(1.6));
+    $('#zoom-out').addEventListener('click', () => zoomBy(1 / 1.6));
+    $('#zoom-fit').addEventListener('click', () => { zoomK = 1; zoomCenter = null; refit(); });
+  }
+  const isControl = el => el.closest('.pin,.factoid,.key,.zoom,.units,button,a,[popover]');
+  stage.addEventListener('dblclick', e => { if (isControl(e.target)) return; const r = stage.getBoundingClientRect(); zoomBy(1.6, [e.clientX - r.left, e.clientY - r.top]); });
+  stage.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); const r = stage.getBoundingClientRect(); zoomBy(e.deltaY < 0 ? 1.25 : 0.8, [e.clientX - r.left, e.clientY - r.top]); }, {passive: false});
+  let pan = null;
+  stage.addEventListener('pointerdown', e => { if (isControl(e.target) || e.button) return; pan = {x: e.clientX, y: e.clientY, dx: 0, dy: 0, id: e.pointerId}; });
+  stage.addEventListener('pointermove', e => {
+    if (!pan || e.pointerId !== pan.id) return;
+    pan.dx = e.clientX - pan.x; pan.dy = e.clientY - pan.y;
+    if (!pan.on && Math.hypot(pan.dx, pan.dy) > 4) { pan.on = true; stage.setPointerCapture(e.pointerId); stage.classList.add('dragging'); closePin(); }
+    if (pan.on) press.style.transform = pinsEl.style.transform = `translate(${pan.dx}px,${pan.dy}px)`;
+  });
+  const endDrag = () => {
+    if (!pan) return; const d = pan; pan = null; stage.classList.remove('dragging');
+    if (!d.on) return;
+    const c = P.proj.invert([P.cw / 2 - d.dx, P.ch / 2 - d.dy]);
+    if (c) { zoomCenter = c; if (zoomK === 1) zoomK = 1.0001; }
+    refit(); press.style.transform = pinsEl.style.transform = '';
+  };
+  stage.addEventListener('pointerup', endDrag); stage.addEventListener('pointercancel', endDrag);
+  /* ---------- popouts: native popovers, placed beside their info button ---------- */
+  const closePops = () => { const o = document.querySelector('.pop:popover-open'); if (o) o.hidePopover(); };
+  $('.panel').addEventListener('scroll', closePops, {passive: true}); addEventListener('scroll', closePops, {passive: true});
+  $$('.pop').forEach(pop => pop.addEventListener('toggle', e => {
+    const btn = document.querySelector(`[popovertarget="${pop.id}"]`); if (!btn) return;
+    btn.classList.toggle('open', e.newState === 'open'); if (e.newState !== 'open') return;
+    const r = btn.getBoundingClientRect(), w = pop.offsetWidth, h = pop.offsetHeight, vw = innerWidth, vh = innerHeight;
+    let x = r.left - w - 12, y = r.top - 8;
+    if (x < 12) { x = Math.min(vw - w - 12, Math.max(12, r.left)); y = r.bottom + 10; }
+    if (y + h > vh - 12) y = Math.max(12, (x === r.left - w - 12 ? r.bottom : r.top - 10) - h);
+    pop.style.left = x + 'px'; pop.style.top = y + 'px';
+  }));
   let rt = 0; new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(() => { layout(); printData(); }, 120); }).observe(stage);
   update(false); layout(); printData();
   document.documentElement.dataset.ready = 'true';

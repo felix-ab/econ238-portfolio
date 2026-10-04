@@ -11,11 +11,11 @@
 <meta name="theme-color" content="#f4f3ef">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='5' y='9' width='14' height='18' fill='%230078BF'/%3E%3Crect x='13' y='4' width='14' height='23' fill='%23FF48B0' style='mix-blend-mode:multiply'/%3E%3C/svg%3E">
 <link rel="preload" href="assets/fonts/SUIT-Variable.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/site.css?v=2">
+<link rel="stylesheet" href="css/site.css?v=4">
 <script defer src="assets/vendor/d3.min.js"></script>
 <script defer src="assets/vendor/topojson-client.min.js"></script>
-<script defer src="model.js?v=2"></script>
-<script defer src="js/app.js?v=4"></script>
+<script defer src="model.js?v=3"></script>
+<script defer src="js/app.js?v=6"></script>
 </head>
 <body>
 <div class="app" id="top">
@@ -27,93 +27,88 @@
     <a class="rail-btn" href="#homes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-6h4v6"/></svg><span>One household</span></a>
     <a class="rail-btn" href="#method"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Method</span></a>
     <a class="rail-btn" href="#sources"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14l10-10M13 4h7v7"/><path d="M18 14v6H4V6h6"/></svg><span>Sources</span></a>
+    <p class="rail-title" aria-hidden="true">The Carbon Cost of a Home Not Built — NYC homes — the commute shed</p>
   </nav>
 
   <main class="stage" id="map" aria-label="Map of where New York City's workers live">
     <div class="plates" id="plates" role="img" aria-labelledby="map-alt"></div>
     <p class="sr-only" id="map-alt">Map of the New York commute shed. Pink ink marks the extra carbon from households who commute to NYC jobs from car-dependent places. Blue ink marks where new homes in the city would go.</p>
-    <div class="edge" aria-hidden="true"><i></i><i></i><i></i></div>
     <div class="pins" id="pins"></div>
     <div class="factoid" id="factoid" role="tooltip" hidden></div>
     <div class="veil" aria-hidden="true"></div>
-    <div class="rim" aria-hidden="true"></div>
-    <svg class="glass-defs" width="0" height="0" aria-hidden="true" focusable="false">
-      <!-- Curved glass over the map. Per-channel displacement after rdev/liquid-glass-react (MIT). -->
-      <filter id="glass" x="0" y="0" width="100" height="100" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-        <feImage id="glass-disp" x="0" y="0" width="100" height="100" preserveAspectRatio="none" result="D"/>
-        <feImage id="glass-mask" x="0" y="0" width="100" height="100" preserveAspectRatio="none" result="MK"/>
-        <feDisplacementMap in="SourceGraphic" in2="D" scale="64" xChannelSelector="R" yChannelSelector="G" result="dR"/>
-        <feColorMatrix in="dR" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="cR"/>
-        <feDisplacementMap in="SourceGraphic" in2="D" scale="54" xChannelSelector="R" yChannelSelector="G" result="dG"/>
-        <feColorMatrix in="dG" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="cG"/>
-        <feDisplacementMap in="SourceGraphic" in2="D" scale="44" xChannelSelector="R" yChannelSelector="G" result="dB"/>
-        <feColorMatrix in="dB" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="cB"/>
-        <feBlend in="cR" in2="cG" mode="screen" result="RG"/>
-        <feBlend in="RG" in2="cB" mode="screen" result="CA"/>
-        <feGaussianBlur in="CA" stdDeviation="1.4" edgeMode="duplicate" result="b1"/>
-        <feGaussianBlur in="CA" stdDeviation="3.6" edgeMode="duplicate" result="b2"/>
-        <feGaussianBlur in="CA" stdDeviation="8" edgeMode="duplicate" result="b3"/>
-        <feColorMatrix in="MK" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 0 0 0 0" result="m1"/>
-        <feColorMatrix in="MK" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 1 0 0 0" result="m2"/>
-        <feColorMatrix in="MK" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 1 0 0" result="m3"/>
-        <feComposite in="b1" in2="m1" operator="in" result="L1"/>
-        <feComposite in="b2" in2="m2" operator="in" result="L2"/>
-        <feComposite in="b3" in2="m3" operator="in" result="L3"/>
-        <feMerge><feMergeNode in="CA"/><feMergeNode in="L1"/><feMergeNode in="L2"/><feMergeNode in="L3"/></feMerge>
-      </filter>
-    </svg>
     <header class="readout">
       <h1 class="sr-only">The Carbon Cost of a Home Not Built</h1>
-      <div class="figure"><span class="figure-num"><span id="total">—</span> <span id="mag" class="mag"></span></span><span class="units" role="group" aria-label="Units"><button type="button" data-unit="tons" aria-pressed="true">t CO₂</button><button type="button" data-unit="cars" aria-pressed="false">cars</button></span></div>
-      <p class="figure-cap"><span id="total-cap"></span> <span id="delta" class="delta"></span></p>
+      <p class="figure"><span id="total">—</span><span class="thin"> <span id="mag" class="mag"></span></span></p>
+      <p class="figure-cap"><span id="total-cap"></span></p>
+      <p id="delta" class="delta"></p>
+      <div class="units" role="group" aria-label="Units"><button type="button" data-unit="tons" aria-pressed="true">t CO₂</button><button type="button" data-unit="cars" aria-pressed="false">Cars</button></div>
     </header>
-    <ul class="key" aria-label="Map key">
-      <li><i class="ink pink"></i>Extra CO₂ from NYC commuters’ homes</li>
-      <li><i class="ink blue"></i>New homes in the city</li>
-      <li><i class="ink black"></i>Land</li>
-    </ul>
-    <p class="scale">Darker pink = more extra CO₂ per km². Darker blue = more growth relative to the homes already there.</p>
+    <div class="key">
+      <ul aria-label="Map key">
+        <li><i class="sw pink"></i>Extra CO₂ from NYC commuters’ homes</li>
+        <li><i class="sw blue"></i>New homes in the city</li>
+        <li><i class="sw black"></i>Land</li>
+      </ul>
+      <button type="button" class="info" popovertarget="pop-map" aria-label="How to read the map">i</button>
+    </div>
+    <div class="zoom" role="group" aria-label="Map zoom">
+      <button type="button" id="zoom-in" aria-label="Zoom in">+</button>
+      <button type="button" id="zoom-out" aria-label="Zoom out">−</button>
+      <button type="button" id="zoom-fit" aria-label="Fit the map">⤢</button>
+    </div>
   </main>
 
   <aside class="panel" aria-labelledby="panel-title">
-    <h2 id="panel-title">Build the homes</h2>
+    <header class="panel-head"><h2 id="panel-title">Build the homes</h2></header>
 
-    <div class="presets" role="group" aria-label="Scenarios">
-      <button type="button" data-preset="yes">City of Yes, 80k</button>
-      <button type="button" data-preset="goal">500,000 homes</button>
-      <button type="button" data-preset="young">Young workers</button>
-      <button type="button" data-preset="staten">Like Staten Island</button>
-    </div>
+    <section class="group">
+      <div class="group-head"><h3>Scenario</h3></div>
+      <div class="chips" role="group" aria-label="Scenarios">
+        <button type="button" data-preset="yes">City of Yes, 80k</button>
+        <button type="button" data-preset="goal">500,000 homes</button>
+        <button type="button" data-preset="young">Young workers</button>
+        <button type="button" data-preset="staten">Like Staten Island</button>
+      </div>
+      <div class="slider"><label for="homes">New homes in the city</label><output id="homes-out" for="homes">100,000</output><input id="homes" type="range" min="0" max="500000" step="1000" value="100000"><div class="ticks" id="ticks"></div></div>
+    </section>
 
-    <div class="slider"><label for="homes">New homes in the city</label><output id="homes-out" for="homes">100,000</output><input id="homes" type="range" min="0" max="500000" step="1000" value="100000"><div class="ticks" id="ticks"></div></div>
+    <section class="group">
+      <div class="group-head"><h3 id="who-title">Who moves in</h3></div>
+      <div class="options" id="who" role="group" aria-labelledby="who-title">
+        <button type="button" class="option" data-who="all" aria-pressed="true">Any commuter<small id="pool-all"></small></button>
+        <button type="button" class="option" data-who="young" aria-pressed="false">Under 30<small id="pool-young"></small></button>
+        <button type="button" class="option" data-who="low" aria-pressed="false">Earning under $40k<small id="pool-low"></small></button>
+        <button type="button" class="option" data-who="long" aria-pressed="false">Long commutes<small id="pool-long"></small></button>
+      </div>
+    </section>
 
-    <fieldset class="grid-pick who"><legend>Who moves in</legend><div id="who">
-      <button type="button" class="cell" data-who="all" aria-pressed="true">Any commuter<small id="pool-all"></small></button>
-      <button type="button" class="cell" data-who="young" aria-pressed="false">Under 30<small id="pool-young"></small></button>
-      <button type="button" class="cell" data-who="low" aria-pressed="false">Earning under $40k<small id="pool-low"></small></button>
-      <button type="button" class="cell" data-who="long" aria-pressed="false">Long commutes<small id="pool-long"></small></button>
-    </div></fieldset>
+    <section class="group">
+      <div class="group-head"><h3 id="where-title">Where the home goes</h3></div>
+      <div class="options" id="where" role="group" aria-labelledby="where-title">
+        <button type="button" class="option" data-where="core" aria-pressed="true">Car-light core<small id="dest-core"></small></button>
+        <button type="button" class="option" data-where="built" aria-pressed="false">Where NYC builds<small id="dest-built"></small></button>
+        <button type="button" class="option" data-where="staten" aria-pressed="false">Like Staten Island<small id="dest-staten"></small></button>
+      </div>
+    </section>
 
-    <fieldset class="grid-pick where"><legend>Where the home goes</legend><div id="where">
-      <button type="button" class="cell" data-where="core" aria-pressed="true">Car-light core<small id="dest-core"></small></button>
-      <button type="button" class="cell" data-where="built" aria-pressed="false">Where NYC builds<small id="dest-built"></small></button>
-      <button type="button" class="cell" data-where="staten" aria-pressed="false">Like Staten Island<small id="dest-staten"></small></button>
-    </div></fieldset>
-
-    <fieldset class="fp"><legend>Household CO₂ by commute distance</legend>
+    <section class="group fp">
+      <div class="group-head"><h3>Household CO₂ by commute distance</h3><button type="button" class="info" popovertarget="pop-fp" aria-label="How to read the chart">i</button></div>
       <svg id="fp-chart" viewBox="0 0 320 210" role="img" aria-label="Household carbon footprint against commute distance"></svg>
       <p class="fp-read" id="fp-read"></p>
-    </fieldset>
+    </section>
 
-    <dl class="readouts">
-      <div><dt>Driving avoided</dt><dd id="r-vmt">—</dd></div>
-      <div><dt>At NYC’s own carbon price</dt><dd id="r-usd">—</dd></div>
-      <div><dt>Land per household, given back</dt><dd id="r-acres">—</dd></div>
-      <div><dt>Households who’d emit more</dt><dd id="r-worse">—</dd></div>
-    </dl>
+    <section class="group">
+      <div class="group-head"><h3>What changes</h3></div>
+      <dl class="readings">
+        <div><dt>Driving avoided</dt><dd id="r-vmt">—</dd></div>
+        <div><dt>At NYC’s own carbon price</dt><dd id="r-usd">—</dd></div>
+        <div><dt>Land per household, given back</dt><dd id="r-acres">—</dd></div>
+        <div><dt>Households who’d emit more</dt><dd id="r-worse">—</dd></div>
+      </dl>
+    </section>
 
-    <div class="actions"><button type="button" id="share">Copy link</button><button type="button" id="export">Export data</button></div>
-    <p class="status" id="status" role="status"></p>
+    <footer class="actions"><button type="button" id="share">Copy link</button><button type="button" id="export">Export data</button><p class="status" id="status" role="status"></p>
+      <p class="micro">Workers: Census LEHD LODES 8, 2023. Households and commutes: Census ACS 5-year, 2020–24. Driving: BTS LATCH 2017. Home energy: EIA RECS 2020; EPA eGRID 2023; EPA GHG Emission Factors Hub. New homes: NYC DCP Housing Database. Carbon price: NYC Local Law 97. Tract outlines: Census cartographic boundaries 2023. Printed live in riso drums on a Photoshop paper scan. ECON 238, University of Rochester, Felix Brener.</p></footer>
   </aside>
 </div>
 
@@ -147,7 +142,10 @@
 <section class="sheet" id="sources" aria-labelledby="sources-title">
   <h2 id="sources-title">Sources</h2>
   <ul class="src" id="src"></ul>
-  <p class="made">Felix Brener, ECON 238, University of Rochester. My own investigation. Claude (Anthropic) helped pull the data, build the model and write the code. Type: SUIT by Sun-young Sunn, under the SIL Open Font License. Tract outlines: US Census Bureau cartographic boundaries, 2023.</p>
+  <p class="made">Felix Brener, ECON 238, University of Rochester. My own investigation. Claude (Anthropic) helped pull the data, build the model and write the code. Type: SUIT by Sun-young Sunn, SIL Open Font License. Tract outlines: US Census Bureau cartographic boundaries, 2023.</p>
 </section>
+
+<div popover id="pop-map" class="pop"><h4>Reading the map</h4><p>Darker pink = more extra CO₂ per km². Darker blue = more growth relative to the homes already there.</p><p>Drag to move. Use + and − to zoom. Numbered places open notes.</p></div>
+<div popover id="pop-fp" class="pop"><h4>Household CO₂ by commute distance</h4><p>Each dot is commuters at that distance. The shaded gap is the CO₂ a household sheds by moving into the chosen city home.</p></div>
 </body>
 </html>
