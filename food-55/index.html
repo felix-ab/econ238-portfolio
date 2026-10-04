@@ -1,120 +1,135 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="How much US land does beef use, and how much would swapping it free up once the replacement has to hit the same leucine and nutrients? Interactive exhibit for ECON 238 FOOD-55 by Felix Brener.">
-  <meta name="theme-color" content="#faf9f6">
-  <meta property="og:title" content="The land on our plates — FOOD-55">
-  <meta property="og:image" content="https://felix-ab.github.io/econ238-portfolio/food-55/assets/cover.png">
-  <title>The land on our plates — FOOD-55 · Felix Brener</title>
-  <link rel="preload" href="assets/fonts/PretendardVariable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="tokens.css?v=2">
-  <link rel="stylesheet" href="style.css?v=2">
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <script defer src="assets/vendor/d3.min.js"></script>
-  <script defer src="assets/vendor/topojson-client.min.js"></script>
-  <script defer src="model.js?v=2"></script>
-  <script defer src="app.js?v=2"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Land on Our Plates — FOOD-55</title>
+<meta name="description" content="US beef uses about 805 million acres. Swap it out and most of that land is no longer needed. But a swap that builds muscle has to hit the same leucine target. An interactive exhibit by Felix Brener for ECON 238.">
+<meta property="og:title" content="The Land on Our Plates">
+<meta property="og:description" content="How much land US beef uses, and what a muscle-building swap costs in plate, calories and nutrients.">
+<meta property="og:image" content="https://felix-ab.github.io/econ238-portfolio/food-55/assets/cover.png">
+<meta name="theme-color" content="#f4f3ef">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='13' cy='16' r='10' fill='%23FF48B0'/%3E%3Ccircle cx='19' cy='16' r='10' fill='%230078BF' style='mix-blend-mode:multiply'/%3E%3C/svg%3E">
+<link rel="preload" href="assets/fonts/Pretendard-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/D2Coding-subset.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/site.css?v=3">
+<script defer src="assets/vendor/d3.min.js"></script>
+<script defer src="assets/vendor/topojson-client.min.js"></script>
+<script defer src="model.js?v=3"></script>
+<script defer src="js/app.js?v=3"></script>
 </head>
 <body>
-<a class="skip-link" href="#explorer">Skip to the explorer</a>
-<header class="site-header">
-  <a class="identity" href="../" aria-label="Felix Brener course portfolio"><span class="monogram">fb.</span><span>FELIX BRENER<br><small>ECON 238 / ROCHESTER</small></span></a>
-  <nav aria-label="Page navigation"><a href="#explorer">Explore</a><a href="#method">The model</a><a href="#sources">Sources ↗</a></nav>
-  <span class="edition"><i class="registration-mark" aria-hidden="true"></i> SHOW ME / FOOD–55</span>
-</header>
-<main>
-  <section class="intro" aria-labelledby="page-title">
-    <div><h1 id="page-title">The land on<br>our <span>plates.</span></h1></div>
-    <div class="intro-copy"><p>US beef uses about 3.3 million km² of land, more than a third of the country.</p><p class="intro-question">Swap it out and most of that land is no longer needed. But a swap that builds muscle has to hit the leucine target too. What does that cost?</p><a class="text-link" href="#method">How the model works ↓</a></div>
-    <div class="ink-stamp" aria-hidden="true"><b>LAND<br>FOOD<br>PEOPLE</b><span>FOOD–55 / US, 2025</span></div>
-  </section>
-  <div class="prototype-banner" role="note"><span class="status-dot" aria-hidden="true"></span><b>HOW TO READ THE MAP</b><span>Each dot is drawn at true scale: on this equal-area map, a dot’s area equals the land it stands for. Dots sit where the cattle and crops actually are (FAO and IFPRI grids, 2010).</span></div>
-  <section class="dashboard" id="explorer" aria-label="Interactive land-use explorer">
-    <div class="visual-column">
-      <div class="panel-heading"><span>01 / LAND BEHIND US BEEF</span><span id="scenario-label">TODAY</span></div>
-      <div class="map-panel">
-        <div class="map-topline"><div><p class="eyebrow">LAND FOR BEEF + ITS REPLACEMENTS, PER YEAR</p><div class="hero-stat"><span id="land-total">—</span><span id="land-unit-label">acres</span></div><p id="metric-caption">Beef pasture and feed cropland (Eshel et al. 2014), plus cropland for whatever replaces it.</p><span class="delta" id="land-delta">Today’s baseline</span></div>
-          <div class="map-actions"><label for="unit">UNIT</label><select id="unit"><option value="acres">Acres</option><option value="mi2">Square miles</option><option value="km2">km²</option></select></div>
-        </div>
-        <div class="map-wrap" id="map-wrap">
-          <svg id="world-map" viewBox="0 0 1000 570" role="img" aria-labelledby="map-title map-description"><title id="map-title">Land used for US beef and its replacements</title><desc id="map-description">United States map with true-scale dots for beef pasture, beef feed cropland and replacement cropland.</desc></svg>
-          <div class="map-failure" id="map-failure" hidden>Map could not load. The controls and tables still work. Reload to try again.</div>
-          <div class="map-watermark">DOT AREA = LAND AREA<br><span>EQUAL EARTH · TRUE SCALE · 0.5° CELLS</span></div>
-          <div class="map-tools" aria-label="Map controls"><button type="button" id="zoom-in" aria-label="Zoom in">+</button><button type="button" id="zoom-out" aria-label="Zoom out">−</button><button type="button" id="zoom-us">US</button><button type="button" id="zoom-world">World</button></div>
-          <div id="map-tooltip" class="map-tooltip" hidden></div>
-        </div>
-        <div class="legend" aria-label="Map layers">
-          <label><input type="checkbox" data-layer="pasture" checked><span class="swatch magenta" aria-hidden="true"></span>Beef pasture <small>(placed by cattle)</small></label>
-          <label><input type="checkbox" data-layer="feed" checked><span class="swatch black" aria-hidden="true"></span>Beef feed crops <small>(placed by maize)</small></label>
-          <label><input type="checkbox" data-layer="replacement" checked><span class="swatch cyan" aria-hidden="true"></span>Replacement crops</label>
-          <label><input type="checkbox" data-layer="world" checked><span class="swatch grey" aria-hidden="true"></span>Cattle elsewhere <small>(head count, not land)</small></label>
-        </div>
-        <div class="map-footnote"><span>Drag to pan · double-click to zoom · hover a cell for its numbers</span><label><input type="checkbox" id="texture" checked> Riso ink</label></div>
-      </div>
-      <div class="result-strip" aria-live="polite" aria-atomic="true">
-        <div><span class="eyebrow">LAND FREED</span><strong id="freed">0</strong><small id="freed-unit">acres no longer needed</small><small id="freed-compare"></small></div>
-        <div><span class="eyebrow">LEUCINE, SWAPPED MEAL</span><strong id="meal-leucine">—</strong><small id="meal-leucine-note"></small></div>
-        <div><span class="eyebrow">CALORIES, SWAPPED MEAL</span><strong id="meal-kcal">—</strong><small id="meal-kcal-note"></small></div>
-      </div>
-      <div class="nutrition">
-        <div class="nutrition-head"><span class="section-number">02</span><div><h2>What one swapped meal delivers.</h2><p>A 4 oz (113 g) serving of cooked beef against <b id="plate-grams">113 g</b> of <b id="plate-name">replacement</b>. <span class="key-m">■ beef</span> <span class="key-c">■ swap</span> <span class="key-t">| target</span></p></div></div>
-        <div class="nutrition-grid">
-          <div><h3>The meal</h3><div id="bars-meal" class="bars"></div></div>
-          <div><h3>Essential amino acids <small>swap as % of beef</small></h3><div id="bars-eaa" class="eaa-grid"></div><p id="eaa-note" class="small-note"></p></div>
-          <div><h3>Micronutrients <small>% of a day’s needs · <span id="micro-who"></span></small></h3><div id="bars-micro" class="bars"></div></div>
-        </div>
-      </div>
+<div class="app" id="top">
+
+  <nav class="rail" aria-label="Sections">
+    <a class="rail-mark" href="../" aria-label="Felix Brener, ECON 238 portfolio">fb.</a>
+    <button class="rail-btn" type="button" data-view="world" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg><span>World</span></button>
+    <button class="rail-btn" type="button" data-view="us" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7l5-2 5 2 5-2 3 1v12l-3-1-5 2-5-2-5 2z"/><path d="M8 5v13M13 7v13M18 5v13"/></svg><span>United States</span></button>
+    <a class="rail-btn" href="#meal"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><circle cx="12" cy="13" r="3.5"/><path d="M3 4v6M5 4v6M3 10h2M4 10v10M20 4c-2 1-2 6 0 7v9"/></svg><span>The meal</span></a>
+    <a class="rail-btn" href="#method"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Method</span></a>
+    <a class="rail-btn" href="#sources"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14l10-10M13 4h7v7"/><path d="M18 14v6H4V6h6"/></svg><span>Sources</span></a>
+  </nav>
+
+  <main class="stage" id="map" aria-label="Map of land used for US beef">
+    <div class="plates" id="plates" role="img" aria-labelledby="map-alt"></div>
+    <p class="sr-only" id="map-alt">World map. Land used for US beef is printed in pink (pasture) and blue (feed crops) where cattle and crops actually are. Cropland for replacement foods is printed in yellow.</p>
+    <div class="pins" id="pins"></div>
+    <div class="factoid" id="factoid" role="tooltip" hidden></div>
+    <div class="blur" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+    <header class="readout">
+      <h1 class="sr-only">The Land on Our Plates</h1>
+      <div class="figure"><span class="figure-num"><span id="total">805</span> <span id="mag" class="mag">million</span></span><span class="units" role="group" aria-label="Units"><button type="button" data-unit="acres" aria-pressed="true">acres</button><button type="button" data-unit="mi2" aria-pressed="false">mi²</button><button type="button" data-unit="km2" aria-pressed="false">km²</button></span></div>
+      <p class="figure-cap"><span id="total-cap">of land feed America’s beef each year.</span> <span id="delta" class="delta"></span></p>
+    </header>
+    <ul class="key" aria-label="Map key">
+      <li><i class="ink pink"></i>Beef pasture</li>
+      <li><i class="ink blue"></i>Beef feed crops</li>
+      <li><i class="ink yellow"></i>Replacement crops</li>
+      <li><i class="ink black"></i>Cattle, worldwide</li>
+    </ul>
+    <p class="scale">Ink covers the same share of each patch of ground that beef uses. Equal Earth projection.</p>
+  </main>
+
+  <aside class="panel" aria-labelledby="panel-title">
+    <h2 id="panel-title">Change the plate</h2>
+
+    <div class="presets" role="group" aria-label="Scenarios">
+      <button type="button" data-preset="today">Today</button>
+      <button type="button" data-preset="monday">Meatless Monday</button>
+      <button type="button" data-preset="half">Half the beef</button>
+      <button type="button" data-preset="lifter">Lifter → chicken</button>
+      <button type="button" data-preset="plants">Plants for muscle</button>
     </div>
-    <aside class="settings" aria-labelledby="settings-title">
-      <div class="settings-title"><h2 id="settings-title">Change the plate.</h2><button id="reset" type="button">Reset ↺</button></div>
-      <fieldset class="presets"><legend>START WITH A SCENARIO</legend><div class="preset-grid">
-        <button type="button" data-preset="today" aria-pressed="true"><span>00</span>Today</button>
-        <button type="button" data-preset="monday" aria-pressed="false"><span>01</span>Meatless Monday</button>
-        <button type="button" data-preset="half" aria-pressed="false"><span>02</span>Half the beef</button>
-        <button type="button" data-preset="lifter" aria-pressed="false"><span>03</span>Lifter swaps to chicken</button>
-        <button type="button" data-preset="plants" aria-pressed="false"><span>04</span>Plants, leucine target</button>
-      </div></fieldset>
-      <div class="control-group"><div class="control-label"><label for="reduction">Beef cut</label><output for="reduction" id="reduction-output">0%</output></div><input id="reduction" type="range" min="0" max="100" step="1" value="0"><div class="range-labels"><span>Same diet</span><span>No beef</span></div></div>
-      <div class="control-group"><div class="control-label"><label for="coverage">Americans taking part</label><output for="coverage" id="coverage-output">100%</output></div><input id="coverage" type="range" min="0" max="100" step="1" value="100"><p class="control-help">Assumes participants eat average amounts of beef.</p></div>
-      <div class="control-group"><label class="control-label" for="replacement">What replaces it?</label><select id="replacement"><option value="mixed">Half chicken, half plants</option><option value="plants">Tofu + beans + lentils</option><option value="tofu">Tofu</option><option value="beans">Black beans</option><option value="lentils">Lentils</option><option value="chicken">Chicken breast</option><option value="eggs">Eggs</option></select></div>
-      <fieldset class="behavior"><legend>HOW PEOPLE EAT</legend><div class="segmented"><button type="button" data-lane="appetite" aria-pressed="true">By appetite</button><button type="button" data-lane="planned" aria-pressed="false">For muscle</button><button type="button" data-lane="mixed" aria-pressed="false">Mix</button></div><p id="lane-note" class="control-help"></p><div id="mix-controls" hidden><div class="control-label"><label for="plannedShare">Eaters planning for muscle</label><output for="plannedShare" id="plannedShare-output">30%</output></div><input id="plannedShare" type="range" min="0" max="100" step="1" value="30"></div></fieldset>
-      <div class="control-group"><label class="control-label" for="profile">Who is eating</label><select id="profile"><option value="adolescent">Teen, 14–18</option><option value="adult">Adult, 19–50</option><option value="older">Adult, 51–70</option><option value="oldest">Adult, 71+</option><option value="pregnancy">Pregnant</option><option value="lactation">Breastfeeding</option></select><label class="control-label sex-label" for="sex">Sex</label><select id="sex"><option value="male">Male</option><option value="female">Female</option></select><p class="control-help">Sets daily nutrient needs and the per-meal leucine target: 2.5 g, or 3.0 g after 50, when muscle responds less to protein.</p></div>
-      <div class="settings-bottom"><span class="eyebrow">BOUNDARY</span><p>Pasture + feed cropland<br><small>Processing plants excluded (see notes)</small></p><div class="export-actions"><button id="share" type="button">Copy scenario link ↗</button><button id="export" type="button">Export data ↓</button></div><p class="share-status" id="share-status" role="status"></p></div>
-    </aside>
-  </section>
-  <section class="accounting" aria-labelledby="account-title"><div class="section-intro"><p class="eyebrow">03 / SHOW YOUR WORK</p><h2 id="account-title">Every layer.<br>Every assumption.</h2><p id="ratio-note"></p></div><div class="ledger"><table><caption>Land per year, <span class="ledger-unit">acres</span></caption><thead><tr><th scope="col">Land use</th><th scope="col">Today</th><th scope="col">Scenario</th></tr></thead><tbody><tr><th scope="row"><i class="swatch magenta"></i>Beef pasture</th><td id="ledger-base-pasture"></td><td id="ledger-pasture"></td></tr><tr><th scope="row"><i class="swatch black"></i>Beef feed crops + hay</th><td id="ledger-base-feed"></td><td id="ledger-feed"></td></tr><tr><th scope="row"><i class="swatch cyan"></i>Replacement foods</th><td>0</td><td id="ledger-replacement"></td></tr><tr class="total-row"><th scope="row">Total</th><td id="ledger-base-total"></td><td id="ledger-total"></td></tr></tbody></table>
-    <details open><summary>The arithmetic</summary>
-      <p><b>Shift</b> = beef cut × share of Americans taking part.</p>
-      <p><b>Beef land left</b> = 3,256,000 km² × (1 − shift). Eshel et al. (2014) put all US animal-product land at about 3.7 million km², 88% of it for beef: pasture 79 points, hay and silage 7, grain 2. Pasture is therefore 89.8% of beef land.</p>
-      <p><b>Replacement land</b> = 3,256,000 km² × shift × (land for one replacement plate ÷ land for one beef serving). Land per serving = protein in the serving × Poore &amp; Nemecek (2018) m² per 100 g protein: beef herd 163.6, chicken 7.06, eggs 5.65, other pulses 7.27, tofu 2.20 (global means).</p>
-      <p><b>Plate size.</b> <i>By appetite</i>: same 113 g as the beef, because people tend to eat a steady weight of food rather than steady calories (Bell, Rolls et al. 1998). <i>For muscle</i>: enough of each food to reach the leucine target. Nutrients for every food come from USDA FoodData Central (SR Legacy, cooked forms).</p>
-      <p><b>Map.</b> Pasture is spread over US half-degree cells in proportion to cattle head (FAO Gridded Livestock of the World, 2010). Feed land follows maize area, tofu land follows soybean area, bean and lentil land follows pulse area, and chicken and egg land follows maize + soy area (MapSPAM 2010, physical area). Dot area = km² × pixels per km² of the equal-area projection.</p>
-      <p>All inputs: <a href="data/model-inputs.json">model-inputs.json</a> · <a href="data/foods.json">foods.json</a> · <a href="data/grid.json">grid.json</a> · <a href="model.js">model.js</a></p>
-    </details></div></section>
-  <section class="method-section" id="method" aria-labelledby="method-title"><div class="method-heading"><p class="eyebrow">04 / WHAT THE MODEL SHOWS</p><h2 id="method-title">Land isn’t the hard part.<br>Leucine is.</h2><p>Leucine is the essential amino acid that switches on muscle protein synthesis (through the mTOR pathway). There is no hypertrophy without enough of it at a meal, and the other eight essential amino acids have to be there too.</p></div><div class="method-steps">
-    <article><span>01</span><div><h3>Every swap frees most of the land.</h3><p>Beef needs about 164 m² of land per 100 g of protein; chicken needs 7 and tofu 2. Even a plant plate sized to hit the leucine target uses roughly 4% of the land of the beef it replaces. That result holds across every option here.</p></div></article>
-    <article><span>02</span><div><h3>Eating by appetite misses the target.</h3><p>A beef-sized plate of beans or lentils carries about 0.75 g of leucine against a 2.5 g target, plus 8–9 g of fiber that fills you up first. Most eaters swapping beef without a plan get less protein and less leucine.</p></div></article>
-    <article><span>03</span><div><h3>Eating for muscle costs plate and calories.</h3><p>Reaching 2.5 g of leucine takes about 350 g of beans (over 450 kcal) or 380 g of lentils, against 289 kcal for the beef. After 50 the target rises to about 3 g, so the plant plate gets bigger still. Chicken hits the target in less than the beef’s weight.</p></div></article>
-    <article><span>04</span><div><h3>Some nutrients don’t come back.</h3><p>Plants carry no B12 (the only form in which people use cobalt) and less, worse-absorbed zinc and iron. Tofu and legumes do beat beef on copper. Choose “Pregnant” or “Adult, 71+” to see how the gaps shift.</p></div></article>
-  </div></section>
-  <section class="research-notes"><details open><summary>Why processing plants are left out</summary><p>Slaughterhouses, packing plants and distribution take very little land next to 3.3 million km² of pasture and feed, and replacement foods need processing too. Counting them for beef alone would bias the comparison. The model keeps the farm-land boundary for every food.</p></details><details><summary>What the map can and can’t claim</summary><p>The totals are national. The map distributes them by where cattle and crops are today, which is an allocation, not a survey of individual ranches. Cattle counts include dairy and feedlot animals, so some feedlot counties carry more pasture than they really have. Freed land is land no longer needed for food. Whether it is rewilded, reused or kept in production is a separate question.</p></details><details><summary>Limits and next questions</summary><ol><li>Eshel’s land totals average 2000–2010. About 19% of US beef (carcass weight) is imported, and its land sits abroad.</li><li>Poore &amp; Nemecek’s beef mean is global. Their median is about half, so per-serving land ratios are rough, but beef stays more than 10× any alternative under either figure.</li><li>Most western rangeland is arid and can’t grow crops. “Freed” acres are not all farmable acres.</li><li>Leucine targets are per-meal thresholds from muscle protein synthesis studies. Whole-day diets, training and digestibility (the DIAAS score) also matter.</li><li>Next: model whole days rather than single meals, add dairy-herd beef, and weight the appetite and muscle lanes with survey data.</li></ol></details></section>
-  <section class="sources-section" id="sources"><div><p class="eyebrow">05 / SOURCES</p><h2>The trail stays visible.</h2><p>Every number on this page comes from one of these sources. Claude (Anthropic) and Codex (OpenAI) helped pull and clean the data and write the code. The calculations are in model.js.</p></div><div class="source-list">
-    <a href="https://doi.org/10.1073/pnas.1402183111">Eshel et al., 2014, PNAS <span>US land for beef ↗</span></a>
-    <a href="https://doi.org/10.1126/science.aaq0216">Poore &amp; Nemecek, 2018, Science <span>Land per 100 g protein ↗</span></a>
-    <a href="https://fdc.nal.usda.gov/">USDA FoodData Central <span>Amino acids and micronutrients ↗</span></a>
-    <a href="https://www.ers.usda.gov/data-products/livestock-and-meat-domestic-data">USDA ERS supply and disappearance <span>59.2 lb beef per person, 2025 ↗</span></a>
-    <a href="https://www.ers.usda.gov/data-products/major-land-uses">USDA ERS Major Land Uses, 2022 <span>784 M acres grazed ↗</span></a>
-    <a href="https://doi.org/10.7910/DVN/GIVQ75">FAO Gridded Livestock of the World <span>Cattle, 2010 ↗</span></a>
-    <a href="https://doi.org/10.7910/DVN/PRFF8V">IFPRI MapSPAM 2010 <span>Crop locations ↗</span></a>
-    <a href="https://doi.org/10.1093/gerona/glu103">Moore et al., 2015 <span>Older adults need more per meal ↗</span></a>
-    <a href="https://doi.org/10.1152/ajpendo.00488.2005">Katsanos et al., 2006 <span>Leucine threshold, elderly ↗</span></a>
-    <a href="https://doi.org/10.1093/ajcn/67.3.412">Bell, Rolls et al., 1998 <span>People eat steady weight ↗</span></a>
-    <a href="https://ods.od.nih.gov/factsheets/list-all/">NIH Office of Dietary Supplements <span>RDAs by age, sex, pregnancy ↗</span></a>
-  </div></section>
-</main>
-<footer><span>FELIX BRENER · ECON 238 · FOOD–55</span><a href="https://github.com/RochesterRizzo/Rizzo-Hours/issues/96">Topic claim ↗</a><a href="https://github.com/felix-ab/econ238-portfolio/tree/main/food-55">Code &amp; data ↗</a><span class="footer-inks" aria-label="Cyan magenta yellow black ink palette"><i></i><i></i><i></i><i></i></span><div class="credits">Font: <a href="https://github.com/orioncactus/pretendard">Pretendard</a> (SIL OFL). Map: <a href="https://github.com/topojson/world-atlas">Natural Earth / world-atlas</a>. <a href="https://github.com/felix-ab/econ238-portfolio/blob/main/food-55/docs/ASSETS.md">Asset licenses</a>.</div></footer>
-<noscript><p class="noscript-note">Enable JavaScript to use the explorer. The method and sources remain readable below.</p></noscript>
+
+    <div class="slider"><label for="reduction">Beef cut</label><output id="reduction-out" for="reduction">0%</output><input id="reduction" type="range" min="0" max="100" value="0"></div>
+    <div class="slider"><label for="coverage">Americans taking part</label><output id="coverage-out" for="coverage">100%</output><input id="coverage" type="range" min="0" max="100" value="100"></div>
+
+    <fieldset class="grid-pick foods"><legend>Replaced with</legend><div id="foods"></div></fieldset>
+
+    <fieldset class="leu"><legend>Plate size</legend>
+      <div class="lanes" role="group" aria-label="How people eat"><button type="button" data-lane="appetite">By appetite</button><button type="button" data-lane="mixed">Mix</button><button type="button" data-lane="planned">For muscle</button></div>
+      <svg id="leu-chart" viewBox="0 0 320 196" role="img" aria-label="Leucine on the plate against plate weight"></svg>
+      <p class="leu-read"><b id="leu-g">—</b> leucine · <b id="leu-plate">—</b> on the plate · <b id="leu-kcal">—</b></p>
+    </fieldset>
+
+    <fieldset class="grid-pick who"><legend>Who’s eating</legend><div id="who"></div></fieldset>
+
+    <fieldset class="dumbbells"><legend>Share of a day’s needs, one meal</legend><div id="micro"></div><p class="dumb-key"><i class="dot pink"></i>Beef <i class="dot blue"></i>Swap</p></fieldset>
+
+    <div class="actions"><button type="button" id="share">Copy link</button><button type="button" id="export">Export data</button></div>
+    <p class="status" id="status" role="status"></p>
+  </aside>
+</div>
+
+<section class="sheet" id="meal" aria-labelledby="meal-title">
+  <h2 id="meal-title">Land isn’t the hard part. Leucine is.</h2>
+  <div class="cols">
+    <p>Leucine is the amino acid that switches on muscle protein synthesis. A meal needs about 2.5 g of it, or about 3 g after 50, when muscle responds less. The other eight essential amino acids have to arrive too.</p>
+    <p>Every swap here frees most of beef’s land. Chicken needs 7 m² per 100 g of protein, tofu 2, beef 164. The cost of a plant swap is on the plate. A beef-sized plate of beans carries 0.8 g of leucine. Reaching 2.5 g takes 350 g of beans and 466 kcal, against 289 kcal for the beef.</p>
+  </div>
+  <div class="meal-grid">
+    <figure><figcaption>One meal, <span id="meal-name">swap</span> against 113 g of beef</figcaption><div id="meal-bars" class="bars"></div></figure>
+    <figure><figcaption>Essential amino acids, swap as a share of beef</figcaption><div id="eaa" class="eaa"></div><p id="eaa-note" class="note"></p></figure>
+  </div>
+</section>
+
+<section class="sheet" id="method" aria-labelledby="method-title">
+  <h2 id="method-title">Method</h2>
+  <ol class="steps">
+    <li><b>Beef’s land.</b> 3,256,000 km² (805 million acres) a year. Eshel et al. (2014) put US animal-product land at 3.7 million km², 88% of it for beef: pasture 79 points, hay and silage 7, grain 2. USDA counted 784 million grazed acres in 2022.</li>
+    <li><b>The scenario.</b> Shift = beef cut × share of Americans taking part. Beef land left = baseline × (1 − shift).</li>
+    <li><b>Replacement land.</b> Baseline × shift × (land for the replacement plate ÷ land for the beef serving). Each food’s land = its protein × Poore and Nemecek’s (2018) m² per 100 g of protein: beef herd 163.6, chicken 7.06, eggs 5.65, pulses 7.27, tofu 2.20.</li>
+    <li><b>Plate size.</b> By appetite, people eat the same 113 g as the beef; they eat a steady weight of food, not steady calories (Bell, Rolls et al. 1998). For muscle, each food is portioned to reach the leucine target for the eater’s age. Nutrients are from USDA FoodData Central.</li>
+    <li><b>The map.</b> Pasture is spread over half-degree cells by cattle head (FAO, 2010) and feed by maize area. Tofu land follows soy, bean and lentil land follows pulses, and chicken and egg land follows maize and soy (MapSPAM, 2010). In each cell, ink covers the share of the ground that use takes.</li>
+    <li><b>The print.</b> Each layer is a riso drum. Coverage is screened live against a stochastic master made in Photoshop, then the drums overprint in Multiply on a Photoshop paper scan.</li>
+  </ol>
+  <h3>Limits</h3>
+  <ul class="limits">
+    <li>Eshel’s totals average 2000–2010. About 19% of US beef is imported, and that land sits abroad.</li>
+    <li>Poore and Nemecek’s beef figure is a global mean, and the median is half of it. Beef still needs more than 10 times the land of any alternative here.</li>
+    <li>Cattle counts include dairy and feedlot animals, so some feedlot counties carry more pasture than they have.</li>
+    <li>Most western range is arid. Freed land isn’t all farmland, and what happens to it is a separate question.</li>
+    <li>The model covers one meal, not a whole day, and leaves out protein digestibility (DIAAS). Processing plants are left out for every food.</li>
+  </ul>
+</section>
+
+<section class="sheet" id="sources" aria-labelledby="sources-title">
+  <h2 id="sources-title">Sources</h2>
+  <ul class="src">
+    <li><a href="https://doi.org/10.1073/pnas.1402183111">Eshel et al. 2014, PNAS</a><span>US land for beef</span></li>
+    <li><a href="https://doi.org/10.1126/science.aaq0216">Poore &amp; Nemecek 2018, Science</a><span>Land per 100 g protein</span></li>
+    <li><a href="https://fdc.nal.usda.gov/">USDA FoodData Central</a><span>Amino acids, micronutrients</span></li>
+    <li><a href="https://www.ers.usda.gov/data-products/livestock-and-meat-domestic-data">USDA ERS, meat supply and disappearance</a><span>59.2 lb of beef per person, 2025</span></li>
+    <li><a href="https://www.ers.usda.gov/data-products/major-land-uses">USDA ERS, Major Land Uses 2022</a><span>784 million acres grazed</span></li>
+    <li><a href="https://doi.org/10.7910/DVN/GIVQ75">FAO Gridded Livestock of the World</a><span>Cattle, 2010</span></li>
+    <li><a href="https://doi.org/10.7910/DVN/PRFF8V">IFPRI MapSPAM 2010</a><span>Crop locations</span></li>
+    <li><a href="https://doi.org/10.1093/gerona/glu103">Moore et al. 2015</a><span>Older adults need more protein per meal</span></li>
+    <li><a href="https://doi.org/10.1152/ajpendo.00488.2005">Katsanos et al. 2006</a><span>Leucine threshold in the elderly</span></li>
+    <li><a href="https://doi.org/10.1093/ajcn/67.3.412">Bell, Rolls et al. 1998</a><span>People eat a steady weight of food</span></li>
+    <li><a href="https://ods.od.nih.gov/factsheets/list-all/">NIH Office of Dietary Supplements</a><span>Daily needs by age, sex, pregnancy</span></li>
+    <li id="pin-sources-anchor"><a href="https://github.com/felix-ab/econ238-portfolio/tree/main/food-55">Code, data and model</a><span>model.js, data/*.json</span></li>
+  </ul>
+  <p class="made">Felix Brener, ECON 238, University of Rochester. FOOD-55, <a href="https://github.com/RochesterRizzo/Rizzo-Hours/issues/96">claimed here</a>. Claude (Anthropic) helped pull the data, build the model and write the code. Type: Pretendard by Kil Hyung-jin and D2Coding by Naver, both under the SIL Open Font License. Coastlines: Natural Earth.</p>
+</section>
 </body>
 </html>

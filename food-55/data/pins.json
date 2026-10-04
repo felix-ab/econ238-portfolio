@@ -1,0 +1,146 @@
+[
+ {
+  "id": "great-plains-feedlots",
+  "place": "Kansas–Nebraska feedlot belt",
+  "lat": 39.9,
+  "lon": -100.3,
+  "title": "The Feedlot Belt",
+  "text": "Nebraska and Kansas feedlots held 4.79 million cattle on Sept. 1, 2026. That is 43% of the 11.2 million head on US lots with 1,000 or more head.",
+  "source_label": "USDA NASS, Cattle on Feed (Sept. 18, 2026)",
+  "source_url": "https://esmis.nal.usda.gov/sites/default/release-files/796064/cofd0926.pdf",
+  "views": [
+   "us"
+  ]
+ },
+ {
+  "id": "texas-herd",
+  "place": "Texas",
+  "lat": 31.3,
+  "lon": -99.3,
+  "title": "Largest State Herd",
+  "text": "Texas had 12.1 million cattle and calves on Jan. 1, 2026, the most of any state. That is about one in seven head in the US.",
+  "source_label": "USDA NASS, Cattle (Jan. 30, 2026)",
+  "source_url": "https://esmis.nal.usda.gov/sites/default/release-files/795748/catl0126.pdf",
+  "views": [
+   "world",
+   "us"
+  ]
+ },
+ {
+  "id": "nebraska-sandhills",
+  "place": "Nebraska Sand Hills",
+  "lat": 42.0,
+  "lon": -101.0,
+  "title": "Grass-Held Dunes",
+  "text": "The Nebraska Sand Hills cover about 13.2 million acres, the largest sand dune area in the Western Hemisphere. More than 90% of the land is native grassland grazed by livestock.",
+  "source_label": "USDA NRCS, Ecological Site Description R065XY022NE (MLRA 65, Nebraska Sand Hills)",
+  "source_url": "https://edit.sc.egov.usda.gov/catalogs/esd/065X/R065XY022NE",
+  "views": [
+   "us"
+  ]
+ },
+ {
+  "id": "blm-public-range",
+  "place": "Great Basin, Nevada",
+  "lat": 39.5,
+  "lon": -116.6,
+  "title": "Public Range",
+  "text": "The Bureau of Land Management permits livestock grazing on 155 million acres of public land. In 2026 ranchers pay $1.69 per animal unit month, a month of forage for one cow and calf.",
+  "source_label": "US Bureau of Land Management, Livestock Grazing on Public Lands",
+  "source_url": "https://www.blm.gov/programs/natural-resources/rangelands-and-grazing/livestock-grazing",
+  "views": [
+   "us"
+  ]
+ },
+ {
+  "id": "corn-belt-feed",
+  "place": "Corn Belt, Iowa",
+  "lat": 42.0,
+  "lon": -93.5,
+  "title": "Corn for Feed",
+  "text": "Animal feed typically takes about 40% of the corn used in the US. Demand rises and falls with the number of cattle, hogs and poultry being fed.",
+  "source_label": "USDA ERS, Feed Grains Sector at a Glance",
+  "source_url": "https://www.ers.usda.gov/topics/crops/corn-and-other-feed-grains/feed-grains-sector-at-a-glance",
+  "views": [
+   "us"
+  ]
+ },
+ {
+  "id": "flint-hills",
+  "place": "Flint Hills, Kansas",
+  "lat": 38.43,
+  "lon": -96.56,
+  "title": "Last Tallgrass",
+  "text": "Tallgrass prairie once covered 170 million acres of North America. Less than 4% remains intact, mostly in the Kansas Flint Hills.",
+  "source_label": "National Park Service, Tallgrass Prairie National Preserve",
+  "source_url": "https://www.nps.gov/tapr/index.htm",
+  "views": [
+   "us"
+  ]
+ },
+ {
+  "id": "import-australia",
+  "place": "Queensland, Australia",
+  "lat": -23.5,
+  "lon": 145.5,
+  "title": "Top Supplier",
+  "text": "Australia was the largest source of US beef imports in 2025. It shipped 1.33 billion pounds, 25% of the total.",
+  "source_label": "USDA ERS, Livestock and Meat International Trade Data (beef and veal imports, carcass weight, 2025)",
+  "source_url": "https://www.ers.usda.gov/data-products/livestock-and-meat-international-trade-data",
+  "views": [
+   "world"
+  ]
+ },
+ {
+  "id": "import-canada",
+  "place": "Alberta, Canada",
+  "lat": 50.5,
+  "lon": -113.0,
+  "title": "Second Supplier",
+  "text": "Canada shipped 1.01 billion pounds of beef to the US in 2025. That was 19% of US beef imports, second only to Australia.",
+  "source_label": "USDA ERS, Livestock and Meat International Trade Data (beef and veal imports, carcass weight, 2025)",
+  "source_url": "https://www.ers.usda.gov/data-products/livestock-and-meat-international-trade-data",
+  "views": [
+   "world"
+  ]
+ },
+ {
+  "id": "import-brazil",
+  "place": "Mato Grosso, Brazil",
+  "lat": -15.6,
+  "lon": -56.1,
+  "title": "Third Supplier",
+  "text": "Brazil shipped 931 million pounds of beef to the US in 2025. That was 17% of US beef imports, third behind Australia and Canada.",
+  "source_label": "USDA ERS, Livestock and Meat International Trade Data (beef and veal imports, carcass weight, 2025)",
+  "source_url": "https://www.ers.usda.gov/data-products/livestock-and-meat-international-trade-data",
+  "views": [
+   "world"
+  ]
+ },
+ {
+  "id": "brazil-amazon-pasture",
+  "place": "Southern Pará, Brazilian Amazon",
+  "lat": -7.0,
+  "lon": -52.0,
+  "title": "Forest to Pasture",
+  "text": "Brazil's Amazon lost 49.1 million hectares of forest from 1985 to 2024. Over the same years pasture grew by 43.8 million hectares, more than any other human land use.",
+  "source_label": "MapBiomas Brasil, Amazon land-cover data, 1985–2024 (Sept. 2025)",
+  "source_url": "https://brasil.mapbiomas.org/amazonia-perdeu-quase-50-milhoes-de-hectares-de-florestas-nos-ultimos-40-anos/",
+  "views": [
+   "world"
+  ]
+ },
+ {
+  "id": "import-mexico",
+  "place": "Northern Mexico",
+  "lat": 25.5,
+  "lon": -104.0,
+  "title": "Fourth Supplier",
+  "text": "Mexico shipped 710 million pounds of beef to the US in 2025. That was 13% of US beef imports, fourth among suppliers.",
+  "source_label": "USDA ERS, Livestock and Meat International Trade Data (beef and veal imports, carcass weight, 2025)",
+  "source_url": "https://www.ers.usda.gov/data-products/livestock-and-meat-international-trade-data",
+  "views": [
+   "world"
+  ]
+ }
+]
