@@ -50,7 +50,9 @@
   const stage = $('#map'), platesEl = $('#plates');
   const plateNames = ['black', 'yellow', 'blue', 'pink'];
   const canvases = {};
-  for (const n of plateNames) { const c = document.createElement('canvas'); c.className = 'p-' + n; platesEl.appendChild(c); canvases[n] = c; }
+  const press = document.createElement('div'); press.className = 'press'; platesEl.appendChild(press);
+  for (const n of plateNames) { const c = document.createElement('canvas'); c.className = 'p-' + n; press.appendChild(c); canvases[n] = c; }
+  let zoomK = 1, zoomCenter = null; // zoom factor over the fitted view; the lon/lat held at the stage centre
   const land = topojson.feature(topo, topo.objects.land);
   const usPoints = {type: 'MultiPoint', coordinates: grid.us.filter(c => c[0] > -130).map(c => [c[0], c[1]])};
   let P = null; // per-view precomputation
@@ -62,6 +64,12 @@
     const proj = d3.geoEqualEarth();
     if (view === 'world') proj.fitExtent([[side, cw < 700 ? topPad * .8 : topPad * .55], [cw - side, ch - bottom]], {type: 'Sphere'});
     else proj.fitExtent([[side + 20, topPad], [cw - side - 20, ch - 74]], usPoints);
+    if (zoomK !== 1 || zoomCenter) {
+      const c0 = zoomCenter || proj.invert([cw / 2, ch / 2]) || [0, 0];
+      proj.scale(proj.scale() * zoomK);
+      const p = proj(c0), t = proj.translate();
+      proj.translate([t[0] + cw / 2 - p[0], t[1] + ch / 2 - p[1]]);
+    }
     // land mask at device resolution
     const mc = document.createElement('canvas'); mc.width = DW; mc.height = DH;
     const mg = mc.getContext('2d'); mg.scale(dpr, dpr); mg.fillStyle = '#000'; mg.beginPath(); d3.geoPath(proj, mg)(land); mg.fill();
@@ -153,7 +161,7 @@
       for (let x = 0; x < DW; x++) {
         const m = mask[y * DW + x]; if (!m) continue;
         const cat = L.cattle[iy * GW + Math.floor(x / S)];
-        const v = (.085 + Math.min(.17, Math.sqrt(cat) * .03)) * m / 255;
+        const v = (.06 + Math.min(.12, Math.sqrt(cat) * .022)) * m / 255;
         if (v * 255 > screen[row + ((x + 401) & 511)]) px[y * DW + x] = (238 << 24) | (b << 16) | (gg << 8) | r;
       }
     }
@@ -223,14 +231,12 @@
   /* ---------- panel ---------- */
   const FOOD_ORDER = ['mixed', 'plants', 'tofu', 'beans', 'lentils', 'chicken', 'eggs'];
   const leuPer100 = key => { const parts = M.PLATES[key].parts; let l = 0, g = 0; for (const [f, s] of Object.entries(parts)) { l += s * foods[f].per100g.leucine; g += s; } return l / g; };
-  $('#foods').innerHTML = FOOD_ORDER.map(k => `<button type="button" class="cell" data-food="${k}" aria-pressed="false">${M.PLATES[k].label}<small>${num(leuPer100(k), 2)} g leu/100 g</small></button>`).join('');
-  const WHO = [['adolescent', '14–18'], ['adult', '19–50'], ['older', '51–70'], ['oldest', '71+'], ['pregnancy', 'Pregnant'], ['lactation', 'Breastfeeding']];
-  $('#who').innerHTML = '<span class="colh">Age</span><span class="colh">Female</span><span class="colh">Male</span>' + WHO.map(([k, l]) =>
-    `<span class="rowh">${l}</span><button type="button" class="cell" data-profile="${k}" data-sex="female" aria-pressed="false">F</button><button type="button" class="cell" data-profile="${k}" data-sex="male" aria-pressed="false" ${k === 'pregnancy' || k === 'lactation' ? 'disabled aria-label="Not applicable"' : ''}>M</button>`).join('');
+  $('#foods').innerHTML = FOOD_ORDER.map(k => `<button type="button" class="option" role="radio" data-food="${k}" aria-checked="false"><span>${M.PLATES[k].label}</span><small>${num(leuPer100(k), 2)} g leucine</small></button>`).join('');
+
 
   // Leucine instrument: leucine against plate weight. The swap moves along a straight segment from the
   // appetite plate (same weight as the beef) to the muscle plate (reaches the target). Drag to set the mix.
-  const svg = d3.select('#leu-chart'), cw = 320, chh = 196, m = {l: 34, r: 12, t: 12, b: 30};
+  const svg = d3.select('#leu-chart'), cw = 320, chh = 180, m = {l: 30, r: 10, t: 14, b: 26};
   const xS = d3.scaleLinear().domain([0, 450]).range([m.l, cw - m.r]), yS = d3.scaleLinear().domain([0, 3.6]).range([chh - m.b, m.t]);
   svg.append('line').attr('class', 'ax').attr('x1', m.l).attr('x2', cw - m.r).attr('y1', chh - m.b).attr('y2', chh - m.b);
   svg.append('line').attr('class', 'ax').attr('x1', m.l).attr('x2', m.l).attr('y1', m.t).attr('y2', chh - m.b);
@@ -292,8 +298,9 @@
     $('#reduction').value = state.reduction; $('#coverage').value = state.coverage;
     $('#reduction-out').textContent = state.reduction + '%'; $('#coverage-out').textContent = state.coverage + '%';
     $$('[data-preset]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.preset === preset)));
-    $$('[data-food]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.food === state.replacement)));
-    $$('#who .cell').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.profile === state.profile && b.dataset.sex === state.sex)));
+    $$('[data-food]').forEach(b => b.setAttribute('aria-checked', String(b.dataset.food === state.replacement)));
+    $('#profile').value = state.profile; $('#sex').value = state.sex; $('#sex').disabled = ['pregnancy', 'lactation'].includes(state.profile);
+    $('#zoom-out').disabled = zoomK <= 1; $('#zoom-fit').disabled = zoomK === 1 && !zoomCenter;
     $$('[data-lane]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lane === state.lane)));
     $$('[data-unit]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.unit === state.unit)));
     $$('[data-view]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === view)));
@@ -302,6 +309,7 @@
     state = M.sanitize(state); result = M.calculate(state, inputs, foods); sync();
     const r = result;
     setFigure(M.convert(r.total, state.unit));
+    $('#unit-word').textContent = {acres: 'acres', mi2: 'square miles', km2: 'square kilometres'}[state.unit];
     $('#total-cap').textContent = r.shift === 0 ? `of land feed America’s beef each year.` : `of land feed America’s beef and what replaces it.`;
     $('#delta').textContent = r.shift === 0 ? '' : `${r.changePercent > 0 ? '+' : '−'}${num(Math.abs(r.changePercent), 1)}% · ${num(r.freed / inputs.compare.km2, 1)} Texases freed`;
     drawLeu(r); dumbbells(r); mealSheet(r); printData();
@@ -312,10 +320,10 @@
   on('#reduction,#coverage', 'input', e => { state[e.target.id] = +e.target.value; preset = null; update(); });
   on('[data-preset]', 'click', e => { preset = e.currentTarget.dataset.preset; state = {...M.PRESETS[preset].state, unit: state.unit, profile: state.profile, sex: state.sex}; update(); });
   on('[data-food]', 'click', e => { state.replacement = e.currentTarget.dataset.food; preset = null; update(); });
-  on('#who .cell', 'click', e => { state.profile = e.currentTarget.dataset.profile; state.sex = e.currentTarget.dataset.sex; update(); });
+  on('#profile,#sex', 'change', e => { state[e.target.id] = e.target.value; update(); });
   on('[data-lane]', 'click', e => { state.lane = e.currentTarget.dataset.lane; state.plannedShare = state.lane === 'mixed' ? 50 : state.plannedShare; preset = null; update(); });
   on('[data-unit]', 'click', e => { state.unit = e.currentTarget.dataset.unit; update(); });
-  on('[data-view]', 'click', e => { view = e.currentTarget.dataset.view; sync(); layout(); printData(); update(); document.getElementById('map').scrollIntoView({block: 'nearest'}); });
+  on('[data-view]', 'click', e => { view = e.currentTarget.dataset.view; zoomK = 1; zoomCenter = null; sync(); layout(); printData(); update(); document.getElementById('map').scrollIntoView({block: 'nearest'}); });
   $('#share').addEventListener('click', async () => {
     const url = location.origin + location.pathname + '?' + M.toQuery(state) + (view === 'us' ? '&view=us' : '');
     try { await navigator.clipboard.writeText(url); $('#status').textContent = 'Link copied.'; } catch { $('#status').textContent = url; }
@@ -326,6 +334,50 @@
     const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'})); a.download = 'food-55-scenario.json'; a.click();
     $('#status').textContent = 'Scenario exported with every input.';
   });
+  /* ---------- zoom and pan: each move reprints the drums at the new scale ---------- */
+  function refit() { layout(); printData(); sync(); }
+  function zoomBy(f, at) {
+    const pt = at || [P.cw / 2, P.ch / 2], ll = P.proj.invert(pt), c = P.proj.invert([P.cw / 2, P.ch / 2]);
+    const k = Math.max(1, Math.min(12, zoomK * f)); if (k === zoomK) return;
+    // keep the point under the cursor fixed: shift the centre toward it by (1 - 1/f)
+    if (at && ll && c) { const s = 1 - zoomK / k; zoomCenter = [c[0] + (ll[0] - c[0]) * s, c[1] + (ll[1] - c[1]) * s]; }
+    else zoomCenter = zoomCenter || c;
+    zoomK = k; if (zoomK === 1) zoomCenter = null; refit();
+  }
+  $('#zoom-in').addEventListener('click', () => zoomBy(1.6));
+  $('#zoom-out').addEventListener('click', () => zoomBy(1 / 1.6));
+  $('#zoom-fit').addEventListener('click', () => { zoomK = 1; zoomCenter = null; refit(); });
+  const isControl = el => el.closest('.pin,.factoid,.key,.zoom,.units,button,a');
+  stage.addEventListener('dblclick', e => { if (isControl(e.target)) return; const r = stage.getBoundingClientRect(); zoomBy(1.6, [e.clientX - r.left, e.clientY - r.top]); });
+  stage.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); const r = stage.getBoundingClientRect(); zoomBy(e.deltaY < 0 ? 1.25 : 0.8, [e.clientX - r.left, e.clientY - r.top]); }, {passive: false});
+  let pan = null;
+  stage.addEventListener('pointerdown', e => { if (isControl(e.target) || e.button) return; pan = {x: e.clientX, y: e.clientY, dx: 0, dy: 0, id: e.pointerId}; });
+  stage.addEventListener('pointermove', e => {
+    if (!pan || e.pointerId !== pan.id) return;
+    pan.dx = e.clientX - pan.x; pan.dy = e.clientY - pan.y;
+    if (!pan.on && Math.hypot(pan.dx, pan.dy) > 4) { pan.on = true; stage.setPointerCapture(e.pointerId); stage.classList.add('dragging'); closePin(); }
+    if (pan.on) press.style.transform = pinsEl.style.transform = `translate(${pan.dx}px,${pan.dy}px)`;
+  });
+  const endDrag = () => {
+    if (!pan) return; const d = pan; pan = null; stage.classList.remove('dragging');
+    if (!d.on) return;
+    const c = P.proj.invert([P.cw / 2 - d.dx, P.ch / 2 - d.dy]);
+    if (c) { zoomCenter = c; if (zoomK === 1) zoomK = 1.0001; }
+    refit(); press.style.transform = pinsEl.style.transform = '';
+  };
+  stage.addEventListener('pointerup', endDrag); stage.addEventListener('pointercancel', endDrag);
+
+  /* ---------- popouts: native popovers, placed beside their ⓘ ---------- */
+  $$('.pop').forEach(pop => pop.addEventListener('toggle', e => {
+    const btn = document.querySelector(`[popovertarget="${pop.id}"]`); if (!btn) return;
+    btn.classList.toggle('open', e.newState === 'open'); if (e.newState !== 'open') return;
+    const r = btn.getBoundingClientRect(), w = pop.offsetWidth, h = pop.offsetHeight, vw = innerWidth, vh = innerHeight;
+    let x = r.left - w - 12, y = r.top - 8;
+    if (x < 12) { x = Math.min(vw - w - 12, Math.max(12, r.left)); y = r.bottom + 10; }
+    if (y + h > vh - 12) y = Math.max(12, (x === r.left - w - 12 ? r.bottom : r.top - 10) - h);
+    pop.style.left = x + 'px'; pop.style.top = y + 'px';
+  }));
+
   let rt = 0;
   new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(() => { layout(); printData(); }, 120); }).observe(stage);
   update(false);

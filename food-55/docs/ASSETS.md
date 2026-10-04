@@ -1,6 +1,6 @@
 # Assets
 
-- **Type.** Pretendard by Kil Hyung-jin (github.com/orioncactus/pretendard) and D2Coding by Naver (github.com/naver/d2codingfont). Both are under the SIL Open Font License, and both are subset to Latin (`assets/fonts/`, licences included).
+- **Type.** One typeface: SUIT by Sun-young Sunn (github.com/sun-typeface/SUIT), SIL Open Font License, Reserved Font Name "SUIT". It is served as the unmodified variable file (`assets/fonts/SUIT-Variable.woff2`, licence alongside) on a fluid six-step type scale (`css/site.css`).
 - **Design reference.** The layout grammar follows a public style reference for 큰그림컴퍼니 (Bigpicture Company, Seoul), from the DESIGN.md library at github.com/MichelKerkmeester/skilled-agent-harness_spec-driven-loops (`styles/library/bundles/style-eafe33bf`): one press ink, oversized grotesk, bracketed mono captions, 1px hairlines, 20 px cards and a 40 px pill. No studio assets are used, and there is no claim of association.
 - **Print assets** (`assets/print/`), all made in Adobe Photoshop 2026 and exported with Photoshop:
   - **`riso-screen.png`**, the riso master: a 512² seamless stochastic threshold map. It combines fine grain, slight clumping, a paper-tooth displace and drift, and is equalized to a uniform histogram.
