@@ -255,3 +255,5 @@ figcaption{text-transform:uppercase;letter-spacing:.04em;font-size:var(--s-1)}
 /* ---------- ported from FOOD-55 QA ---------- */
 .rail-mark{min-width:44px;min-height:44px;display:grid;place-items:center;flex:none}
 @media (max-width:600px){.factoid{left:12px!important;right:64px;width:auto;top:auto!important;bottom:104px}}
+
+.hint{font-size:var(--s-1);line-height:1.35;margin:-2px 0 var(--sp-2);max-width:46ch}

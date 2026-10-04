@@ -3,19 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Carbon Cost of a Home Not Built</title>
-<meta name="description" content="Hundreds of thousands of people commute into New York City jobs from car-dependent places. If the city built homes for them, how much driving and carbon would disappear? An interactive exhibit by Felix Brener for ECON 238.">
-<meta property="og:title" content="The Carbon Cost of a Home Not Built">
-<meta property="og:description" content="Where NYC's commuters live, what their households emit, and what a new home in the city would change.">
+<title>The Carbon Cost of NYC’s ‘Green’ Rules</title>
+<meta name="description" content="Environmental review and zoning block homes in New York City. Households priced out of the city live farther away, drive more and heat bigger houses. What is the carbon cost of the ‘green’ rules? An interactive exhibit by Felix Brener for ECON 238.">
+<meta property="og:title" content="The Carbon Cost of NYC’s ‘Green’ Rules">
+<meta property="og:description" content="Rules sold as green block homes in New York City. This counts the carbon from the households they price out.">
 <meta property="og:image" content="https://felix-ab.github.io/econ238-portfolio/nyc-homes/assets/cover.png">
 <meta name="theme-color" content="#f4f3ef">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='5' y='9' width='14' height='18' fill='%230078BF'/%3E%3Crect x='13' y='4' width='14' height='23' fill='%23FF48B0' style='mix-blend-mode:multiply'/%3E%3C/svg%3E">
 <link rel="preload" href="assets/fonts/SUIT-Variable.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/site.css?v=4">
+<link rel="stylesheet" href="css/site.css?v=5">
 <script defer src="assets/vendor/d3.min.js"></script>
 <script defer src="assets/vendor/topojson-client.min.js"></script>
-<script defer src="model.js?v=3"></script>
-<script defer src="js/app.js?v=6"></script>
+<script defer src="model.js?v=4"></script>
+<script defer src="js/app.js?v=7"></script>
 </head>
 <body>
 <div class="app" id="top">
@@ -27,17 +27,17 @@
     <a class="rail-btn" href="#homes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-6h4v6"/></svg><span>One household</span></a>
     <a class="rail-btn" href="#method"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Method</span></a>
     <a class="rail-btn" href="#sources"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14l10-10M13 4h7v7"/><path d="M18 14v6H4V6h6"/></svg><span>Sources</span></a>
-    <p class="rail-title" aria-hidden="true">The Carbon Cost of a Home Not Built — NYC homes — the commute shed</p>
+    <p class="rail-title" aria-hidden="true">The Carbon Cost of NYC’s ‘Green’ Rules — blocked homes — the commute shed</p>
   </nav>
 
   <main class="stage" id="map" aria-label="Map of where New York City's workers live">
     <div class="plates" id="plates" role="img" aria-labelledby="map-alt"></div>
-    <p class="sr-only" id="map-alt">Map of the New York commute shed. Pink ink marks the extra carbon from households who commute to NYC jobs from car-dependent places. Blue ink marks where new homes in the city would go.</p>
+    <p class="sr-only" id="map-alt">Map of New York City’s commute shed. Pink ink marks the extra carbon from priced-out households who commute to NYC jobs from car-dependent places. Blue ink marks where the blocked homes would have been.</p>
     <div class="pins" id="pins"></div>
     <div class="factoid" id="factoid" role="tooltip" hidden></div>
     <div class="veil" aria-hidden="true"></div>
     <header class="readout">
-      <h1 class="sr-only">The Carbon Cost of a Home Not Built</h1>
+      <h1 class="sr-only">The Carbon Cost of NYC’s ‘Green’ Rules</h1>
       <p class="figure"><span id="total">—</span><span class="thin"> <span id="mag" class="mag"></span></span></p>
       <p class="figure-cap"><span id="total-cap"></span></p>
       <p id="delta" class="delta"></p>
@@ -45,8 +45,8 @@
     </header>
     <div class="key">
       <ul aria-label="Map key">
-        <li><i class="sw pink"></i>Extra CO₂ from NYC commuters’ homes</li>
-        <li><i class="sw blue"></i>New homes in the city</li>
+        <li><i class="sw pink"></i>Extra CO₂ from priced-out households</li>
+        <li><i class="sw blue"></i>Homes the rules block</li>
         <li><i class="sw black"></i>Land</li>
       </ul>
       <button type="button" class="info" popovertarget="pop-map" aria-label="How to read the map">i</button>
@@ -59,7 +59,7 @@
   </main>
 
   <aside class="panel" aria-labelledby="panel-title">
-    <header class="panel-head"><h2 id="panel-title">Build the homes</h2></header>
+    <header class="panel-head"><h2 id="panel-title">The blocked homes</h2></header>
 
     <section class="group">
       <div class="group-head"><h3>Scenario</h3></div>
@@ -67,13 +67,15 @@
         <button type="button" data-preset="yes">City of Yes, 80k</button>
         <button type="button" data-preset="goal">500,000 homes</button>
         <button type="button" data-preset="young">Young workers</button>
-        <button type="button" data-preset="staten">Like Staten Island</button>
+        <button type="button" data-preset="staten">Built like Staten Island</button>
       </div>
-      <div class="slider"><label for="homes">New homes in the city</label><output id="homes-out" for="homes">100,000</output><input id="homes" type="range" min="0" max="500000" step="1000" value="100000"><div class="ticks" id="ticks"></div></div>
+      <div class="slider"><label for="homes">Homes the rules block</label><output id="homes-out" for="homes">100,000</output><input id="homes" type="range" min="0" max="500000" step="1000" value="100000"><div class="ticks" id="ticks"></div></div>
+      <div class="slider"><label for="pshare">Priced out</label><output id="pshare-out" for="pshare">25%</output><input id="pshare" type="range" min="0" max="100" step="1" value="25"></div>
+      <p class="hint">Share of blocked homes that would have housed a household now living farther out because of price. The rest go to people already in the city, newcomers, or households who’d pick the suburbs anyway.</p>
     </section>
 
     <section class="group">
-      <div class="group-head"><h3 id="who-title">Who moves in</h3></div>
+      <div class="group-head"><h3 id="who-title">Who’s priced out</h3></div>
       <div class="options" id="who" role="group" aria-labelledby="who-title">
         <button type="button" class="option" data-who="all" aria-pressed="true">Any commuter<small id="pool-all"></small></button>
         <button type="button" class="option" data-who="young" aria-pressed="false">Under 30<small id="pool-young"></small></button>
@@ -83,10 +85,10 @@
     </section>
 
     <section class="group">
-      <div class="group-head"><h3 id="where-title">Where the home goes</h3></div>
+      <div class="group-head"><h3 id="where-title">Where the blocked home would have been</h3></div>
       <div class="options" id="where" role="group" aria-labelledby="where-title">
         <button type="button" class="option" data-where="core" aria-pressed="true">Car-light core<small id="dest-core"></small></button>
-        <button type="button" class="option" data-where="built" aria-pressed="false">Where NYC builds<small id="dest-built"></small></button>
+        <button type="button" class="option" data-where="built" aria-pressed="false">Where homes get built<small id="dest-built"></small></button>
         <button type="button" class="option" data-where="staten" aria-pressed="false">Like Staten Island<small id="dest-staten"></small></button>
       </div>
     </section>
@@ -98,37 +100,37 @@
     </section>
 
     <section class="group">
-      <div class="group-head"><h3>What changes</h3></div>
+      <div class="group-head"><h3>What the rules cost</h3></div>
       <dl class="readings">
-        <div><dt>Driving avoided</dt><dd id="r-vmt">—</dd></div>
+        <div><dt>Extra driving</dt><dd id="r-vmt">—</dd></div>
         <div><dt>At NYC’s own carbon price</dt><dd id="r-usd">—</dd></div>
-        <div><dt>Land per household, given back</dt><dd id="r-acres">—</dd></div>
-        <div><dt>Households who’d emit more</dt><dd id="r-worse">—</dd></div>
+        <div><dt>Extra land per household</dt><dd id="r-acres">—</dd></div>
+        <div><dt>Households who’d emit more in the city</dt><dd id="r-worse">—</dd></div>
       </dl>
     </section>
 
     <footer class="actions"><button type="button" id="share">Copy link</button><button type="button" id="export">Export data</button><p class="status" id="status" role="status"></p>
-      <p class="micro">Workers: Census LEHD LODES 8, 2023. Households and commutes: Census ACS 5-year, 2020–24. Driving: BTS LATCH 2017. Home energy: EIA RECS 2020; EPA eGRID 2023; EPA GHG Emission Factors Hub. New homes: NYC DCP Housing Database. Carbon price: NYC Local Law 97. Tract outlines: Census cartographic boundaries 2023. Printed live in riso drums on a Photoshop paper scan. ECON 238, University of Rochester, Felix Brener.</p></footer>
+      <p class="micro">Workers: Census LEHD LODES 8, 2023. Households and commutes: Census ACS 5-year, 2020–24. Driving: BTS LATCH 2017. Home energy: EIA RECS 2020; EPA eGRID 2023; EPA GHG Emission Factors Hub. Where homes get built: NYC DCP Housing Database. Blocked homes: NYC City of Yes estimate. Carbon price: NYC Local Law 97. Tract outlines: Census cartographic boundaries 2023. Printed live in riso drums on a Photoshop paper scan. ECON 238, University of Rochester, Felix Brener.</p></footer>
   </aside>
 </div>
 
 <section class="sheet" id="homes" aria-labelledby="homes-title">
-  <h2 id="homes-title">A home in the city is a climate policy.</h2>
+  <h2 id="homes-title">The carbon cost of a home that wasn’t built.</h2>
   <div class="cols">
-    <p id="lede-1">A household in the city’s car-light core drives about 3,000 miles a year and lives in an apartment that shares its walls. A household in Nassau County with someone working in the city drives about 11,700 miles and heats a house. When New York doesn’t build, the jobs stay and the workers live farther out.</p>
-    <p id="lede-2">Some of those commuters would choose a yard anyway. This model doesn’t assume they all want to move. You choose how many homes get built, who fills them, and where they go, and it counts what changes.</p>
+    <p id="lede-1">A household in New York City’s car-light core drives about 3,000 miles a year and lives in an apartment that shares its walls. A Nassau County household with someone working in the city drives about 11,700 miles and heats a house. When the rules block homes in the city, the jobs stay. The workers live farther out.</p>
+    <p id="lede-2">Not every suburban household is there because of price. Some would pick a yard anyway, so the model counts only the priced-out share. You set how many homes the rules block, how many would have gone to priced-out households, who those households are and where the homes would have been. The model counts the carbon.</p>
   </div>
   <div class="meal-grid">
-    <figure><figcaption>One household, today vs. in a new city home</figcaption><div id="hh-bars" class="bars"></div></figure>
-    <figure><figcaption>Where the commuters live</figcaption><div id="origins" class="bars"></div></figure>
+    <figure><figcaption>One priced-out household, where it lives now vs. in the blocked home</figcaption><div id="hh-bars" class="bars"></div></figure>
+    <figure><figcaption>Where priced-out commuters live now</figcaption><div id="origins" class="bars"></div></figure>
   </div>
 </section>
 
 <section class="sheet" id="layers" aria-labelledby="layers-title">
-  <h2 id="layers-title">Regulate the ton, not the bulb.</h2>
+  <h2 id="layers-title">Price the ton. Don’t block the building.</h2>
   <div class="cols">
-    <p>A new building in New York answers to several layers of rules aimed at the climate. Zoning and environmental review decide whether it gets built at all. The energy code and the 2021 gas ban (Local Law 154) dictate equipment. Local Law 97 caps emissions per square foot and charges a fixed price per ton over the cap.</p>
-    <p id="layers-p2">Economists favour the last layer: it prices the outcome and lets builders find the cheapest tons. The first layers can do the opposite. Environmental review for a rezoning typically takes six to eight months and can cost hundreds of thousands of dollars, by the city’s own account. Every home it delays or stops pushes a household outside the city, where it emits more. The city has started to adjust: since June 2024, the Green Fast Track exempts qualifying projects of up to 250 homes. This exhibit counts the tons at stake, priced at the city’s own Local Law 97 rate.</p>
+    <p>A new building in New York City answers to several layers of rules sold as climate policy. Environmental review and zoning decide whether it gets built at all. The energy code and the 2021 gas ban (Local Law 154) dictate its equipment. Local Law 97 caps emissions per square foot and charges a fixed price per ton over the cap.</p>
+    <p id="layers-p2">Economists favour the last layer. It prices the outcome and lets owners find the cheapest tons. The first two can do the opposite. Environmental review for a rezoning typically takes six to eight months and can cost hundreds of thousands of dollars, by the city’s own account. Zoning caps how many homes a lot can hold. Each home these rules block can push a household out of the city, where it drives more and heats a bigger home. The city has started to adjust: since June 2024, the Green Fast Track exempts qualifying projects of up to 250 homes. This exhibit counts the tons at stake and prices them at the city’s own Local Law 97 rate, $268 a ton.</p>
   </div>
 </section>
 
@@ -145,7 +147,7 @@
   <p class="made">Felix Brener, ECON 238, University of Rochester. My own investigation. Claude (Anthropic) helped pull the data, build the model and write the code. Type: SUIT by Sun-young Sunn, SIL Open Font License. Tract outlines: US Census Bureau cartographic boundaries, 2023.</p>
 </section>
 
-<div popover id="pop-map" class="pop"><h4>Reading the map</h4><p>Darker pink = more extra CO₂ per km². Darker blue = more growth relative to the homes already there.</p><p>Drag to move. Use + and − to zoom. Numbered places open notes.</p></div>
-<div popover id="pop-fp" class="pop"><h4>Household CO₂ by commute distance</h4><p>Each dot is commuters at that distance. The shaded gap is the CO₂ a household sheds by moving into the chosen city home.</p></div>
+<div popover id="pop-map" class="pop"><h4>Reading the map</h4><p>Darker pink = more extra CO₂ per km². Darker blue = more blocked homes relative to the homes already there.</p><p>Drag to move. Use + and − to zoom. Numbered places open notes.</p></div>
+<div popover id="pop-fp" class="pop"><h4>Household CO₂ by commute distance</h4><p>Each dot is commuters at that distance. The shaded gap is the extra CO₂ a priced-out household emits compared with the blocked home.</p></div>
 </body>
 </html>

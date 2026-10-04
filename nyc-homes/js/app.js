@@ -219,7 +219,8 @@
 
   /* ---------- state ---------- */
   function sync() {
-    $('#homes').value = state.homes; $('#homes-out').textContent = num(state.homes); $('#homes').style.setProperty('--p', state.homes / 5000 + '%');
+    $('#homes').value = state.homes; $('#homes-out').textContent = num(state.homes);
+    if ($('#pshare')) { $('#pshare').value = state.share; $('#pshare-out').textContent = state.share + '%'; $('#pshare').style.setProperty('--p', state.share + '%'); } $('#homes').style.setProperty('--p', state.homes / 5000 + '%');
     $$('[data-preset]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.preset === preset)));
     $$('[data-who]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.who === state.who)));
     $$('[data-where]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.where === state.where)));
@@ -231,10 +232,11 @@
     state = H.sanitize(state); result = H.calculate(state, D); sync();
     const r = result, cars = state.unit === 'cars';
     setFigure(cars ? r.tons / F.carTonsPerYear : r.tons);
-    $('#total-cap').textContent = r.moved === 0 ? 'Build some homes to see what changes.' : cars
-      ? `cars’ worth of CO₂ a year disappear if ${num(r.moved)} commuting households live in new city homes.`
-      : `tons of CO₂ a year disappear if ${num(r.moved)} commuting households live in new city homes.`;
-    $('#delta').textContent = r.moved ? `${num(r.perHome, 1)} t per home` + (r.moved < state.homes ? ` · only ${num(r.pool)} fit this group` : '') : '';
+    const capped = r.moved < state.homes * state.share / 100;
+    $('#total-cap').textContent = r.moved === 0 ? 'of CO₂ a year. Set some blocked homes and a priced-out share.' : cars
+      ? `cars’ worth of CO₂ a year: the cost of blocking ${num(state.homes)} NYC homes, ${state.share}% of which would have housed a priced-out household.`
+      : `tons of CO₂ a year: the cost of blocking ${num(state.homes)} NYC homes, ${state.share}% of which would have housed a priced-out household.`;
+    $('#delta').textContent = r.moved ? `${num(r.perHome, 1)} t per priced-out household · $${num(r.dollars / 1e6, 1)}M a year at NYC’s $268/t` + (capped ? ` · only ${num(r.pool)} households fit this group` : '') : '';
     $('#r-vmt').textContent = num(r.vmt / 1e6, 0) + ' million miles a year';
     $('#r-usd').textContent = '$' + num(r.dollars / 1e6, 1) + ' million a year';
     $('#r-acres').textContent = r.moved ? num(r.acres / r.moved, 2) + ' acres' : '—';
@@ -247,6 +249,7 @@
   }
   const on = (sel, ev, fn) => $$(sel).forEach(el => el.addEventListener(ev, fn));
   on('#homes', 'input', e => { state.homes = +e.target.value; preset = null; update(); });
+  on('#pshare', 'input', e => { state.share = +e.target.value; preset = null; update(); });
   on('[data-preset]', 'click', e => { preset = e.currentTarget.dataset.preset; state = {...H.PRESETS[preset].state, unit: state.unit}; update(); });
   on('[data-who]', 'click', e => { state.who = e.currentTarget.dataset.who; preset = null; update(); });
   on('[data-where]', 'click', e => { state.where = e.currentTarget.dataset.where; preset = null; update(); });

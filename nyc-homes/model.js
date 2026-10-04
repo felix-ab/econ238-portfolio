@@ -3,7 +3,9 @@
    transit share, annual household driving, household CO2 (driving + home energy), land area. */
 (function (root) {
   'use strict';
-  const DEFAULT = Object.freeze({homes: 100000, who: 'all', where: 'core', cutoff: 30, unit: 'tons'});
+  // homes: homes the rules block. share: % of them that would have housed a household now priced out to
+  // somewhere with a bigger footprint (the rest go to people already in the city, newcomers, or suburb-choosers).
+  const DEFAULT = Object.freeze({homes: 80000, share: 25, who: 'all', where: 'core', cutoff: 30, unit: 'tons'});
   const PRESETS = Object.freeze({
     yes: {label: 'City of Yes', state: {...DEFAULT, homes: 80000, where: 'built'}},
     goal: {label: '500,000 homes', state: {...DEFAULT, homes: 500000, where: 'built'}},
@@ -15,6 +17,7 @@
     const s = {...DEFAULT};
     s.homes = Math.round(clamp(v.homes ?? s.homes, 0, 500000, s.homes) / 1000) * 1000;
     s.cutoff = clamp(v.cutoff ?? s.cutoff, 5, 120, s.cutoff);
+    s.share = Math.round(clamp(v.share ?? s.share, 0, 100, s.share));
     if (['all', 'young', 'low', 'long'].includes(v.who)) s.who = v.who;
     if (['core', 'built', 'staten'].includes(v.where)) s.where = v.where;
     if (['tons', 'cars'].includes(v.unit)) s.unit = v.unit;
@@ -50,7 +53,7 @@
   function calculate(state, D) {
     const s = sanitize(state), T = D.tracts, dest = destination(s, D), cap = origins(s, D);
     let pool = 0; for (let i = 0; i < T.n; i++) pool += cap[i];
-    const moved = Math.min(s.homes, pool), share = pool ? moved / pool : 0, n = new Float64Array(T.n);
+    const moved = Math.min(s.homes * s.share / 100, pool), share = pool ? moved / pool : 0, n = new Float64Array(T.n);
     let tons = 0, vmt = 0, km2 = 0, gain = 0, loss = 0;
     for (let i = 0; i < T.n; i++) {
       if (!cap[i]) continue;

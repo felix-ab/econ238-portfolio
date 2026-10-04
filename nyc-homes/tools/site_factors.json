@@ -144,20 +144,30 @@
     "text": "Each tract’s mix of detached houses, row houses and apartments (ACS) is multiplied by EIA RECS 2020 energy use by building type in the Middle Atlantic. Electricity uses eGRID 2023 regional rates; gas, oil and propane use EPA factors."
    },
    {
-    "title": "The new home.",
-    "text": "An apartment in a building of five or more units on the NYC grid (3.0 t a year), plus the driving of the tracts where it goes. Those are the car-light core (tracts where under 20% of workers drive), the tracts where NYC has added homes since 2015 (DCP Housing Database), or Staten Island with its own house mix."
+    "title": "The blocked home.",
+    "text": "An apartment in a building of five or more units on the NYC grid (3.0 t a year), plus the driving of the tracts where it would have been. Those are the car-light core (tracts where under 20% of workers drive), the tracts where homes have been added since 2015 (DCP Housing Database), or Staten Island with its own house mix."
    },
    {
-    "title": "Who moves.",
-    "text": "Eligible households commute to NYC jobs from outside the city, or from parts of it where at least 35% of workers drive, such as much of Staten Island, eastern Queens and southern Brooklyn. Homes fill each eligible tract in proportion to its households. Tons are priced at $268, the charge NYC levies per ton over a building’s Local Law 97 cap."
+    "title": "Who’s priced out.",
+    "text": "Eligible households commute to NYC jobs from outside the city, or from parts of it where at least 35% of workers drive, such as much of Staten Island, eastern Queens and southern Brooklyn. Priced-out households are drawn from each eligible tract in proportion to its households."
+   },
+   {
+    "title": "The priced-out share.",
+    "text": "No study measures it directly, so it’s an adjustable assumption: 25% by default, with a plausible range of 10–40%. Mast (2023) traced who moved into 686 new market-rate buildings in 12 metros. In New York City, 8.2% of residents came straight from the suburbs, and the vacancies they left rippled outward until movers looked like the region as a whole. In Helsinki, chains of moves also end with newcomers from outside the region and with newly formed households (Bratu et al. 2023). Neither counts here."
+   },
+   {
+    "title": "The cost.",
+    "text": "CO₂ cost = blocked homes × priced-out share × (household CO₂ where it lives now − CO₂ in a new NYC apartment). Tons are priced at $268, the charge NYC levies per ton over a building’s Local Law 97 cap."
    }
   ],
   "limits": [
-   "Who moves in is your choice on the panel, not a forecast. Some commuters prefer the suburbs, so the slider counts homes, and only that many households move.",
-   "A household keeps its size and income when it moves; in reality both can change.",
+   "Who’s priced out is your choice on the panel, not a forecast.",
+   "The priced-out share is an assumption drawn from moving-chain research, not a measurement for New York City.",
+   "Blocked-homes counts are the city’s own estimates of what rule changes would allow, not measured counterfactuals.",
+   "A priced-out household keeps its size and income in the blocked home; in reality both can change.",
    "LATCH models 2017 weekday driving on 2010 tracts. Split tracts take their parent’s value; 842 tracts that changed more take their county’s average.",
    "LATCH has driving estimates for only 16 Manhattan tracts. The other Manhattan tracts use those tracts’ average, 6.8 miles a weekday.",
-   "Home energy uses regional averages by building type, not the actual building. New all-electric buildings under Local Law 154 likely use less than the RECS average, so the new-home figure is conservative.",
+   "Home energy uses regional averages by building type, not the actual building. New all-electric buildings under Local Law 154 likely use less than the RECS average, so the blocked-home figure is conservative.",
    "eGRID rates cover power generated inside each grid region. NYC also imports cleaner upstate power, which would lower the city side.",
    "Commute distances are straight lines between tract centres.",
    "Embodied carbon from construction is left out. Every new home has it, wherever it’s built."
@@ -242,6 +252,16 @@
     "label": "Jones & Kammen 2014, ES&T",
     "url": "https://doi.org/10.1021/es4034364",
     "note": "Suburbs offset urban density’s carbon savings"
+   },
+   {
+    "label": "Mast 2023, J. Urban Econ.",
+    "url": "https://doi.org/10.1016/j.jue.2021.103383",
+    "note": "Who moves into new buildings; NYC 8.2% from suburbs"
+   },
+   {
+    "label": "Bratu, Harjunen & Saarimaa 2023, J. Urban Econ.",
+    "url": "https://doi.org/10.1016/j.jue.2022.103528",
+    "note": "Moving chains from new housing"
    },
    {
     "label": "Code, data and model",
