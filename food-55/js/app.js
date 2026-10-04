@@ -25,6 +25,10 @@
     const d = g.getImageData(0, 0, SN, SN).data;
     for (let i = 0; i < SN * SN; i++) screen[i] = d[i * 4];
   } else { for (let i = 0; i < SN * SN; i++) screen[i] = (i * 2654435761 >>> 24); }
+  // The key's cattle swatch is printed from the same riso master as the map: random speckle, not a dot grid.
+  { const k = 36, c = document.createElement('canvas'); c.width = c.height = k; const g = c.getContext('2d'), im = g.createImageData(k, k);
+    for (let y = 0; y < k; y++) for (let x = 0; x < k; x++) if (screen[(y + 97) * SN + x + 131] < 255 * .2) { const i = (y * k + x) * 4; im.data[i] = im.data[i + 1] = im.data[i + 2] = 18; im.data[i + 3] = 255; }
+    g.putImageData(im, 0, 0); document.documentElement.style.setProperty('--speckle', `url(${c.toDataURL()})`); }
 
   /* ---------- data rasters on the 0.5° grid ---------- */
   const W = 720, H = 360, cellKm2 = lat => (0.5 * 111.195) ** 2 * Math.cos(lat * Math.PI / 180);

@@ -213,7 +213,8 @@ figcaption{font-size:var(--s0);font-weight:var(--w-label);border-bottom:var(--li
 .sw{width:12px;height:12px;display:inline-block;border:var(--line);flex:none;mix-blend-mode:multiply}
 .sw.pink{background:var(--pink)}.sw.blue{background:var(--blue)}.sw.yellow{background:var(--yellow)}
 .sw.dots{background:var(--card);background:var(--dots),var(--card)}
-.sw.grain{background:var(--dots-fine),var(--card)}
+.sw.grain{background:var(--speckle,var(--card)) 0 0/18px 18px,var(--card)}
+.sw.sea{background:var(--dots),var(--card)}
 .key{border-radius:var(--r-card)}
 /* numbered callouts: a solid square on the place, a numbered ring beside it */
 .pin{width:auto;height:auto;margin:0;background:none!important;display:block}

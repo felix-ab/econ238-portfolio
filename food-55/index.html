@@ -11,11 +11,11 @@
 <meta name="theme-color" content="#f4f3ef">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='13' cy='16' r='10' fill='%23FF48B0'/%3E%3Ccircle cx='19' cy='16' r='10' fill='%230078BF' style='mix-blend-mode:multiply'/%3E%3C/svg%3E">
 <link rel="preload" href="assets/fonts/SUIT-Variable.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/site.css?v=10">
+<link rel="stylesheet" href="css/site.css?v=11">
 <script defer src="assets/vendor/d3.min.js"></script>
 <script defer src="assets/vendor/topojson-client.min.js"></script>
 <script defer src="model.js?v=9"></script>
-<script defer src="js/app.js?v=10"></script>
+<script defer src="js/app.js?v=11"></script>
 </head>
 <body>
 <div class="app" id="top">
@@ -48,7 +48,8 @@
         <li><i class="sw pink"></i>Beef pasture</li>
         <li><i class="sw blue"></i>Beef feed crops</li>
         <li><i class="sw yellow"></i>Replacement crops</li>
-        <li><i class="sw grain"></i>Cattle worldwide</li>
+        <li><i class="sw grain"></i>Cattle, worldwide</li>
+        <li><i class="sw sea"></i>Sea</li>
       </ul>
       <button type="button" class="info" popovertarget="pop-map" aria-label="How to read the map">i</button>
     </div>
@@ -176,7 +177,7 @@
   <p class="made">Felix Brener, ECON 238, University of Rochester. FOOD-55, <a href="https://github.com/RochesterRizzo/Rizzo-Hours/issues/96">claimed here</a>. Claude (Anthropic) helped pull the data, build the model and write the code. Type: SUIT by Sun-young Sunn, SIL Open Font License. Coastlines: Natural Earth.</p>
 </section>
 
-<div popover id="pop-map" class="pop"><h4>Reading the map</h4><p>Each colour is one riso ink. In every half-degree patch, ink covers the same share of the ground that the use takes. Pasture is placed by where cattle are (FAO, 2010), feed by maize fields, and replacement crops by soy, pulse or feed-grain fields (MapSPAM, 2010).</p><p>Black is a light tint for land, darker where cattle are dense worldwide. It shows head counts, not land.</p><p>The map is Mercator, which enlarges land toward the poles. The ink share in each patch stays true at any projection.</p><p>Drag to move. Use + and − to zoom. Numbered places open notes on what matters for US beef there.</p></div>
+<div popover id="pop-map" class="pop"><h4>Reading the map</h4><p>Each colour is one riso ink. In every half-degree patch, ink covers the same share of the ground that the use takes. Pasture is placed by where cattle are (FAO, 2010), feed by maize fields, and replacement crops by soy, pulse or feed-grain fields (MapSPAM, 2010).</p><p>Black is the key ink. On land it prints as a random speckle, denser where cattle are dense worldwide; it shows head counts, not land. The sea is a regular grid of dots, and coastlines are drawn in solid black.</p><p>The map is Mercator, which enlarges land toward the poles. The ink share in each patch stays true at any projection.</p><p>Drag to move. Use + and − to zoom. Numbered places open notes on what matters for US beef there.</p></div>
 <div popover id="pop-land" class="pop"><h4>Land</h4><p>Both bars are scaled to today’s 805 million acres. Today’s bar is all beef: pasture and feed crops (Eshel et al. 2014). The scenario bar shows the beef land left, the cropland for the replacement plates, and, as a dot screen, the land no longer needed.</p></div>
 <div popover id="pop-scenario" class="pop"><h4>How much beef goes</h4><p><b>Beef cut</b> is how much of their beef participants stop eating. <b>Americans taking part</b> is how many people do it. They are separate because a policy can work either way. The model uses only their product. Their product is the shift: half the beef for everyone equals all of it for half the people.</p><p>Meatless Monday cuts one day in seven, or 14%. The two muscle presets replace all beef and size plates to hit the leucine target.</p></div>
 <div popover id="pop-foods" class="pop"><h4>Replacement foods</h4><p>Leucine per 100 g, cooked (USDA FoodData Central). Land per 100 g of protein (Poore &amp; Nemecek 2018, global means): beef 164 m², chicken 7, eggs 6, pulses 7, tofu 2.</p><p>Mixed plates split the beef serving equally among their foods.</p></div>
