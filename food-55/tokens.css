@@ -1,0 +1,12 @@
+/* Design tokens: Seoul print-studio influence; original site design. */
+@font-face {font-family: 'Pretendard';src: url('assets/fonts/PretendardVariable.woff2') format('woff2');font-weight: 45 920;font-display: swap;}
+:root {
+  --font-display: 'Pretendard', 'Arial', sans-serif;
+  --font-body: 'Pretendard', system-ui, sans-serif;
+  --font-label: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  --paper: #faf9f6; --sea: #fff; --land: #dededb; --ink: #171716; --muted: #5e5e58;
+  --cyan: #00adcf; --magenta: #e93086; --yellow: #f3d518; --key: #454541;
+  --rule: 2px solid var(--ink); --hairline: 1px solid #c9c9c0; --shadow: 4px 4px 0 var(--ink);
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px;
+  --label-size: 10px; --body-size: 15px; --radius: 0; --sidebar-width: 330px;
+}

@@ -1,0 +1,15 @@
+{
+  "version": "design-prototype-1",
+  "status": "illustrative",
+  "label": "Illustrative design inputs — not research estimates",
+  "baselineAreaKm2": null,
+  "geography": "Illustrative world canvas; U.S. study proposed",
+  "timePeriod": null,
+  "baselineIndex": 100,
+  "pastureShare": 0.75,
+  "feedShare": 0.25,
+  "replacementLandRatios": {"tofu": 0.18, "beans": 0.22, "chicken": 0.32, "mixed": 0.24},
+  "plannedPortionMultiplier": 1.35,
+  "spatialStatus": "schematic",
+  "provenance": "All numeric coefficients are arbitrary interface-development fixtures. Do not cite them as dietary, population, or land-use evidence. No acreage, mapped ranches, nutrient adequacy or environmental finding is established."
+}
