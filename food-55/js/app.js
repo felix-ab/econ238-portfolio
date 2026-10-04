@@ -60,10 +60,18 @@
   function layout() {
     const rect = stage.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
     const cw = Math.round(rect.width), ch = Math.round(rect.height), DW = Math.round(cw * dpr), DH = Math.round(ch * dpr);
-    const topPad = Math.min(ch * .3, 240), side = cw < 700 ? 10 : 28, bottom = cw < 700 ? 64 : 64;
-    const proj = d3.geoEqualEarth();
-    if (view === 'world') proj.fitExtent([[side, cw < 700 ? topPad * .8 : topPad * .55], [cw - side, ch - bottom]], {type: 'Sphere'});
-    else proj.fitExtent([[side + 20, topPad], [cw - side - 20, ch - 74]], usPoints);
+    // Mercator, scaled to cover the stage edge to edge: the map runs under the figure and the glass rim,
+    // which is what the blur is for. World: keep 60°S–82°N in view, never show past Mercator's 85° limit.
+    const proj = d3.geoMercator(), my = lat => Math.log(Math.tan(Math.PI / 4 + lat * Math.PI / 360));
+    if (view === 'world') {
+      const yN = my(82), yS = my(-60), yMax = my(85), s = Math.max(cw / (2 * Math.PI), ch / (yN - yS)), half = ch / 2 / s;
+      const yc = Math.max(-yMax + half, Math.min(yMax - half, (yN + yS) / 2));
+      const spare = Math.PI - cw / (2 * s), xc = spare > .001 ? Math.max(-spare, Math.min(spare, -40 * Math.PI / 180)) : 0;
+      proj.scale(s).translate([cw / 2 - s * xc, ch / 2 + s * yc]);
+    } else {
+      const top = Math.min(ch * .3, 230);
+      proj.fitExtent([[24, top], [cw - 24, ch - 70]], usPoints);
+    }
     if (zoomK !== 1 || zoomCenter) {
       const c0 = zoomCenter || proj.invert([cw / 2, ch / 2]) || [0, 0];
       proj.scale(proj.scale() * zoomK);
@@ -109,19 +117,21 @@
   // toward the rim along a rounded-rectangle bevel, so the map bends like curved glass.
   // Masks: three bands (R, G, B channels) that start deeper as the blur gets heavier.
   function buildGlass(cw, ch) {
-    const k = 2, w = Math.ceil(cw / k), h = Math.ceil(ch / k), rad = 20 / k;
-    const band = Math.max(46, Math.min(130, Math.min(cw, ch) * .13)) / k;
+    const k = 2, w = Math.ceil(cw / k), h = Math.ceil(ch / k);
+    const ro = $('.readout').getBoundingClientRect(), so = stage.getBoundingClientRect();
+    const side = Math.max(40, Math.min(110, Math.min(cw, ch) * .1)) / k;
+    const top = Math.max(side * k, Math.min(ch * .45, ro.bottom - so.top + 28)) / k;
     const dc = document.createElement('canvas'), mc = document.createElement('canvas');
     dc.width = mc.width = w; dc.height = mc.height = h;
     const di = dc.getContext('2d').createImageData(w, h), mi = mc.getContext('2d').createImageData(w, h);
-    const hx = w / 2 - rad, hy = h / 2 - rad, ss = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+    const ss = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+    const clamp = v => Math.max(0, Math.min(1, v));
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-      const px = x + .5 - w / 2, py = y + .5 - h / 2, qx = Math.abs(px) - hx, qy = Math.abs(py) - hy;
-      let d, nx, ny; // d: inward distance from the rim; (nx, ny): inward normal
-      if (qx > 0 && qy > 0) { const l = Math.hypot(qx, qy) || 1; d = rad - l; nx = -Math.sign(px) * qx / l; ny = -Math.sign(py) * qy / l; }
-      else if (qx > qy) { d = rad - qx; nx = -Math.sign(px); ny = 0; }
-      else { d = rad - qy; nx = 0; ny = -Math.sign(py); }
-      const t = Math.max(0, Math.min(1, 1 - d / band)), mag = t * t, i = (y * w + x) * 4;
+      // bevel depth from each edge; the inward normal blends the edges by depth, which rounds the corners
+      const tl = clamp(1 - (x + .5) / side), tr = clamp(1 - (w - x - .5) / side), tt = clamp(1 - (y + .5) / top), tb = clamp(1 - (h - y - .5) / side);
+      const t = Math.max(tl, tr, tt, tb), wl = tl ** 3, wr = tr ** 3, wt = tt ** 3, wb = tb ** 3, sum = wl + wr + wt + wb || 1;
+      let nx = (wl - wr) / sum, ny = (wt - wb) / sum; const nl = Math.hypot(nx, ny) || 1; nx /= nl; ny /= nl;
+      const mag = t * t, i = (y * w + x) * 4;
       di.data[i] = 128 + 127 * nx * mag; di.data[i + 1] = 128 + 127 * ny * mag; di.data[i + 2] = 128; di.data[i + 3] = 255;
       mi.data[i] = 255 * ss(.05, .4, t); mi.data[i + 1] = 255 * ss(.35, .72, t); mi.data[i + 2] = 255 * ss(.66, 1, t); mi.data[i + 3] = 255;
     }
@@ -177,7 +187,6 @@
     g.putImageData(img, 0, 0);
     g.save(); g.scale(dpr, dpr); g.strokeStyle = '#121212'; g.lineJoin = 'round';
     g.lineWidth = 1.4; g.beginPath(); d3.geoPath(proj, g)(land); g.stroke();
-    if (view === 'world' && zoomK === 1) { g.lineWidth = 1; g.beginPath(); d3.geoPath(proj, g)({type: 'Sphere'}); g.stroke(); }
     g.restore();
   }
   let pending = 0;
@@ -223,10 +232,13 @@
   // Rings sit up-right of their square; if one would overlap a ring already placed, it tries the other corners.
   const RING = [[20, -20], [-20, -20], [20, 20], [-20, 20]];
   function placePins() {
-    let n = 0; const rings = [];
+    let n = 0; const rings = [], so = stage.getBoundingClientRect();
+    const blocked = ['.readout .figure', '.readout .figure-cap', '.readout .delta', '.units', '.key', '.zoom'].map(s => document.querySelector(s)).filter(e => e && e.offsetParent)
+      .map(e => { const r = e.getBoundingClientRect(); return [r.left - so.left, r.top - so.top, r.right - so.left, r.bottom - so.top]; });
     pins.forEach((p, i) => {
       const xy = P.proj([p.lon, p.lat]), el = pinEls[i];
-      const inside = (p.views || ['world', 'us']).includes(view) && xy && xy[0] > 8 && xy[0] < P.cw - 8 && xy[1] > 48 && xy[1] < P.ch - 70;
+      const under = blocked.some(([l, t, r, b]) => xy && xy[0] > l - 40 && xy[0] < r + 40 && xy[1] > t - 40 && xy[1] < b + 44);
+      const inside = (p.views || ['world', 'us']).includes(view) && xy && !under && xy[0] > 24 && xy[0] < P.cw - 44 && xy[1] > 44 && xy[1] < P.ch - 24;
       el.hidden = !inside; if (!inside) return;
       el.dataset.n = ++n; el.querySelector('b').textContent = n;
       const ring = RING.find(([dx, dy]) => rings.every(([x, y]) => Math.hypot(xy[0] + dx - x, xy[1] + dy - y) > 32)) || RING[0];
@@ -279,7 +291,7 @@
     endA.attr('cx', xS(a.grams)).attr('cy', yS(a.leucine)); endB.attr('cx', xS(Math.min(450, b.grams))).attr('cy', yS(b.leucine));
     handle.attr('cx', xS(Math.min(450, r.plate.grams))).attr('cy', yS(r.plate.leucine)); halo.attr('cx', xS(Math.min(450, r.plate.grams))).attr('cy', yS(r.plate.leucine));
     $('#leu-g').textContent = num(r.plate.leucine, 2) + ' g'; $('#leu-plate').textContent = num(r.plate.grams) + ' g';
-    $('#leu-kcal').textContent = num(r.plate.kcal) + ' kcal (beef ' + num(r.beef.kcal) + ')';
+    $('#leu-kcal').innerHTML = `${num(r.plate.kcal)}<small> kcal · beef ${num(r.beef.kcal)}</small>`;
   }
   const drag = d3.drag().on('drag', e => {
     if (!segPts) return;

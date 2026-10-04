@@ -26,7 +26,7 @@ DRIs: NIH ODS RDAs for protein, iron, zinc, copper, selenium and B12, by age ban
 
 ## Map
 
-Equal Earth (equal-area). Dot area = km² x (sphere px² / 510,072,000 km²), so dots are true scale.
+Mercator, scaled to cover the stage (world view keeps 60°S–82°N in frame). Mercator enlarges high latitudes, so ink is encoded as coverage, not area: in each 0.5° cell, ink covers the share of the ground that the use takes. That ratio is the same under any projection.
 
 How national totals are spread across US 0.5° cells (US mask from Natural Earth 50m):
 - Pasture: by cattle head (FAO GLW3 2010, doi:10.7910/DVN/GIVQ75).
