@@ -11,22 +11,22 @@
 <meta name="theme-color" content="#f4f3ef">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='13' cy='16' r='10' fill='%23FF48B0'/%3E%3Ccircle cx='19' cy='16' r='10' fill='%230078BF' style='mix-blend-mode:multiply'/%3E%3C/svg%3E">
 <link rel="preload" href="assets/fonts/SUIT-Variable.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/site.css?v=8">
+<link rel="stylesheet" href="css/site.css?v=9">
 <script defer src="assets/vendor/d3.min.js"></script>
 <script defer src="assets/vendor/topojson-client.min.js"></script>
-<script defer src="model.js?v=8"></script>
-<script defer src="js/app.js?v=8"></script>
+<script defer src="model.js?v=9"></script>
+<script defer src="js/app.js?v=9"></script>
 </head>
 <body>
 <div class="app" id="top">
 
   <nav class="rail" aria-label="Sections">
     <a class="rail-mark" href="../" aria-label="Felix Brener, ECON 238 portfolio">fb.</a>
-    <button class="rail-btn" type="button" data-view="world" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg><span>World</span></button>
-    <button class="rail-btn" type="button" data-view="us" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7l5-2 5 2 5-2 3 1v12l-3-1-5 2-5-2-5 2z"/><path d="M8 5v13M13 7v13M18 5v13"/></svg><span>United States</span></button>
-    <a class="rail-btn" href="#meal"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><circle cx="12" cy="13" r="3.5"/><path d="M3 4v6M5 4v6M3 10h2M4 10v10M20 4c-2 1-2 6 0 7v9"/></svg><span>The meal</span></a>
-    <a class="rail-btn" href="#method"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Method</span></a>
-    <a class="rail-btn" href="#sources"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14l10-10M13 4h7v7"/><path d="M18 14v6H4V6h6"/></svg><span>Sources</span></a>
+    <button class="rail-btn" type="button" data-view="world" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg><span>Map: world</span></button>
+    <button class="rail-btn" type="button" data-view="us" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7l5-2 5 2 5-2 3 1v12l-3-1-5 2-5-2-5 2z"/><path d="M8 5v13M13 7v13M18 5v13"/></svg><span>Map: United States</span></button>
+    <a class="rail-btn" href="#meal" data-sec="meal"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><circle cx="12" cy="13" r="3.5"/><path d="M3 4v6M5 4v6M3 10h2M4 10v10M20 4c-2 1-2 6 0 7v9"/></svg><span>The meal, nutrient by nutrient</span></a>
+    <a class="rail-btn" href="#method" data-sec="method"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Method</span></a>
+    <a class="rail-btn" href="#sources" data-sec="sources"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14l10-10M13 4h7v7"/><path d="M18 14v6H4V6h6"/></svg><span>Sources</span></a>
     <p class="rail-title" aria-hidden="true">The Land on Our Plates — FOOD–55 — US beef, 2025</p>
   </nav>
 
@@ -60,10 +60,16 @@
   </main>
 
   <aside class="panel" aria-labelledby="panel-title">
+    <div class="brief" role="note" aria-label="What this page asks">
+      <p><b>FOOD-55 asks:</b> cut 10–100% of US beef and model what replaces it (pasture, feed crops, substitute foods, protein and calories) instead of just deleting cattle.</p>
+      <p><b>My angle:</b> a swap has to feed people as well as the beef did. Equal weight isn’t equal nutrition, so I size each replacement by leucine, the amino acid that triggers muscle building, and track what that costs in food, calories and land.</p>
+      <p class="try"><b>Try:</b> pick <i>Half the beef</i>, then switch the serving from <i>Same weight</i> to <i>Enough leucine</i>. Land barely moves; the plate and calories do.</p>
+    </div>
     <header class="panel-head"><h2 id="panel-title">Change the plate</h2><button type="button" id="reset" class="quiet">Reset</button></header>
 
     <section class="group">
-      <div class="group-head"><h3>Scenario</h3><button type="button" class="info" popovertarget="pop-scenario" aria-label="About the scenarios">i</button></div>
+      <div class="group-head"><h3>How much beef goes</h3><button type="button" class="info" popovertarget="pop-scenario" aria-label="About the scenarios">i</button></div>
+      <p class="hint">Beef removed = cut × people taking part. Today’s serving being replaced: 113 g (4 oz) of cooked beef.</p>
       <div class="chips" role="group" aria-label="Scenarios">
         <button type="button" data-preset="today">Today</button>
         <button type="button" data-preset="monday">Meatless Monday</button>
@@ -71,30 +77,34 @@
         <button type="button" data-preset="lifter">Chicken for muscle</button>
         <button type="button" data-preset="plants">Plants for muscle</button>
       </div>
-      <div class="slider"><label for="reduction">Beef cut</label><output id="reduction-out" for="reduction">0%</output><input id="reduction" type="range" min="0" max="100" value="0"></div>
-      <div class="slider"><label for="coverage">Americans taking part</label><output id="coverage-out" for="coverage">100%</output><input id="coverage" type="range" min="0" max="100" value="100"></div>
+      <div class="slider"><label for="reduction">Beef cut <small>(of each participant’s beef)</small></label><output id="reduction-out" for="reduction">0%</output><input id="reduction" type="range" min="0" max="100" value="0"></div>
+      <div class="slider"><label for="coverage">Americans taking part <small>(share of people)</small></label><output id="coverage-out" for="coverage">100%</output><input id="coverage" type="range" min="0" max="100" value="100"></div>
     </section>
 
     <section class="group">
-      <div class="group-head"><h3>Land</h3><button type="button" class="info" popovertarget="pop-land" aria-label="About the land bars">i</button></div>
+      <div class="group-head"><h3>Land, today vs scenario</h3><button type="button" class="info" popovertarget="pop-land" aria-label="About the land bars">i</button></div>
+      <p class="hint">Freed = beef land no longer needed after the replacement crops are counted.</p>
       <div class="stack" id="stack"></div>
       <ul class="stack-key"><li><i class="sw pink"></i>Pasture</li><li><i class="sw blue"></i>Feed</li><li><i class="sw yellow"></i>Replacement</li><li><i class="sw dots"></i>Freed</li></ul>
     </section>
 
     <section class="group">
-      <div class="group-head"><h3>Replaced with</h3><button type="button" class="info" popovertarget="pop-foods" aria-label="About the replacement foods">i</button></div>
+      <div class="group-head"><h3>What replaces each serving</h3><button type="button" class="info" popovertarget="pop-foods" aria-label="About the replacement foods">i</button></div>
+      <p class="hint">Small print: leucine per 100 g cooked. Beef has 2.2 g.</p>
       <div class="options" id="foods" role="radiogroup" aria-label="Replacement food"></div>
     </section>
 
     <section class="group">
-      <div class="group-head"><h3>Plate size</h3><button type="button" class="info" popovertarget="pop-plate" aria-label="About plate size">i</button></div>
-      <div class="segmented" role="group" aria-label="How people eat"><button type="button" data-lane="appetite">By appetite</button><button type="button" data-lane="mixed">Mix</button><button type="button" data-lane="planned">For muscle</button></div>
+      <div class="group-head"><h3>How big the replacement serving is</h3><button type="button" class="info" popovertarget="pop-plate" aria-label="About plate size">i</button></div>
+      <p class="hint">113 g of beans has a third of the beef’s leucine. Leucine is the yardstick here because it’s the trigger for muscle protein synthesis, so it shows whether a swap still works for muscle.</p>
+      <div class="segmented" role="group" aria-label="How people size the replacement"><button type="button" data-lane="appetite">Same weight<small>by appetite</small></button><button type="button" data-lane="mixed">Mix<small>some of each</small></button><button type="button" data-lane="planned">Enough leucine<small>for muscle</small></button></div>
       <svg id="leu-chart" viewBox="0 0 320 180" role="img" aria-label="Leucine on the plate against plate weight"></svg>
-      <dl class="readings"><div><dt>Leucine</dt><dd id="leu-g">—</dd></div><div><dt>On the plate</dt><dd id="leu-plate">—</dd></div><div><dt>Calories</dt><dd id="leu-kcal">—</dd></div></dl>
+      <dl class="readings"><div><dt>Leucine in the swap</dt><dd id="leu-g">—</dd></div><div><dt>Swap’s weight</dt><dd id="leu-plate">—</dd></div><div><dt>Calories</dt><dd id="leu-kcal">—</dd></div></dl>
     </section>
 
     <section class="group">
       <div class="group-head"><h3>Who’s eating</h3><button type="button" class="info" popovertarget="pop-who" aria-label="About nutrient needs">i</button></div>
+      <p class="hint">Sets the leucine target (2.5 g a meal, 3 g after 50), which changes serving size and so land, and the daily needs in the next section.</p>
       <div class="pair">
         <label class="select"><span>Age</span><select id="profile"><option value="adolescent">14–18</option><option value="adult">19–50</option><option value="older">51–70</option><option value="oldest">71+</option><option value="pregnancy">Pregnant</option><option value="lactation">Breastfeeding</option></select></label>
         <label class="select"><span>Sex</span><select id="sex"><option value="female">Female</option><option value="male">Male</option></select></label>
@@ -102,13 +112,14 @@
     </section>
 
     <section class="group">
-      <div class="group-head"><h3>Share of a day’s needs</h3><button type="button" class="info" popovertarget="pop-micro" aria-label="About the micronutrients">i</button></div>
+      <div class="group-head"><h3>One meal vs. a day’s needs</h3><button type="button" class="info" popovertarget="pop-micro" aria-label="About the micronutrients">i</button></div>
+      <p class="hint">% of this eater’s recommended daily amount that one serving delivers.</p>
       <div id="micro" class="dumbbells"></div>
       <p class="legend-line"><i class="dot pink"></i>Beef <i class="dot blue"></i>Swap</p>
     </section>
 
     <footer class="actions"><button type="button" id="share">Copy link</button><button type="button" id="export">Export data</button><p class="status" id="status" role="status"></p>
-      <p class="micro">Land: Eshel et al. 2014, PNAS 111:11996; Poore &amp; Nemecek 2018, Science 360:987. Nutrients: USDA FoodData Central, SR Legacy, cooked. Daily needs: NIH Office of Dietary Supplements. Places: FAO Gridded Livestock of the World 2010; IFPRI MapSPAM 2010; Natural Earth. Pins: USDA NASS and ERS, BLM, NRCS, NPS, MapBiomas. Printed live in four riso drums on a Photoshop paper scan. FOOD–55, ECON 238, University of Rochester, Felix Brener.</p></footer>
+      <p class="micro">Emissions are not modeled; this is land only. Land: Eshel et al. 2014, PNAS 111:11996; Poore &amp; Nemecek 2018, Science 360:987. Nutrients: USDA FoodData Central, SR Legacy, cooked. Daily needs: NIH Office of Dietary Supplements. Places: FAO Gridded Livestock of the World 2010; IFPRI MapSPAM 2010; Natural Earth. Pins: USDA NASS and ERS, BLM, NRCS, NPS, MapBiomas. Printed live in four riso drums on a Photoshop paper scan. FOOD–55, ECON 238, University of Rochester, Felix Brener.</p></footer>
   </aside>
 </div>
 
@@ -128,9 +139,9 @@
   <h2 id="method-title">Method</h2>
   <ol class="steps">
     <li><b>Beef’s land.</b> 3,256,000 km² (805 million acres) a year. Eshel et al. (2014) put US animal-product land at 3.7 million km², 88% of it for beef: pasture 79 points, hay and silage 7, grain 2. USDA counted 784 million grazed acres in 2022.</li>
-    <li><b>The scenario.</b> Shift = beef cut × share of Americans taking part. Beef land left = baseline × (1 − shift).</li>
+    <li><b>The scenario.</b> Shift = beef cut × share of Americans taking part (FOOD-55’s 10, 25, 50 and 100% cuts are points on this slider). Beef land left = baseline × (1 − shift).</li>
     <li><b>Replacement land.</b> Baseline × shift × (land for the replacement plate ÷ land for the beef serving). Each food’s land = its protein × Poore and Nemecek’s (2018) m² per 100 g of protein: beef herd 163.6, chicken 7.06, eggs 5.65, pulses 7.27, tofu 2.20.</li>
-    <li><b>Plate size.</b> By appetite, people eat the same 113 g as the beef; they eat a steady weight of food, not steady calories (Bell, Rolls et al. 1998). For muscle, each food is portioned to reach the leucine target for the eater’s age. Nutrients are from USDA FoodData Central.</li>
+    <li><b>Serving size.</b> The meal being replaced is 113 g (4 oz) of cooked beef. <i>Same weight</i> (by appetite): the replacement is also 113 g, since people eat a steady weight of food, not steady calories (Bell, Rolls et al. 1998). <i>Enough leucine</i> (for muscle): each food is portioned to reach the leucine target for the eater’s age. <i>Mix</i> blends the two by the share of people who plan. Nutrients are from USDA FoodData Central.</li>
     <li><b>The map.</b> Pasture is spread over half-degree cells by cattle head (FAO, 2010) and feed by maize area. Tofu land follows soy, bean and lentil land follows pulses, and chicken and egg land follows maize and soy (MapSPAM, 2010). In each cell, ink covers the share of the ground that use takes.</li>
     <li><b>The print.</b> Each layer is a riso drum. Coverage is screened live against a stochastic master made in Photoshop, then the drums overprint in Multiply on a Photoshop paper scan.</li>
   </ol>
@@ -140,6 +151,7 @@
     <li>Poore and Nemecek’s beef figure is a global mean, and the median is half of it. Beef still needs more than 10 times the land of any alternative here.</li>
     <li>Cattle counts include dairy and feedlot animals, so some feedlot counties carry more pasture than they have.</li>
     <li>Most western range is arid. Freed land isn’t all farmland, and what happens to it is a separate question.</li>
+    <li>FOOD-55 also asks about emissions. This model covers land only, not emissions.</li>
     <li>The model covers one meal, not a whole day, and leaves out protein digestibility (DIAAS). Processing plants are left out for every food.</li>
   </ul>
 </section>
@@ -165,9 +177,9 @@
 
 <div popover id="pop-map" class="pop"><h4>Reading the map</h4><p>Each colour is one riso ink. In every half-degree patch, ink covers the same share of the ground that the use takes. Pasture is placed by where cattle are (FAO, 2010), feed by maize fields, and replacement crops by soy, pulse or feed-grain fields (MapSPAM, 2010).</p><p>Black is a light tint for land, darker where cattle are dense worldwide. It shows head counts, not land.</p><p>The map is Mercator, which enlarges land toward the poles. The ink share in each patch stays true at any projection.</p><p>Drag to move. Use + and − to zoom. Numbered places open notes on what matters for US beef there.</p></div>
 <div popover id="pop-land" class="pop"><h4>Land</h4><p>Both bars are scaled to today’s 805 million acres. Today’s bar is all beef: pasture and feed crops (Eshel et al. 2014). The scenario bar shows the beef land left, the cropland for the replacement plates, and, as a dot screen, the land no longer needed.</p></div>
-<div popover id="pop-scenario" class="pop"><h4>Scenarios</h4><p><b>Beef cut</b> is how much of their beef people stop eating. <b>Americans taking part</b> is how many do it. Their product is the shift: half the beef for everyone equals all of it for half the people.</p><p>Meatless Monday cuts one day in seven, or 14%. The two muscle presets replace all beef and size plates to hit the leucine target.</p></div>
+<div popover id="pop-scenario" class="pop"><h4>How much beef goes</h4><p><b>Beef cut</b> is how much of their beef participants stop eating. <b>Americans taking part</b> is how many people do it. They are separate because a policy can work either way. The model uses only their product. Their product is the shift: half the beef for everyone equals all of it for half the people.</p><p>Meatless Monday cuts one day in seven, or 14%. The two muscle presets replace all beef and size plates to hit the leucine target.</p></div>
 <div popover id="pop-foods" class="pop"><h4>Replacement foods</h4><p>Leucine per 100 g, cooked (USDA FoodData Central). Land per 100 g of protein (Poore &amp; Nemecek 2018, global means): beef 164 m², chicken 7, eggs 6, pulses 7, tofu 2.</p><p>Mixed plates split the beef serving equally among their foods.</p></div>
-<div popover id="pop-plate" class="pop"><h4>Plate size</h4><p><b>By appetite:</b> people eat the same 113 g they ate as beef. Studies find people eat a steady weight of food, not steady calories (Bell, Rolls et al. 1998).</p><p><b>For muscle:</b> each food is portioned to reach the leucine target, the amount that switches on muscle protein synthesis.</p><p><b>Mix:</b> drag the dot along the line to set the share of people who plan for muscle.</p></div>
+<div popover id="pop-plate" class="pop"><h4>Serving size</h4><p>Swapping beef means choosing how much of the new food people eat, and that amount drives both nutrition and land.</p><p><b>Same weight (by appetite):</b> people put the same 113 g on the plate that the beef took up. People tend to eat a steady weight of food, not steady calories (Bell, Rolls et al. 1998).</p><p><b>Enough leucine (for muscle):</b> the replacement is portioned until it reaches the leucine target, the per-meal dose that switches on muscle protein synthesis.</p><p><b>Mix:</b> a real population is part of each, with some people planning protein and most eating what’s served. Drag the dot along the line to set the share who plan.</p><p>Chart: leucine (up) against serving weight (across). The pink dot is the beef; the dashed line is the target.</p></div>
 <div popover id="pop-who" class="pop"><h4>Who’s eating</h4><p>The leucine target is 2.5 g a meal, rising to about 3 g after 50, when muscle responds less to protein (Moore et al. 2015; Katsanos et al. 2006). It changes plate size, and so land.</p><p>Daily needs for protein, iron, zinc, copper, selenium and B12 follow NIH Recommended Dietary Allowances for each age, sex, pregnancy and breastfeeding.</p></div>
 <div popover id="pop-micro" class="pop"><h4>Micronutrients</h4><p>Share of a full day’s need delivered by one meal.</p><p>Plants carry no vitamin B12, and B12 is the only form in which people use cobalt. Plant iron is non-heme and absorbed less well. Tofu and lentils beat beef on copper.</p></div>
 </body>

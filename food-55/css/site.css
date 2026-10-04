@@ -284,3 +284,31 @@ figcaption{text-transform:uppercase;letter-spacing:.04em;font-size:var(--s-1)}
 @media (max-width:900px){body{padding-bottom:76px}.app{padding-bottom:12px}}
 @media (max-width:520px){.factoid{left:12px!important;right:12px;width:auto}.bars .row{grid-template-columns:90px 1fr 70px}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+
+/* ---------- context layer: framing, one-line hints, two-line options ---------- */
+.brief{padding:var(--sp-4) var(--sp-5);border-bottom:var(--line);background:var(--wash);font-size:var(--s-1);line-height:1.4;display:grid;gap:var(--sp-2)}
+.brief b{font-weight:var(--w-head)}
+.brief i{font-style:normal;font-weight:var(--w-label);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.15em}
+.hint{font-size:var(--s-1);line-height:1.35;margin:-2px 0 var(--sp-1);max-width:46ch}
+.slider label small{font-size:var(--s-1);font-weight:var(--w-body)}
+.segmented button{display:flex;flex-direction:column;align-items:center;gap:1px;line-height:1.15}
+.segmented button small{font-size:10px;font-weight:var(--w-body);letter-spacing:.01em}
+/* ---------- the rail stays put while the page scrolls ---------- */
+@media (min-width:901px){
+  .rail{position:fixed;top:var(--gap);bottom:var(--gap);left:var(--gap);width:var(--rail);z-index:20}
+  .app::before{content:'';grid-column:1}
+  .app>.stage{grid-column:2}.app>.panel{grid-column:3}
+  .sheet{margin-left:calc(var(--rail) + var(--gap) * 2)}
+}
+.sheet,#map{scroll-margin-top:var(--gap)}
+/* view buttons are filled only while the map is on screen; elsewhere the current section is */
+.rail[data-active]:not([data-active=map]) .rail-btn[aria-pressed=true]{background:none;box-shadow:inset 0 0 0 1px var(--ink)}
+.rail[data-active]:not([data-active=map]) .rail-btn[aria-pressed=true] svg{stroke:var(--ink)}
+.rail-btn[aria-current=true]{background:var(--ink)}
+.rail-btn[aria-current=true] svg{stroke:var(--card)}
+@media (min-width:600px) and (max-width:900px){.brief{grid-column:1/-1}}
+
+.pin[hidden]{display:none}
+.rail-mark{min-width:44px;min-height:44px;display:grid;place-items:center}
+#leu-chart text{paint-order:stroke;stroke:var(--card);stroke-width:3px}
+@media (max-width:600px){.factoid{left:12px!important;right:64px;width:auto;top:auto!important;bottom:104px}}

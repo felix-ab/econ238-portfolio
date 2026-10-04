@@ -14,7 +14,7 @@
   ]);
   const screenImg = await new Promise(res => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = 'assets/print/riso-screen.png'; });
 
-  let state = M.fromQuery(location.search), result, view = new URLSearchParams(location.search).get('view') === 'us' ? 'us' : 'world';
+  let state = M.fromQuery(location.search), result, q0 = new URLSearchParams(location.search).get('view'), view = q0 === 'us' || (!q0 && innerWidth < 600) ? 'us' : 'world';
   let preset = Object.keys(M.PRESETS).find(k => M.toQuery(M.PRESETS[k].state) === M.toQuery(state)) || null;
 
   /* ---------- riso master: 512² threshold map made in Photoshop ---------- */
@@ -199,13 +199,20 @@
     let n = 0; const rings = [], so = stage.getBoundingClientRect();
     const blocked = ['.readout .figure', '.readout .figure-cap', '.readout .delta', '.units', '.key', '.zoom'].map(s => document.querySelector(s)).filter(e => e && e.offsetParent)
       .map(e => { const r = e.getBoundingClientRect(); return [r.left - so.left, r.top - so.top, r.right - so.left, r.bottom - so.top]; });
-    pins.forEach((p, i) => {
-      const xy = P.proj([p.lon, p.lat]), el = pinEls[i];
+    const pos = pins.map((p, i) => {
+      const xy = P.proj([p.lon, p.lat]);
       const under = blocked.some(([l, t, r, b]) => xy && xy[0] > l - 40 && xy[0] < r + 40 && xy[1] > t - 40 && xy[1] < b + 44);
-      const inside = (p.views || ['world', 'us']).includes(view) && xy && !under && xy[0] > 24 && xy[0] < P.cw - 44 && xy[1] > 44 && xy[1] < P.ch - 24;
-      el.hidden = !inside; if (!inside) return;
+      return (p.views || ['world', 'us']).includes(view) && xy && !under && xy[0] > 24 && xy[0] < P.cw - 24 && xy[1] > 44 && xy[1] < P.ch - 24 ? xy : null;
+    });
+    pins.forEach((p, i) => {
+      const xy = pos[i], el = pinEls[i];
+      el.hidden = !xy; if (!xy) return;
       el.dataset.n = ++n; el.querySelector('b').textContent = n;
-      const ring = RING.find(([dx, dy]) => rings.every(([x, y]) => Math.hypot(xy[0] + dx - x, xy[1] + dy - y) > 32)) || RING[0];
+      // a ring must stay inside the stage and clear every other ring and every pin's square
+      const ok = ([dx, dy]) => { const x = xy[0] + dx, y = xy[1] + dy;
+        return x > 18 && x < P.cw - 18 && y > 18 && y < P.ch - 18 && rings.every(([a, b]) => Math.hypot(x - a, y - b) > 32)
+          && pos.every((q, j) => !q || j === i || Math.hypot(x - q[0], y - q[1]) > 20); };
+      const ring = RING.find(ok) || RING.find(([dx, dy]) => xy[0] + dx > 18 && xy[0] + dx < P.cw - 18 && xy[1] + dy > 18) || RING[0];
       rings.push([xy[0] + ring[0], xy[1] + ring[1]]);
       el.style.setProperty('--rx', ring[0] + 'px'); el.style.setProperty('--ry', ring[1] + 'px');
       el.style.left = xy[0] + 'px'; el.style.top = xy[1] + 'px';
@@ -250,7 +257,7 @@
     const t = r.dri.leucineMeal;
     tgt.attr('x1', m.l).attr('x2', cw - m.r).attr('y1', yS(t)).attr('y2', yS(t));
     tgtLbl.attr('x', cw - m.r).attr('y', yS(t) - 5).text('target ' + t + ' g');
-    beefDot.attr('cx', xS(r.beef.grams)).attr('cy', yS(r.beef.leucine)); beefLbl.attr('x', xS(r.beef.grams) + 10).attr('y', yS(r.beef.leucine) + 14);
+    beefDot.attr('cx', xS(r.beef.grams)).attr('cy', yS(r.beef.leucine)); beefLbl.attr('x', xS(r.beef.grams) - 10).attr('y', yS(r.beef.leucine) - 10).attr('text-anchor', 'end');
     seg.attr('x1', xS(a.grams)).attr('y1', yS(a.leucine)).attr('x2', xS(Math.min(450, b.grams))).attr('y2', yS(b.leucine));
     endA.attr('cx', xS(a.grams)).attr('cy', yS(a.leucine)); endB.attr('cx', xS(Math.min(450, b.grams))).attr('cy', yS(b.leucine));
     handle.attr('cx', xS(Math.min(450, r.plate.grams))).attr('cy', yS(r.plate.leucine)); halo.attr('cx', xS(Math.min(450, r.plate.grams))).attr('cy', yS(r.plate.leucine));
@@ -328,7 +335,7 @@
   on('#profile,#sex', 'change', e => { state[e.target.id] = e.target.value; update(); });
   on('[data-lane]', 'click', e => { state.lane = e.currentTarget.dataset.lane; state.plannedShare = state.lane === 'mixed' ? 50 : state.plannedShare; preset = null; update(); });
   on('[data-unit]', 'click', e => { state.unit = e.currentTarget.dataset.unit; update(); });
-  on('[data-view]', 'click', e => { view = e.currentTarget.dataset.view; zoomK = 1; zoomCenter = null; sync(); layout(); printData(); update(); document.getElementById('map').scrollIntoView({block: 'nearest'}); });
+  on('[data-view]', 'click', e => { view = e.currentTarget.dataset.view; zoomK = 1; zoomCenter = null; sync(); layout(); printData(); update(); document.getElementById('map').scrollIntoView({behavior: 'smooth', block: 'start'}); });
   $('#share').addEventListener('click', async () => {
     const url = location.origin + location.pathname + '?' + M.toQuery(state) + (view === 'us' ? '&view=us' : '');
     try { await navigator.clipboard.writeText(url); $('#status').textContent = 'Link copied.'; } catch { $('#status').textContent = url; }
@@ -373,6 +380,8 @@
   stage.addEventListener('pointerup', endDrag); stage.addEventListener('pointercancel', endDrag);
 
   /* ---------- popouts: native popovers, placed beside their ⓘ ---------- */
+  const closePops = () => { const o = document.querySelector('.pop:popover-open'); if (o) o.hidePopover(); };
+  $('.panel').addEventListener('scroll', closePops, {passive: true}); addEventListener('scroll', closePops, {passive: true});
   $$('.pop').forEach(pop => pop.addEventListener('toggle', e => {
     const btn = document.querySelector(`[popovertarget="${pop.id}"]`); if (!btn) return;
     btn.classList.toggle('open', e.newState === 'open'); if (e.newState !== 'open') return;
@@ -383,6 +392,18 @@
     pop.style.left = x + 'px'; pop.style.top = y + 'px';
   }));
 
+  /* ---------- rail: mark the section on screen ---------- */
+  const rail = $('.rail'), secs = ['map', 'meal', 'method', 'sources'].map(id => document.getElementById(id));
+  // The active section is the one crossing a reading line 35% down the viewport.
+  let railFrame = 0;
+  function markRail() {
+    railFrame = 0; const line = innerHeight * .35;
+    const cur = secs.find(s => { const r = s.getBoundingClientRect(); return r.top <= line && r.bottom > line; }) || (scrollY < 10 ? secs[0] : secs[secs.length - 1]);
+    rail.dataset.active = cur.id;
+    $$('.rail [data-sec]').forEach(l => l.setAttribute('aria-current', String(l.dataset.sec === cur.id)));
+  }
+  addEventListener('scroll', () => { if (!railFrame) railFrame = requestAnimationFrame(markRail); }, {passive: true});
+  addEventListener('resize', markRail); markRail();
   let rt = 0;
   new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(() => { layout(); printData(); }, 120); }).observe(stage);
   update(false);
