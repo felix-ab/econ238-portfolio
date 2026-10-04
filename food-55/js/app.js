@@ -84,7 +84,42 @@
     for (const c of Object.values(canvases)) { c.width = DW; c.height = DH; }
     P = {proj, dpr, DW, DH, S, GW, GH, L, mask, box: [Math.max(0, (bx0 - 1) * S), Math.max(0, (by0 - 1) * S), Math.min(DW, (bx1 + 2) * S), Math.min(DH, (by1 + 2) * S)], cw, ch};
     printBlack();
+    if (GLASS) buildGlass(cw, ch);
     placePins();
+  }
+
+  // The SVG glass needs feImage maps; WebKit is unreliable with them, so it gets the CSS edge blur.
+  let glassGen = 0;
+  const ua = navigator.userAgent, GLASS = (!!window.chrome && !/CriOS/.test(ua)) || /Firefox\//.test(ua);
+  if (GLASS) document.documentElement.classList.add('glass-on');
+  // Glass maps for #glass, rebuilt on resize. Displacement: zero in the middle, pulling inward
+  // toward the rim along a rounded-rectangle bevel, so the map bends like curved glass.
+  // Masks: three bands (R, G, B channels) that start deeper as the blur gets heavier.
+  function buildGlass(cw, ch) {
+    const k = 2, w = Math.ceil(cw / k), h = Math.ceil(ch / k), rad = 20 / k;
+    const band = Math.max(46, Math.min(130, Math.min(cw, ch) * .13)) / k;
+    const dc = document.createElement('canvas'), mc = document.createElement('canvas');
+    dc.width = mc.width = w; dc.height = mc.height = h;
+    const di = dc.getContext('2d').createImageData(w, h), mi = mc.getContext('2d').createImageData(w, h);
+    const hx = w / 2 - rad, hy = h / 2 - rad, ss = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      const px = x + .5 - w / 2, py = y + .5 - h / 2, qx = Math.abs(px) - hx, qy = Math.abs(py) - hy;
+      let d, nx, ny; // d: inward distance from the rim; (nx, ny): inward normal
+      if (qx > 0 && qy > 0) { const l = Math.hypot(qx, qy) || 1; d = rad - l; nx = -Math.sign(px) * qx / l; ny = -Math.sign(py) * qy / l; }
+      else if (qx > qy) { d = rad - qx; nx = -Math.sign(px); ny = 0; }
+      else { d = rad - qy; nx = 0; ny = -Math.sign(py); }
+      const t = Math.max(0, Math.min(1, 1 - d / band)), mag = t * t, i = (y * w + x) * 4;
+      di.data[i] = 128 + 127 * nx * mag; di.data[i + 1] = 128 + 127 * ny * mag; di.data[i + 2] = 128; di.data[i + 3] = 255;
+      mi.data[i] = 255 * ss(.05, .4, t); mi.data[i + 1] = 255 * ss(.35, .72, t); mi.data[i + 2] = 255 * ss(.66, 1, t); mi.data[i + 3] = 255;
+    }
+    dc.getContext('2d').putImageData(di, 0, 0); mc.getContext('2d').putImageData(mi, 0, 0);
+    const f = document.querySelector('.glass-defs filter'); f.setAttribute('width', cw); f.setAttribute('height', ch);
+    for (const [id, c] of [['glass-disp', dc], ['glass-mask', mc]]) {
+      const el = document.getElementById(id);
+      el.setAttribute('width', cw); el.setAttribute('height', ch); el.setAttribute('href', c.toDataURL());
+    }
+    // Chrome caches a CSS-referenced SVG filter; re-reference it under a fresh id so the new maps apply.
+    f.id = 'glass-' + (++glassGen); platesEl.style.filter = `url(#${f.id})`;
   }
 
   // Screen one drum: ink where coverage beats the master. Each drum reads the master at its own offset,

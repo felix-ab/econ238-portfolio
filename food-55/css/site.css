@@ -45,7 +45,8 @@ a{color:inherit}
 
 /* stage: map + readout */
 .stage{position:relative;border:var(--line);border-radius:var(--r-card);overflow:hidden;background:var(--paper) url(../assets/print/paper.webp) 0 0/512px 512px;isolation:isolate}
-.plates{position:absolute;inset:0}
+.plates{position:absolute;inset:0;background:var(--paper) url(../assets/print/paper.webp) 0 0/512px 512px;}
+.glass-defs{position:absolute;width:0;height:0}
 .plates canvas{position:absolute;inset:0;width:100%;height:100%;mix-blend-mode:multiply;image-rendering:pixelated}
 /* misregistration: each drum lands a fraction of a pixel off */
 .plates .p-pink{transform:translate(.5px,-.35px)}
@@ -53,13 +54,15 @@ a{color:inherit}
 .plates .p-yellow{transform:translate(.25px,.55px)}
 
 /* progressive blur behind the figure */
-.blur{position:absolute;left:0;right:0;top:0;height:clamp(170px,30%,260px);pointer-events:none;z-index:3}
-.blur i{position:absolute;inset:0}
-.blur i:nth-child(1){backdrop-filter:blur(1px);-webkit-backdrop-filter:blur(1px);mask:linear-gradient(#000 0 80%,transparent 100%);-webkit-mask:linear-gradient(#000 0 80%,transparent 100%)}
-.blur i:nth-child(2){backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);mask:linear-gradient(#000 0 62%,transparent 84%);-webkit-mask:linear-gradient(#000 0 62%,transparent 84%)}
-.blur i:nth-child(3){backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);mask:linear-gradient(#000 0 45%,transparent 68%);-webkit-mask:linear-gradient(#000 0 45%,transparent 68%)}
-.blur i:nth-child(4){backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);mask:linear-gradient(#000 0 28%,transparent 52%);-webkit-mask:linear-gradient(#000 0 28%,transparent 52%)}
-.blur i:nth-child(5){background:linear-gradient(rgba(244,243,239,.72),rgba(244,243,239,.38) 45%,rgba(244,243,239,0) 85%)}
+.edge{position:absolute;inset:0;pointer-events:none;z-index:2;display:none}
+.edge i{position:absolute;inset:0;--e:7%;-webkit-mask:linear-gradient(90deg,#000,transparent var(--e),transparent calc(100% - var(--e)),#000),linear-gradient(#000,transparent var(--e),transparent calc(100% - var(--e)),#000);mask:linear-gradient(90deg,#000,transparent var(--e),transparent calc(100% - var(--e)),#000),linear-gradient(#000,transparent var(--e),transparent calc(100% - var(--e)),#000)}
+.edge i:nth-child(1){--e:11%;-webkit-backdrop-filter:blur(1.5px);backdrop-filter:blur(1.5px)}
+.edge i:nth-child(2){--e:7%;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.edge i:nth-child(3){--e:3.5%;-webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px)}
+html:not(.glass-on) .edge{display:block}
+.veil{position:absolute;left:0;right:0;top:0;height:clamp(150px,26%,230px);pointer-events:none;z-index:3;background:linear-gradient(rgba(244,243,239,.62),rgba(244,243,239,.3) 50%,rgba(244,243,239,0))}
+/* the glass edge: a frosted lift that thickens toward the rim, and a thin specular line */
+.rim{position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:3;box-shadow:inset 0 0 0 1px rgba(255,255,255,.55),inset 0 1px 0 1px rgba(255,255,255,.5),inset 0 0 34px rgba(255,255,255,.34)}
 
 .readout{position:absolute;left:28px;right:28px;top:20px;z-index:4;pointer-events:none}
 .figure{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap}
@@ -72,11 +75,11 @@ a{color:inherit}
 .delta{font:var(--t-mono)/1 var(--mono);text-transform:uppercase;border:var(--line);border-radius:var(--r-card);padding:5px 9px;margin-left:6px;vertical-align:3px;background:var(--yellow);mix-blend-mode:multiply}
 .delta:empty{display:none}
 
-.key{position:absolute;left:24px;bottom:42px;list-style:none;display:flex;flex-wrap:wrap;gap:6px 14px;z-index:4;font-size:var(--t-small);background:var(--card);border:var(--line);border-radius:var(--r-card);padding:8px 14px}
+.key{position:absolute;left:24px;bottom:44px;list-style:none;display:flex;flex-wrap:wrap;gap:6px 14px;z-index:4;font-size:var(--t-small);background:var(--card);border:var(--line);border-radius:var(--r-card);padding:8px 14px}
 .key li{display:flex;align-items:center;gap:6px}
 .ink{width:12px;height:12px;border-radius:50%;display:inline-block;mix-blend-mode:multiply}
 .ink.pink{background:var(--pink)}.ink.blue{background:var(--blue)}.ink.yellow{background:var(--yellow);box-shadow:inset 0 0 0 1px var(--ink)}.ink.black{background:var(--black)}
-.scale{position:absolute;left:24px;bottom:14px;z-index:4;font:var(--t-mono)/1.2 var(--mono)}
+.scale{position:absolute;left:24px;bottom:12px;z-index:4;font:11px/1.2 var(--mono);background:var(--card);border:var(--line);border-radius:var(--r-card);padding:5px 12px}
 
 /* pins + factoid popouts */
 .pins{position:absolute;inset:0;z-index:2;pointer-events:none}
