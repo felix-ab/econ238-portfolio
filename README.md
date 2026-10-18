@@ -27,3 +27,6 @@ Week 1 (Sep 6): Exemption used.
 
 - [The Land on Our Plates](https://felix-ab.github.io/econ238-portfolio/food-55/) · class-list topic FOOD-55, Beef Land-Use Counterfactual. How much land US beef uses, and what a swap costs once the replacement has to hit the same leucine target. [Code](food-55/) · [topic claim](https://github.com/RochesterRizzo/Rizzo-Hours/issues/96) · [Museum entry](https://github.com/RochesterRizzo/Rizzo-Hours/issues/147)
 - [The Carbon Cost of NYC’s ‘Green’ Rules](https://felix-ab.github.io/econ238-portfolio/nyc-homes/) · my own topic. Rules sold on environmental grounds block homes in New York City; the households they price out drive more and heat bigger houses. [Code](nyc-homes/) · [topic claim](https://github.com/RochesterRizzo/Rizzo-Hours/issues/146) · [Museum entry](https://github.com/RochesterRizzo/Rizzo-Hours/issues/148)
+
+
+**Week Seven (Oct 18): [Buy Time for Birds](birds/)** — a proposed voluntary contract compensating a farmer for delayed haying. [Anonymous ballot](https://buy-time-for-birds-felix.breezyharp128.chatgpt.site/vote) · [Live results](https://buy-time-for-birds-felix.breezyharp128.chatgpt.site/results) · [Print the poster](birds/poster.pdf).
