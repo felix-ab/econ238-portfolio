@@ -30,3 +30,5 @@ Week 1 (Sep 6): Exemption used.
 
 
 **Week Seven (Oct 18): [Buy Time for Birds](birds/)** — a proposed voluntary contract compensating a farmer for delayed haying. [Anonymous ballot](https://buy-time-for-birds-felix.breezyharp128.chatgpt.site/vote) · [Live results](https://buy-time-for-birds-felix.breezyharp128.chatgpt.site/results) · [Print the poster](birds/poster.pdf).
+
+[Week Seven digital poster](birds/digital-poster.html) — digital-only fallback; no physical display claimed.
