@@ -34,3 +34,5 @@ Week 1 (Sep 6): Exemption used.
 [Week Seven digital poster](birds/digital-poster.html) — digital-only fallback; no physical display claimed.
 
 **Week Eight (Oct 25): [The People Closest at Hand: Who Gets to Speak for a Valley?](https://felixbrener.substack.com/p/the-people-closest-at-hand-who-gets)** — an environmental economic history lecture on Hetch Hetchy, public benefits, and who could enforce the bargain. Includes a linked reading list.
+
+**Week Nine (Nov 1): [Who Gets the Benefit?](week-nine/)** — an interactive environmental justice explainer connecting Yorkville’s waterfront, the distribution of amenity gains, and meaningful tribal decision-making authority. Includes a hypothetical household calculator and sources.
